@@ -1,0 +1,5 @@
+spring.application.name: app
+# https://www.devglan.com/online-tools/hmac-sha256-online
+security.jwt.secret-key: deff1af56cce746d7cd3eeef041e4938b11dd214b7bfa97357f9217a3ab2909e
+# 1h in millisecond
+security.jwt.expiration-time: 3600000
