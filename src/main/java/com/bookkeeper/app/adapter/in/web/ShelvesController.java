@@ -1,7 +1,6 @@
 package com.bookkeeper.app.adapter.in.web;
 
 import com.bookkeeper.app.application.port.in.ListShelvesUseCase;
-import com.bookkeeper.app.common.RequestResult;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;

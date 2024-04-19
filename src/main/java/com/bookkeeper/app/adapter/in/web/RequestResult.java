@@ -1,4 +1,4 @@
-package com.bookkeeper.app.common;
+package com.bookkeeper.app.adapter.in.web;
 
 public interface RequestResult {
 

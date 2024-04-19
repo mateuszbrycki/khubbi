@@ -2,7 +2,6 @@ package com.bookkeeper.app.adapter.in.web;
 
 import com.bookkeeper.app.adapter.in.web.security.JwtService;
 import com.bookkeeper.app.application.port.in.AddUserUseCase;
-import com.bookkeeper.app.common.RequestResult;
 import io.vavr.control.Try;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
