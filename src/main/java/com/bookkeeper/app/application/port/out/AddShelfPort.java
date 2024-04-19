@@ -5,5 +5,5 @@ import io.vavr.control.Try;
 
 public interface AddShelfPort {
 
-    Try<Shelf> addShelf(Shelf shelf);
+  Try<Shelf> addShelf(Shelf shelf);
 }

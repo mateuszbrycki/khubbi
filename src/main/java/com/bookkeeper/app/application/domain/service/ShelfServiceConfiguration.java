@@ -8,9 +8,9 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 public class ShelfServiceConfiguration {
 
-    @Bean
-    ShelfService shelfService() {
-        ShelfInMemoryDatabase shelfInMemoryDatabase = new ShelfInMemoryDatabase(List.empty());
-        return new ShelfService(shelfInMemoryDatabase, shelfInMemoryDatabase);
-    }
+  @Bean
+  ShelfService shelfService() {
+    ShelfInMemoryDatabase shelfInMemoryDatabase = new ShelfInMemoryDatabase(List.empty());
+    return new ShelfService(shelfInMemoryDatabase, shelfInMemoryDatabase);
+  }
 }

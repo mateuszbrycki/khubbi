@@ -12,15 +12,20 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/shelves")
 public class ShelvesController {
 
-    private final ListShelvesUseCase listShelvesUseCase;
+  private final ListShelvesUseCase listShelvesUseCase;
 
-    public ShelvesController(ListShelvesUseCase listShelvesUseCase) {
-        this.listShelvesUseCase = listShelvesUseCase;
-    }
-    @GetMapping
-    public ResponseEntity<?> listShelves() {
-        return this.listShelvesUseCase.listShelves(new ListShelvesUseCase.ListShelvesCommand())
-                .fold(failure -> new ResponseEntity<>(new RequestResult.RequestError(failure.getMessage()), HttpStatus.CONFLICT),
-                        result -> new ResponseEntity<>(result.toJavaList(), HttpStatus.OK));
-    }
+  public ShelvesController(ListShelvesUseCase listShelvesUseCase) {
+    this.listShelvesUseCase = listShelvesUseCase;
+  }
+
+  @GetMapping
+  public ResponseEntity<?> listShelves() {
+    return this.listShelvesUseCase
+        .listShelves(new ListShelvesUseCase.ListShelvesCommand())
+        .fold(
+            failure ->
+                new ResponseEntity<>(
+                    new RequestResult.RequestError(failure.getMessage()), HttpStatus.CONFLICT),
+            result -> new ResponseEntity<>(result.toJavaList(), HttpStatus.OK));
+  }
 }

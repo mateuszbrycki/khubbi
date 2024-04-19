@@ -6,8 +6,8 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 public class PersistenceConfiguration {
 
-    @Bean
-    UserInMemoryRepository inMemoryUserRepository() {
-        return new UserInMemoryRepository();
-    }
+  @Bean
+  UserInMemoryRepository inMemoryUserRepository() {
+    return new UserInMemoryRepository();
+  }
 }

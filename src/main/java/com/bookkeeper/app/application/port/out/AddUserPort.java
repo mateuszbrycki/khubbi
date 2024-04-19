@@ -5,5 +5,5 @@ import io.vavr.control.Try;
 
 public interface AddUserPort {
 
-    Try<User> addUser(User user);
+  Try<User> addUser(User user);
 }

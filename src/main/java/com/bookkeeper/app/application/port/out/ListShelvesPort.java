@@ -6,5 +6,5 @@ import io.vavr.control.Try;
 
 public interface ListShelvesPort {
 
-    Try<List<Shelf>> listShelves();
+  Try<List<Shelf>> listShelves();
 }

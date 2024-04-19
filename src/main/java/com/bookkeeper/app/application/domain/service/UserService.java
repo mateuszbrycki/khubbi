@@ -11,26 +11,20 @@ import java.util.UUID;
 
 public class UserService implements AddUserUseCase {
 
-    private final AddUserPort addUserPort;
+  private final AddUserPort addUserPort;
 
-    public UserService(AddUserPort addUserPort) {
-        this.addUserPort = addUserPort;
-    }
-    
-    @Override
-    public Try<User> addUser(AddUserCommand command) {
+  public UserService(AddUserPort addUserPort) {
+    this.addUserPort = addUserPort;
+  }
 
-        Date now = Date.from(Instant.now());
+  @Override
+  public Try<User> addUser(AddUserCommand command) {
 
-        // TODO mateusz.brycki check duplicates
-        return addUserPort.addUser(
-                new User(
-                        UUID.randomUUID(),
-                        command.fullName(),
-                        command.email(),
-                        command.password(),
-                        now,
-                        now));
+    Date now = Date.from(Instant.now());
 
-    }
+    // TODO mateusz.brycki check duplicates
+    return addUserPort.addUser(
+        new User(
+            UUID.randomUUID(), command.fullName(), command.email(), command.password(), now, now));
+  }
 }

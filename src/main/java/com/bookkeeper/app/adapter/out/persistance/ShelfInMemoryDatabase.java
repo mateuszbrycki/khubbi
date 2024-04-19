@@ -8,20 +8,19 @@ import io.vavr.control.Try;
 
 public class ShelfInMemoryDatabase implements AddShelfPort, ListShelvesPort {
 
-    private List<Shelf> shelves;
+  private List<Shelf> shelves;
 
-    public ShelfInMemoryDatabase(List<Shelf> shelves) {
-        this.shelves = shelves;
-    }
+  public ShelfInMemoryDatabase(List<Shelf> shelves) {
+    this.shelves = shelves;
+  }
 
-    @Override
-    public Try<Shelf> addShelf(Shelf shelf) {
-        return Try.of(() -> this.shelves = this.shelves.append(shelf))
-                .map(t -> shelf);
-    }
+  @Override
+  public Try<Shelf> addShelf(Shelf shelf) {
+    return Try.of(() -> this.shelves = this.shelves.append(shelf)).map(t -> shelf);
+  }
 
-    @Override
-    public Try<List<Shelf>> listShelves() {
-        return Try.of(() -> this.shelves);
-    }
+  @Override
+  public Try<List<Shelf>> listShelves() {
+    return Try.of(() -> this.shelves);
+  }
 }

@@ -13,24 +13,26 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/shelf")
 public class ShelfController {
 
-    private final AddShelfUseCase addShelfUseCase;
+  private final AddShelfUseCase addShelfUseCase;
 
-    public ShelfController(AddShelfUseCase addShelfUseCase) {
-        this.addShelfUseCase = addShelfUseCase;
-    }
+  public ShelfController(AddShelfUseCase addShelfUseCase) {
+    this.addShelfUseCase = addShelfUseCase;
+  }
 
+  @PostMapping
+  public ResponseEntity<?> addShelf(@RequestBody Shelf shelf) {
 
-    @PostMapping
-    public ResponseEntity<?> addShelf(@RequestBody Shelf shelf) {
+    AddShelfUseCase.AddShelfCommand addShelfCommand =
+        new AddShelfUseCase.AddShelfCommand(shelf.name());
 
-        AddShelfUseCase.AddShelfCommand addShelfCommand = new AddShelfUseCase.AddShelfCommand(shelf.name());
+    return this.addShelfUseCase
+        .addShelf(addShelfCommand)
+        .fold(
+            failure ->
+                new ResponseEntity<>(
+                    new RequestResult.RequestError(failure.getMessage()), HttpStatus.CONFLICT),
+            result -> new ResponseEntity<>(result, HttpStatus.CREATED));
+  }
 
-        return this.addShelfUseCase.addShelf(addShelfCommand)
-                .fold(failure -> new ResponseEntity<>(new RequestResult.RequestError(failure.getMessage()), HttpStatus.CONFLICT),
-                        result -> new ResponseEntity<>(result, HttpStatus.CREATED));
-    }
-
-    record Shelf(String name) {
-    }
-
+  record Shelf(String name) {}
 }

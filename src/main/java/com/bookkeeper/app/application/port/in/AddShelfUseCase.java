@@ -6,10 +6,9 @@ import java.util.UUID;
 
 public interface AddShelfUseCase {
 
-    Try<Shelf> addShelf(AddShelfCommand command);
+  Try<Shelf> addShelf(AddShelfCommand command);
 
-    record AddShelfCommand(String name) {
-    }
+  record AddShelfCommand(String name) {}
 
-    record Shelf(UUID id, String name) {}
+  record Shelf(UUID id, String name) {}
 }

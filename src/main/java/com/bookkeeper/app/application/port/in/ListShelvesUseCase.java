@@ -7,10 +7,9 @@ import java.util.UUID;
 
 public interface ListShelvesUseCase {
 
-    Try<List<Shelf>> listShelves(ListShelvesCommand command);
+  Try<List<Shelf>> listShelves(ListShelvesCommand command);
 
-    record ListShelvesCommand() {
-    }
+  record ListShelvesCommand() {}
 
-    record Shelf(UUID id, String name) {}
+  record Shelf(UUID id, String name) {}
 }

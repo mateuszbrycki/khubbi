@@ -2,6 +2,7 @@ package com.bookkeeper.app.adapter.in.web;
 
 import com.bookkeeper.app.adapter.in.web.security.JwtService;
 import com.bookkeeper.app.application.port.in.AddUserUseCase;
+import com.bookkeeper.app.common.RequestResult;
 import io.vavr.control.Try;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -21,165 +22,173 @@ import java.util.UUID;
 @RestController
 public class AuthenticationController {
 
-    private final AddUserUseCase addUserUseCase;
-    private final JwtService jwtService;
-    private final AuthenticationManager authenticationManager;
-    private final PasswordEncoder passwordEncoder;
+  private final AddUserUseCase addUserUseCase;
+  private final JwtService jwtService;
+  private final AuthenticationManager authenticationManager;
+  private final PasswordEncoder passwordEncoder;
 
-    public AuthenticationController(
-            AddUserUseCase addUserUseCase,
-            JwtService jwtService,
-            AuthenticationManager authenticationManager,
-            PasswordEncoder passwordEncoder) {
-        this.addUserUseCase = addUserUseCase;
-        this.jwtService = jwtService;
-        this.authenticationManager = authenticationManager;
-        this.passwordEncoder = passwordEncoder;
+  public AuthenticationController(
+      AddUserUseCase addUserUseCase,
+      JwtService jwtService,
+      AuthenticationManager authenticationManager,
+      PasswordEncoder passwordEncoder) {
+    this.addUserUseCase = addUserUseCase;
+    this.jwtService = jwtService;
+    this.authenticationManager = authenticationManager;
+    this.passwordEncoder = passwordEncoder;
+  }
+
+  @PostMapping("/signup")
+  public ResponseEntity<?> register(@RequestBody RegisterUserDto registerUserDto) {
+
+    Try<RegisterResponse> user =
+        addUserUseCase
+            .addUser(
+                new AddUserUseCase.AddUserCommand(
+                    registerUserDto.getEmail(),
+                    passwordEncoder.encode(registerUserDto.getPassword()),
+                    registerUserDto.getFullName()))
+            .map(
+                addUserResult ->
+                    new RegisterResponse()
+                        .setId(addUserResult.getId())
+                        .setEmail(addUserResult.getEmail())
+                        .setCreatedAt(addUserResult.getCreatedAt()));
+
+    return user.fold(
+        failure ->
+            new ResponseEntity<>(
+                new RequestResult.RequestError(failure.getMessage()), HttpStatus.CONFLICT),
+        result -> new ResponseEntity<>(result, HttpStatus.OK));
+  }
+
+  @PostMapping("/login")
+  public ResponseEntity<?> authenticate(@RequestBody LoginUserDto loginUserDto) {
+    Authentication authentication =
+        authenticationManager.authenticate(
+            new UsernamePasswordAuthenticationToken(
+                loginUserDto.getEmail(), loginUserDto.getPassword()));
+
+    if (authentication.isAuthenticated()) {
+      String jwtToken = jwtService.generateToken(loginUserDto.getEmail());
+      LoginResponse loginResponse =
+          new LoginResponse().setToken(jwtToken).setExpiresIn(jwtService.getExpirationTime());
+      return ResponseEntity.ok(loginResponse);
     }
 
-    @PostMapping("/signup")
-    public ResponseEntity<RegisterResponse> register(@RequestBody RegisterUserDto registerUserDto) {
+    return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+  }
 
-        Try<RegisterResponse> user = addUserUseCase.addUser(new AddUserUseCase.AddUserCommand(
-                registerUserDto.getEmail(), passwordEncoder.encode(registerUserDto.getPassword()), registerUserDto.getFullName()
-        )).map(
-                addUserResult -> new RegisterResponse().setId(addUserResult.getId()).setEmail(addUserResult.getEmail()).setCreatedAt(addUserResult.getCreatedAt()));
+  public static class RegisterResponse {
+    private UUID id;
 
-        return ResponseEntity.ok(
-                user.getOrElseThrow(() -> new RuntimeException("Cannot register user with " + registerUserDto.getEmail())));
+    private String email;
+
+    private Date createdAt;
+
+    public UUID getId() {
+      return id;
     }
 
-    @PostMapping("/login")
-    public ResponseEntity<?> authenticate(@RequestBody LoginUserDto loginUserDto) {
-        Authentication authentication = authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(
-                        loginUserDto.getEmail(),
-                        loginUserDto.getPassword()
-                )
-        );
-
-
-        if (authentication.isAuthenticated()) {
-            String jwtToken = jwtService.generateToken(loginUserDto.getEmail());
-            LoginResponse loginResponse = new LoginResponse().setToken(jwtToken).setExpiresIn(jwtService.getExpirationTime());
-            return ResponseEntity.ok(loginResponse);
-        }
-
-        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
-
+    public RegisterResponse setId(UUID id) {
+      this.id = id;
+      return this;
     }
 
-    public static class RegisterResponse {
-        private UUID id;
-
-        private String email;
-
-        private Date createdAt;
-
-        public UUID getId() {
-            return id;
-        }
-
-        public RegisterResponse setId(UUID id) {
-            this.id = id;
-            return this;
-        }
-
-        public String getEmail() {
-            return email;
-        }
-
-        public RegisterResponse setEmail(String email) {
-            this.email = email;
-            return this;
-        }
-
-        public Date getCreatedAt() {
-            return createdAt;
-        }
-
-        public RegisterResponse setCreatedAt(Date createdAt) {
-            this.createdAt = createdAt;
-            return this;
-        }
+    public String getEmail() {
+      return email;
     }
 
-    public static class LoginResponse {
-        private String token;
-
-        private long expiresIn;
-
-        public String getToken() {
-            return token;
-        }
-
-        public LoginResponse setToken(String token) {
-            this.token = token;
-            return this;
-        }
-
-        public long getExpiresIn() {
-            return expiresIn;
-        }
-
-        public LoginResponse setExpiresIn(long expiresIn) {
-            this.expiresIn = expiresIn;
-            return this;
-        }
+    public RegisterResponse setEmail(String email) {
+      this.email = email;
+      return this;
     }
 
-    public static class LoginUserDto {
-        private String email;
-
-        private String password;
-
-        public String getEmail() {
-            return email;
-        }
-
-        public void setEmail(String email) {
-            this.email = email;
-        }
-
-        public String getPassword() {
-            return password;
-        }
-
-        public void setPassword(String password) {
-            this.password = password;
-        }
+    public Date getCreatedAt() {
+      return createdAt;
     }
 
-    public static class RegisterUserDto {
-        private String email;
+    public RegisterResponse setCreatedAt(Date createdAt) {
+      this.createdAt = createdAt;
+      return this;
+    }
+  }
 
-        private String password;
+  public static class LoginResponse {
+    private String token;
 
-        private String fullName;
+    private long expiresIn;
 
-        public String getEmail() {
-            return email;
-        }
-
-        public void setEmail(String email) {
-            this.email = email;
-        }
-
-        public String getPassword() {
-            return password;
-        }
-
-        public void setPassword(String password) {
-            this.password = password;
-        }
-
-        public String getFullName() {
-            return fullName;
-        }
-
-        public void setFullName(String fullName) {
-            this.fullName = fullName;
-        }
+    public String getToken() {
+      return token;
     }
 
+    public LoginResponse setToken(String token) {
+      this.token = token;
+      return this;
+    }
+
+    public long getExpiresIn() {
+      return expiresIn;
+    }
+
+    public LoginResponse setExpiresIn(long expiresIn) {
+      this.expiresIn = expiresIn;
+      return this;
+    }
+  }
+
+  public static class LoginUserDto {
+    private String email;
+
+    private String password;
+
+    public String getEmail() {
+      return email;
+    }
+
+    public void setEmail(String email) {
+      this.email = email;
+    }
+
+    public String getPassword() {
+      return password;
+    }
+
+    public void setPassword(String password) {
+      this.password = password;
+    }
+  }
+
+  public static class RegisterUserDto {
+    private String email;
+
+    private String password;
+
+    private String fullName;
+
+    public String getEmail() {
+      return email;
+    }
+
+    public void setEmail(String email) {
+      this.email = email;
+    }
+
+    public String getPassword() {
+      return password;
+    }
+
+    public void setPassword(String password) {
+      this.password = password;
+    }
+
+    public String getFullName() {
+      return fullName;
+    }
+
+    public void setFullName(String fullName) {
+      this.fullName = fullName;
+    }
+  }
 }
