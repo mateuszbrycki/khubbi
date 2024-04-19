@@ -4,12 +4,11 @@ import com.bookkeeper.app.application.domain.model.User;
 import com.bookkeeper.app.application.port.out.AddUserPort;
 import io.vavr.control.Option;
 import io.vavr.control.Try;
-import org.springframework.stereotype.Repository;
 
 import java.util.HashMap;
 import java.util.Map;
 
-public class InMemoryUserRepository implements AddUserPort {
+public class UserInMemoryRepository implements AddUserPort {
 
     private final Map<String, User> users = new HashMap<>();
 

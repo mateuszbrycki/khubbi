@@ -1,6 +1,6 @@
 package com.bookkeeper.app.adapter.in.web.security;
 
-import com.bookkeeper.app.adapter.out.persistance.InMemoryUserRepository;
+import com.bookkeeper.app.adapter.out.persistance.UserInMemoryRepository;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -59,8 +59,8 @@ public class SecurityConfiguration {
     }
 
     @Bean
-    UserDetailsService userDetailsService(InMemoryUserRepository inMemoryUserRepository) {
-        return username -> inMemoryUserRepository.findByEmail(username)
+    UserDetailsService userDetailsService(UserInMemoryRepository userInMemoryRepository) {
+        return username -> userInMemoryRepository.findByEmail(username)
                 .map(this::toUserDetails)
                 .getOrElseThrow(() -> new UsernameNotFoundException("User not found"));
     }
