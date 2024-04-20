@@ -43,6 +43,7 @@ tasks.named("test") {
 node {
 	nodeProjectDir = file("./src/main/front")
 }
+npmInstall.args = ['--force']
 
 task buildFrontendApp(type: NpmTask) {
 	args = ['run', 'build']
@@ -57,4 +58,4 @@ task copyFrontendApp(type: Copy) {
 buildFrontendApp.dependsOn npmInstall
 processResources.dependsOn copyFrontendApp
 copyFrontendApp.dependsOn buildFrontendApp
-build.dependsOn copyFrontendApp
+bootJar.dependsOn copyFrontendApp

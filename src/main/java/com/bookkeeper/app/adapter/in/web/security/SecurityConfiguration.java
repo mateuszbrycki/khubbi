@@ -7,9 +7,11 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
+import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
+import org.springframework.security.config.annotation.web.configurers.CorsConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -41,12 +43,18 @@ public class SecurityConfiguration {
       AuthenticationProvider authenticationProvider)
       throws Exception {
     return http.csrf(AbstractHttpConfigurer::disable)
+        .cors(cors -> cors.configurationSource(r -> corsConfiguration()))
         .authorizeHttpRequests(
             authorize ->
-                authorize.requestMatchers("/auth/**").permitAll()
-                        .requestMatchers("/*").permitAll()
-                        .requestMatchers("/static/**").permitAll()
-                        .anyRequest().authenticated())
+                authorize
+                    .requestMatchers("/auth/**")
+                    .permitAll()
+                    .requestMatchers("/*")
+                    .permitAll()
+                    .requestMatchers("/static/**")
+                    .permitAll()
+                    .anyRequest()
+                    .authenticated())
         .sessionManagement(
             session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
         .authenticationProvider(authenticationProvider)
@@ -54,19 +62,14 @@ public class SecurityConfiguration {
         .build();
   }
 
-  @Bean
-  CorsConfigurationSource corsConfigurationSource() {
-    CorsConfiguration configuration = new CorsConfiguration();
-
-    configuration.setAllowedOrigins(List.of("http://localhost:8005"));
-    configuration.setAllowedMethods(List.of("GET", "POST"));
-    configuration.setAllowedHeaders(List.of("Authorization", "Content-Type"));
-
-    UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-
-    source.registerCorsConfiguration("/**", configuration);
-
-    return source;
+  private CorsConfiguration corsConfiguration() {
+    CorsConfiguration corsConfiguration = new CorsConfiguration();
+    corsConfiguration.setAllowedOrigins(List.of("http://localhost:3000", "http://localhost:3001"));
+    corsConfiguration.setAllowedMethods(List.of("POST", "GET", "PUT", "DELETE", "OPTIONS"));
+    corsConfiguration.setAllowedHeaders(
+        List.of("Authorization", "Content-Type", "X-Requested-With", "Accept", "X-XSRF-TOKEN"));
+    corsConfiguration.setAllowCredentials(true);
+    return corsConfiguration;
   }
 
   @Bean
