@@ -2,6 +2,7 @@ plugins {
 	id "java"
 	id "org.springframework.boot" version "3.3.0-SNAPSHOT"
 	id "io.spring.dependency-management" version "1.1.4"
+	id "com.github.node-gradle.node" version "7.0.2"
 }
 
 group = "com.bookkeeper"
@@ -38,3 +39,22 @@ dependencies {
 tasks.named("test") {
 	useJUnitPlatform()
 }
+
+node {
+	nodeProjectDir = file("./src/main/front")
+}
+
+task buildFrontendApp(type: NpmTask) {
+	args = ['run', 'build']
+}
+
+task copyFrontendApp(type: Copy) {
+	dependsOn('buildFrontendApp')
+	from('./src/main/front/build')
+	into('./build/resources/main/public/.')
+}
+
+buildFrontendApp.dependsOn npmInstall
+processResources.dependsOn copyFrontendApp
+copyFrontendApp.dependsOn buildFrontendApp
+build.dependsOn copyFrontendApp
