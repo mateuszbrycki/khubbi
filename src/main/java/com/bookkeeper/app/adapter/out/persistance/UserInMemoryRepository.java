@@ -2,19 +2,20 @@ package com.bookkeeper.app.adapter.out.persistance;
 
 import com.bookkeeper.app.application.domain.model.User;
 import com.bookkeeper.app.application.port.out.AddUserPort;
+import io.vavr.collection.Map;
 import io.vavr.control.Option;
 import io.vavr.control.Try;
 
-import java.util.HashMap;
-import java.util.Map;
-
 public class UserInMemoryRepository implements AddUserPort {
 
-  private final Map<String, User> users = new HashMap<>();
+  private Map<String, User> users;
 
-  public Option<User> findByEmail(String email) {
+  public UserInMemoryRepository(Map<String, User> users) {
+    this.users = users;
+  }
 
-    return Try.of(() -> Option.of(users.get(email))).getOrElse(Option::none);
+  public Try<Option<User>> findByEmail(String email) {
+    return Try.of(() -> users.get(email));
   }
 
   // TODO mateusz.brycki welll...might be better
@@ -23,7 +24,7 @@ public class UserInMemoryRepository implements AddUserPort {
   }
 
   private User add(User user) {
-    this.users.put(user.getEmail(), user);
+    this.users = this.users.put(user.getEmail(), user);
     return user;
   }
 }
