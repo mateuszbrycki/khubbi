@@ -24,7 +24,8 @@ public class ShelvesController {
         .fold(
             failure ->
                 new ResponseEntity<>(
-                    new RequestResult.RequestError(failure.getMessage()), HttpStatus.CONFLICT),
+                    new RequestResult.RequestError(failure.getMessage()),
+                    HttpStatus.INTERNAL_SERVER_ERROR),
             result -> new ResponseEntity<>(result.toJavaList(), HttpStatus.OK));
   }
 }

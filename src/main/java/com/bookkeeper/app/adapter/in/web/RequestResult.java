@@ -8,5 +8,9 @@ public interface RequestResult {
     public RequestError(String message) {
       this.message = message;
     }
+
+    public String getMessage() {
+      return message;
+    }
   }
 }

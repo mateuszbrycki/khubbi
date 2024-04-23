@@ -9,11 +9,11 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import com.bookkeeper.app.adapter.in.web.security.JwtAuthenticationFilter;
-import com.bookkeeper.app.application.domain.model.Shelf;
 import com.bookkeeper.app.application.domain.service.ShelfWithNameExistsException;
 import com.bookkeeper.app.application.port.in.AddShelfUseCase;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.vavr.control.Try;
+import java.util.UUID;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.security.servlet.SecurityAutoConfiguration;
@@ -24,8 +24,6 @@ import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.FilterType;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
-
-import java.util.UUID;
 
 @WebMvcTest(
     value = ShelfController.class,
@@ -47,7 +45,7 @@ class ShelfControllerTest {
     when(addShelfUseCase.addShelf(new AddShelfUseCase.AddShelfCommand("any-name")))
         .thenReturn(Try.failure(new Exception("Cannot add a shelf")));
 
-    // when
+    // when & then
     this.mockMvc
         .perform(
             post("/shelf")
@@ -65,7 +63,7 @@ class ShelfControllerTest {
     when(addShelfUseCase.addShelf(new AddShelfUseCase.AddShelfCommand("any-name")))
         .thenReturn(Try.failure(new ShelfWithNameExistsException("Cannot add a shelf")));
 
-    // when
+    // when & then
     this.mockMvc
             .perform(
                     post("/shelf")
@@ -85,7 +83,7 @@ class ShelfControllerTest {
     when(addShelfUseCase.addShelf(new AddShelfUseCase.AddShelfCommand(shelf.name())))
         .thenReturn(Try.success(shelf));
 
-    // when
+    // when & then
     this.mockMvc
         .perform(
             post("/shelf")
