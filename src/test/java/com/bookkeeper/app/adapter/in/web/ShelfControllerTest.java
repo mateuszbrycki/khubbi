@@ -10,6 +10,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 import com.bookkeeper.app.adapter.in.web.security.JwtAuthenticationFilter;
 import com.bookkeeper.app.application.domain.model.Shelf;
+import com.bookkeeper.app.application.domain.service.ShelfWithNameExistsException;
 import com.bookkeeper.app.application.port.in.AddShelfUseCase;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.vavr.control.Try;
@@ -40,7 +41,7 @@ class ShelfControllerTest {
   @MockBean private AddShelfUseCase addShelfUseCase;
 
   @Test
-  public void shouldReturnRequestErrorWhenShelfAdditionFailed() throws Exception {
+  public void shouldReturnRequestErrorWhenShelfAdditionFailedDueToAnyError() throws Exception {
 
     // given
     when(addShelfUseCase.addShelf(new AddShelfUseCase.AddShelfCommand("any-name")))
@@ -53,8 +54,26 @@ class ShelfControllerTest {
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(asJsonString(new ShelfController.Shelf("any-name"))))
             .andDo(print())
-            .andExpect(status().isConflict())
+            .andExpect(status().isInternalServerError())
         .andExpect(content().string(containsString("Cannot add a shelf")));
+  }
+
+  @Test
+  public void shouldReturnRequestConflictWhenShelfAdditionFailedDueShelfWithNameExistsException() throws Exception {
+
+    // given
+    when(addShelfUseCase.addShelf(new AddShelfUseCase.AddShelfCommand("any-name")))
+        .thenReturn(Try.failure(new ShelfWithNameExistsException("Cannot add a shelf")));
+
+    // when
+    this.mockMvc
+            .perform(
+                    post("/shelf")
+                            .contentType(MediaType.APPLICATION_JSON)
+                            .content(asJsonString(new ShelfController.Shelf("any-name"))))
+            .andDo(print())
+            .andExpect(status().isConflict())
+            .andExpect(content().string(containsString("Cannot add a shelf")));
   }
 
   @Test

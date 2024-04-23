@@ -1,8 +1,11 @@
 package com.bookkeeper.app.adapter.in.web;
 
+import static io.vavr.API.*;
+import static io.vavr.Predicates.instanceOf;
+
+import com.bookkeeper.app.application.domain.service.ShelfWithNameExistsException;
 import com.bookkeeper.app.application.port.in.AddShelfUseCase;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -28,9 +31,17 @@ public class ShelfController {
     return this.addShelfUseCase
         .addShelf(addShelfCommand)
         .fold(
-            failure ->
-                new ResponseEntity<>(
-                    new RequestResult.RequestError(failure.getMessage()), HttpStatus.CONFLICT),
+            failure -> {
+              HttpStatus status =
+                  Match(failure)
+                      .of(
+                          Case(
+                              $(instanceOf(ShelfWithNameExistsException.class)),
+                              HttpStatus.CONFLICT),
+                          Case($(), HttpStatus.INTERNAL_SERVER_ERROR));
+              return new ResponseEntity<>(
+                  new RequestResult.RequestError(failure.getMessage()), status);
+            },
             result -> new ResponseEntity<>(result, HttpStatus.CREATED));
   }
 
