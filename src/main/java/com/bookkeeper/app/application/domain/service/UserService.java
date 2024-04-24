@@ -3,8 +3,8 @@ package com.bookkeeper.app.application.domain.service;
 import com.bookkeeper.app.application.domain.model.User;
 import com.bookkeeper.app.application.port.in.AddUserUseCase;
 import com.bookkeeper.app.application.port.out.AddUserPort;
+import com.bookkeeper.app.application.port.out.ListUsersPort;
 import io.vavr.control.Try;
-
 import java.time.Instant;
 import java.util.Date;
 import java.util.UUID;
@@ -12,9 +12,11 @@ import java.util.UUID;
 public class UserService implements AddUserUseCase {
 
   private final AddUserPort addUserPort;
+  private final ListUsersPort listUsersPort;
 
-  public UserService(AddUserPort addUserPort) {
+  public UserService(AddUserPort addUserPort, ListUsersPort listUsersPort) {
     this.addUserPort = addUserPort;
+    this.listUsersPort = listUsersPort;
   }
 
   @Override

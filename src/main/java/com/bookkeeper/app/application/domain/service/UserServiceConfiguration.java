@@ -9,6 +9,6 @@ public class UserServiceConfiguration {
 
   @Bean
   UserService userService(UserInMemoryRepository userInMemoryRepository) {
-    return new UserService(userInMemoryRepository);
+    return new UserService(userInMemoryRepository, userInMemoryRepository);
   }
 }
