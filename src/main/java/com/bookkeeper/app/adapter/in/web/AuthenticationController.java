@@ -1,8 +1,14 @@
 package com.bookkeeper.app.adapter.in.web;
 
+import static io.vavr.API.*;
+import static io.vavr.Predicates.instanceOf;
+
 import com.bookkeeper.app.adapter.in.web.security.JwtService;
+import com.bookkeeper.app.application.domain.service.UserWithEmailExistsException;
 import com.bookkeeper.app.application.port.in.AddUserUseCase;
 import io.vavr.control.Try;
+import java.util.Date;
+import java.util.UUID;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -13,9 +19,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-
-import java.util.Date;
-import java.util.UUID;
 
 @RequestMapping("/auth")
 @RestController
@@ -55,10 +58,15 @@ public class AuthenticationController {
                         .setCreatedAt(addUserResult.getCreatedAt()));
 
     return user.fold(
-        failure ->
-            new ResponseEntity<>(
-                new RequestResult.RequestError(failure.getMessage()), HttpStatus.CONFLICT),
-        result -> new ResponseEntity<>(result, HttpStatus.OK));
+        failure -> {
+          HttpStatus status =
+              Match(failure)
+                  .of(
+                      Case($(instanceOf(UserWithEmailExistsException.class)), HttpStatus.CONFLICT),
+                      Case($(), HttpStatus.INTERNAL_SERVER_ERROR));
+          return new ResponseEntity<>(new RequestResult.RequestError(failure.getMessage()), status);
+        },
+        result -> new ResponseEntity<>(result, HttpStatus.CREATED));
   }
 
   @PostMapping("/login")
