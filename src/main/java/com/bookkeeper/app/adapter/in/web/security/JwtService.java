@@ -1,6 +1,7 @@
 package com.bookkeeper.app.adapter.in.web.security;
 
 import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.io.Decoders;
@@ -23,7 +24,7 @@ public class JwtService {
     this.jwtExpiration = jwtExpiration;
   }
 
-  public String extractUsername(String token) {
+  public String extractEmail(String token) {
     return extractClaim(token, Claims::getSubject);
   }
 
@@ -32,7 +33,6 @@ public class JwtService {
     return claimsResolver.apply(claims);
   }
 
-  // TODO mateusz.brycki change to UserDetails
   public String generateToken(String email) {
     return generateToken(new HashMap<>(), email);
   }
@@ -46,6 +46,10 @@ public class JwtService {
   }
 
   private String buildToken(Map<String, Object> extraClaims, String email, long expiration) {
+    if (email == null || email.isEmpty()) {
+      throw new IllegalArgumentException("Email cannot be null or empty");
+    }
+
     return Jwts.builder()
         .setClaims(extraClaims)
         .setSubject(email)
@@ -55,9 +59,15 @@ public class JwtService {
         .compact();
   }
 
+  // TODO mateusz.brycki introduce proper logging
   public boolean isTokenValid(String token, UserDetails userDetails) {
-    final String username = extractUsername(token);
-    return (username.equals(userDetails.getUsername())) && !isTokenExpired(token);
+    try {
+      final String email = extractEmail(token);
+      return (email.equals(userDetails.getUsername())) && !isTokenExpired(token);
+    } catch (ExpiredJwtException exception) {
+      System.err.println(exception.getMessage());
+      return false;
+    }
   }
 
   private boolean isTokenExpired(String token) {
