@@ -1,20 +1,22 @@
 import {connect, MapDispatchToProps, MapStateToProps} from 'react-redux'
 import {State} from "../../store/state";
 import {getUserState} from '../store/selectors'
-import {RegisterUserAction} from "../store/actions";
-import RegisterForm, {RegisterFormActionProps, RegisterFormProps} from "../components/RegisterForm";
+import {LoginUserAction, RegisterUserAction} from "../store/actions";
+import {EntryFormsActionProps, EntryFormsProps} from "../components/EntryForms";
+import EntryForms from "../components/EntryForms";
 
-const mapStateToProps: MapStateToProps<RegisterFormProps, {}, State> = (state: State) => ({
+const mapStateToProps: MapStateToProps<EntryFormsProps, {}, State> = (state: State) => ({
     user: getUserState(state)
 })
 
-const mapDispatchToProps: MapDispatchToProps<RegisterFormActionProps, {}> = (dispatch) => ({
-    registerUser: (email: string, password: string) => dispatch(RegisterUserAction(email, password))
+const mapDispatchToProps: MapDispatchToProps<EntryFormsActionProps, {}> = (dispatch) => ({
+    registerUser: (email: string, password: string) => dispatch(RegisterUserAction(email, password)),
+    loginUser: (email: string, password: string) => dispatch(LoginUserAction(email, password))
 })
 
 const AuthorizationContainer = connect(
 mapStateToProps,
     mapDispatchToProps
-)(RegisterForm) // TODO mateusz.brycki redesign to a general component that depends on two forms (login and registration)
+)(EntryForms)
 
 export default AuthorizationContainer
