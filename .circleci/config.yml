@@ -20,16 +20,16 @@ jobs:
           command: npm test
       - save_cache:
           paths:
-            - ~/src/main/front/node_modules
+            - ~/bookkeeper/src/main/front/node_modules
           key: v1-node-modules-cache-{{ arch }}-{{ .Branch }}-{{ checksum "package-lock.json" }}
       - persist_to_workspace:
-          root: ~/src/main/front/
+          root: ~/bookkeeper/src/main/front/
           paths:
             - build
   test-backend:
     working_directory: ~/bookkeeper
     docker:
-      - image: graalvm-community:21
+      - image: amazoncorretto:21
     steps:
       - checkout:
           path:  ~/bookkeeper
