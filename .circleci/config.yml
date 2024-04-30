@@ -11,7 +11,7 @@ jobs:
       - image: node:22.0.0-alpine
     steps:
       - checkout:
-          path:  ~/bookkeeper/src/main/front/
+          path:  ~/bookkeeper
       - run:
           name: "Build"
           command: npm run build
@@ -31,8 +31,6 @@ jobs:
     docker:
       - image: openjdk:23-jdk
     steps:
-      - checkout:
-          path:  ~/bookkeeper
       - run:
           name: "Build"
           command: ./gradlew clean build
