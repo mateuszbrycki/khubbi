@@ -55,7 +55,7 @@ task copyFrontendApp(type: Copy) {
 	into('./build/resources/main/public/.')
 }
 
-buildFrontendApp.dependsOn npmInstall
-processResources.dependsOn copyFrontendApp
-copyFrontendApp.dependsOn buildFrontendApp
-bootJar.dependsOn copyFrontendApp
+//buildFrontendApp.dependsOn npmInstall
+//processResources.dependsOn copyFrontendApp
+//copyFrontendApp.dependsOn buildFrontendApp
+//bootJar.dependsOn copyFrontendApp
