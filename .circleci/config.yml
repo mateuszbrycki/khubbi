@@ -25,11 +25,11 @@ jobs:
       - persist_to_workspace:
           root: .
           paths:
-            - build
+            - ~/src/main/front/build
   test-backend:
     working_directory: ~/bookkeeper
     docker:
-      - image: openjdk:23-jdk
+      - image: openjdk:21
     steps:
       - checkout:
           path:  ~/bookkeeper
