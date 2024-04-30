@@ -1,17 +1,32 @@
 workflows:
   build-and-deploy:
     jobs:
-      - test-frontend
-      - test-backend
+      - checkout
+      - test-frontend:
+          requires:
+            - checkout
+      - test-backend:
+          requires:
+            - checkout
 version: 2.1
 jobs:
+  checkout:
+    docker:
+      - image: cimg/ruby:3.1.0
+    working_directory: ~/bookkeeper
+    steps:
+      - checkout
+      - save_cache:
+          key: v1-repo-cache-{{ .Environment.CIRCLE_SHA1 }}
+          paths:
+            - ~/bookkeeper
   test-frontend:
     working_directory: ~/bookkeeper/src/main/front/
     docker:
       - image: node:22.0.0-alpine
     steps:
-      - checkout:
-          path:  ~/bookkeeper
+      - restore_cache:
+          key: v1-repo-cache-{{ .Environment.CIRCLE_SHA1 }}
       - run:
           name: "Install"
           command: npm install --force
@@ -32,8 +47,8 @@ jobs:
     docker:
       - image: amazoncorretto:21
     steps:
-      - checkout:
-          path:  ~/bookkeeper
+      - restore_cache:
+          key: v1-repo-cache-{{ .Environment.CIRCLE_SHA1 }}
       - run:
           name: "Build"
           command: ./gradlew clean build
