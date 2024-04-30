@@ -22,10 +22,6 @@ jobs:
           paths:
             - ~/bookkeeper/src/main/front/node_modules
           key: v1-node-modules-cache-{{ arch }}-{{ .Branch }}-{{ checksum "package-lock.json" }}
-      - persist_to_workspace:
-          root: ~/bookkeeper/src/main/front/
-          paths:
-            - build
   test-backend:
     working_directory: ~/bookkeeper
     docker:
