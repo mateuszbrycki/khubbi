@@ -16,8 +16,13 @@ jobs:
           name: "Install"
           command: npm install --force
       - run:
-          name: "Tests"
-          command: npm test
+          name: Run tests with JUnit as reporter
+          command: npm test --ci --runInBand --reporters=default --reporters=jest-junit
+          environment:
+            JEST_JUNIT_OUTPUT_DIR: ./reports/
+            JEST_JUNIT_ADD_FILE_ATTRIBUTE: "true"
+      - store_test_results:
+          path: ./reports/
       - save_cache:
           paths:
             - ~/bookkeeper/src/main/front/node_modules
