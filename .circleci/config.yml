@@ -35,7 +35,3 @@ jobs:
       - run:
           name: "Tests"
           command: ./gradlew test
-      - persist_to_workspace:
-          root: .
-          paths:
-            - build
