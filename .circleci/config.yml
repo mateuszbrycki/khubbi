@@ -12,6 +12,11 @@ jobs:
     steps:
       - checkout:
           path:  ~/bookkeeper
+      - restore_cache:
+          keys:
+            - v1-node-modules-cache-{{ arch }}-{{ .Branch }}-{{ checksum "Gemfile.lock" }}
+            - v1-node-modules-cache-{{ arch }}-{{ .Branch }}-
+            - vv1-node-modules-cache-{{ arch }}-
       - run:
           name: "Install"
           command: npm install --force
