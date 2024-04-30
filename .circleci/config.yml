@@ -1,0 +1,50 @@
+workflows:
+  build-and-deploy:
+    jobs:
+      - test-frontend
+      - test-backend
+version: 2.1
+jobs:
+  test-frontend:
+    working_directory: ~/src/main/front/
+    docker:
+      - image: node:22.0.0-alpine
+    steps:
+      - checkout:
+          path:  ~/src/main/front/
+      - restore_cache:
+          keys:
+            - v1-node-modules-cache-{{ arch }}-{{ .Branch }}-{{ checksum "package-lock.json" }}
+            - v1-node-modules-cache-{ arch }}-{{ .Branch }}-
+            - v1-node-modules-cache-{{ arch }}-
+      - run:
+          name: "Build"
+          command: npm run build
+      - run:
+          name: "Tests"
+          command: npm test
+      - save_cache:
+          paths:
+            - ~/src/main/front/node_modules
+          key: v1-node-modules-cache-{{ arch }}-{{ .Branch }}-{{ checksum "package-lock.json" }}
+      - persist_to_workspace:
+          root: .
+          paths:
+            - build
+  test-backend:
+    working_directory: ~/
+    docker:
+      - image: openjdk:23-jdk
+    steps:
+      - checkout:
+          path:  ~/
+      - run:
+          name: "Build"
+          command: ./gradlew clean build
+      - run:
+          name: "Tests"
+          command: ./gradlew test
+      - persist_to_workspace:
+          root: .
+          paths:
+            - build
