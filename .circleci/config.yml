@@ -19,9 +19,9 @@ jobs:
             - vv1-node-modules-cache-{{ arch }}-
       - run:
           name: "Install"
-          command: npm install --force
+          command: npm install
       - run:
-          name: Run tests with JUnit as reporter
+          name: "Tests"
           command: npm test --ci --runInBand --reporters=default --reporters=jest-junit
           environment:
             JEST_JUNIT_OUTPUT_DIR: ./results/
@@ -44,12 +44,9 @@ jobs:
           command: ./gradlew clean build
       - run:
           name: "Tests"
-          command: ./gradlew test
-      - run:
-          name: Save test results
-          command: |
+          command:  |
+            ./gradlew test
             mkdir -p ~/test-results/junit/
             find . -type f -regex ".*/build/test-results/.*xml" -exec cp {} ~/test-results/junit/ \;
-          when: always
       - store_test_results:
           path: ~/test-results
