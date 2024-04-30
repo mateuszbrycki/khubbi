@@ -23,13 +23,13 @@ jobs:
             - ~/src/main/front/node_modules
           key: v1-node-modules-cache-{{ arch }}-{{ .Branch }}-{{ checksum "package-lock.json" }}
       - persist_to_workspace:
-          root: .
+          root: ~/src/main/front/
           paths:
-            - ~/src/main/front/build
+            - build
   test-backend:
     working_directory: ~/bookkeeper
     docker:
-      - image: openjdk:21
+      - image: graalvm-community:21
     steps:
       - checkout:
           path:  ~/bookkeeper
