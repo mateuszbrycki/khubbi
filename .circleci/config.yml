@@ -19,10 +19,10 @@ jobs:
           name: Run tests with JUnit as reporter
           command: npm test --ci --runInBand --reporters=default --reporters=jest-junit
           environment:
-            JEST_JUNIT_OUTPUT_DIR: ./reports/
+            JEST_JUNIT_OUTPUT_DIR: ./results/
             JEST_JUNIT_ADD_FILE_ATTRIBUTE: "true"
       - store_test_results:
-          path: ./reports/
+          path: ./results/
       - save_cache:
           paths:
             - ~/bookkeeper/src/main/front/node_modules
