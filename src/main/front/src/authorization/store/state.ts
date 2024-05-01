@@ -1,12 +1,15 @@
 import {User} from "../../types";
-import {List,Set} from "immutable";
 
 export interface AuthorizationState {
     readonly user: User | null
+    readonly jwtToken: string | null
+    readonly expiresIn: number | null
 }
 
 const initialState: AuthorizationState = {
-    user: null
+    user: null,
+    jwtToken: null,
+    expiresIn: null
 }
 
 

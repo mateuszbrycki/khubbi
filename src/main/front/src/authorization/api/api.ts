@@ -1,9 +1,13 @@
 import axios from 'axios';
 
+export interface LoginResponse {
+    readonly token: string
+    readonly expiresIn: number
+}
 
 export interface AuthorizationHttpApi {
     readonly register: (email: string, password: string) => {}
-    readonly login: (email: string, password: string) => {}
+    readonly login: (email: string, password: string) => Promise<LoginResponse>
 }
 
 const Api: AuthorizationHttpApi = {
