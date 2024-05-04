@@ -5,8 +5,14 @@ export interface LoginResponse {
     readonly expiresIn: number
 }
 
+export interface RegisterResponse {
+    readonly id: string
+    readonly email: string
+    readonly createdAt: string
+}
+
 export interface AuthorizationHttpApi {
-    readonly register: (email: string, password: string) => {}
+    readonly register: (email: string, password: string) => Promise<RegisterResponse>
     readonly login: (email: string, password: string) => Promise<LoginResponse>
 }
 
