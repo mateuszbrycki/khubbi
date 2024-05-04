@@ -1,5 +1,5 @@
 import {authorizationReducer} from "../reducers";
-import {LoginUserAction, Types, UserLoggedInAction} from "../actions";
+import {UserLoggedInAction} from "../actions";
 import {initialAuthorizationState} from "../state";
 
 test('should return the initial state', () => {
