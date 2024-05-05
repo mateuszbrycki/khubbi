@@ -1,0 +1,1 @@
+export const JWT_TOKEN_STORAGE_KEY: string = "JWT_TOKEN_STORAGE_KEY"

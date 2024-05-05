@@ -1,4 +1,4 @@
-import axios from 'axios';
+import axios from '../../common/axios';
 
 export interface LoginResponse {
     readonly token: string
@@ -18,14 +18,14 @@ export interface AuthorizationHttpApi {
 
 const Api: AuthorizationHttpApi = {
     register: (email: string, password: string) => {
-        return axios.post(`http://localhost:8080/auth/signup`, { "email": email, "password": password })
-              .then(res => {
+        return axios.post(`http://localhost:8080/auth/signup`, {"email": email, "password": password})
+            .then(res => {
                 return res.data
-              })
+            })
 
     },
     login: (email: string, password: string) => {
-        return axios.post(`http://localhost:8080/auth/login`, { "email": email, "password": password })
+        return axios.post(`http://localhost:8080/auth/login`, {"email": email, "password": password})
             .then(res => {
                 return res.data
             })

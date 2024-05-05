@@ -1,7 +1,8 @@
 import {Action} from "redux";
 import {AuthorizationHttpApi, LoginResponse, RegisterResponse} from "../api/api";
 import {call, put, takeEvery} from '@redux-saga/core/effects'
-import {LoginUser, RegisterUser, Types, UserLoggedIn, UserLoggedInAction, UserRegisteredAction} from './actions'
+import {LoginUser, RegisterUser, Types, UserLoggedInAction, UserRegisteredAction} from './actions'
+import {JWT_TOKEN_STORAGE_KEY} from "../../common/variables";
 
 function* callLogin(api: AuthorizationHttpApi, email: string, password: string): Generator<any, any, LoginResponse> {
     return yield api.login(email, password)
@@ -30,6 +31,7 @@ function* onAuthorization(api: AuthorizationHttpApi): IterableIterator<unknown> 
     yield takeEvery((a: Action): a is LoginUser => a.type === Types.LoginUser, function* (a: LoginUser) {
         const response: LoginResponse = yield call(callLogin, api, a.payload.email, a.payload.password);
         yield put(UserLoggedInAction(response.token, response.expiresIn))
+        localStorage.setItem(JWT_TOKEN_STORAGE_KEY, response.token)
     })
 
 }
