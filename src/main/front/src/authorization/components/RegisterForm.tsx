@@ -21,7 +21,6 @@ const RegisterForm: React.FC<RegisterFormProps & RegisterFormActionProps> = (pro
     const [validationError, setValidationError] = useState<string>("")
 
     useEffect(() => {
-        console.log(repeatPassword);
         if (password != repeatPassword) {
             setValidationError("Passwords are not equal");
             return;
