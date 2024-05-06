@@ -25,6 +25,7 @@ exports[`renders correctly 1`] = `
         placeholder="Enter email"
         required={true}
         type="text"
+        value=""
       />
     </div>
     <div
@@ -43,6 +44,7 @@ exports[`renders correctly 1`] = `
         placeholder="Password"
         required={true}
         type="password"
+        value=""
       />
     </div>
     <div
@@ -61,6 +63,7 @@ exports[`renders correctly 1`] = `
         placeholder="Repeat Password"
         required={true}
         type="password"
+        value=""
       />
       <div
         className="invalid-feedback"

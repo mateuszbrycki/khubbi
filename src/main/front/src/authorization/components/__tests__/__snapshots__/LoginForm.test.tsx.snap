@@ -24,6 +24,7 @@ exports[`renders correctly 1`] = `
         onChange={[Function]}
         placeholder="Enter email"
         type="text"
+        value=""
       />
     </div>
     <div
@@ -41,6 +42,7 @@ exports[`renders correctly 1`] = `
         onChange={[Function]}
         placeholder="Password"
         type="password"
+        value=""
       />
     </div>
     <button
