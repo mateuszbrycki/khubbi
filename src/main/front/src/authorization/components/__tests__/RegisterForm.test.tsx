@@ -1,9 +1,8 @@
-import renderer from "react-test-renderer";
 import RegisterForm from "../RegisterForm";
+import ShallowRenderer from "react-test-renderer/shallow";
 
 it('renders correctly', () => {
-    const tree = renderer
-        .create(<RegisterForm user={null} registerUser={(email, password) => null} />)
-        .toJSON();
-    expect(tree).toMatchSnapshot();
+    const renderer = ShallowRenderer.createRenderer()
+    renderer.render(<RegisterForm user={null} registerUser={(email, password) => null} />)
+    expect(renderer.getRenderOutput()).toMatchSnapshot()
 });

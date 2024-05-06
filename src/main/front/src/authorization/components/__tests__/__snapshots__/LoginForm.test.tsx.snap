@@ -1,57 +1,47 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`renders correctly 1`] = `
-[
+<React.Fragment>
   <h2>
     Login
-  </h2>,
-  <form
-    className=""
+  </h2>
+  <Form
     onSubmit={[Function]}
   >
-    <div
+    <FormGroup
       className="mb-3"
+      controlId="loginFormEmail"
     >
-      <label
-        className="form-label"
-        htmlFor="loginFormEmail"
-      >
+      <FormLabel>
         Email address
-      </label>
-      <input
-        className="form-control"
-        id="loginFormEmail"
+      </FormLabel>
+      <FormControl
         onChange={[Function]}
         placeholder="Enter email"
         type="text"
         value=""
       />
-    </div>
-    <div
+    </FormGroup>
+    <FormGroup
       className="mb-3"
+      controlId="loginFormPassword"
     >
-      <label
-        className="form-label"
-        htmlFor="loginFormPassword"
-      >
+      <FormLabel>
         Password
-      </label>
-      <input
-        className="form-control"
-        id="loginFormPassword"
+      </FormLabel>
+      <FormControl
         onChange={[Function]}
         placeholder="Password"
         type="password"
         value=""
       />
-    </div>
-    <button
-      className="btn btn-primary"
-      disabled={false}
+    </FormGroup>
+    <Button
       type="submit"
+      variant="primary"
     >
       Submit
-    </button>
-  </form>,
-]
+    </Button>
+  </Form>
+</React.Fragment>
 `;

@@ -18,16 +18,14 @@ const EntryForms: React.FC<EntryFormsProps & EntryFormsActionProps> = (props) =>
     const {user, registerUser, loginUser} = props
 
     return <>
-        <Container>
-            <Row>
-                <Col>
-                    <RegisterForm user={user} registerUser={registerUser}/>
-                </Col>
-                <Col>
-                    <LoginForm user={user} loginUser={loginUser}/>
-                </Col>
-            </Row>
-        </Container>
+        <Row>
+            <Col>
+                <RegisterForm user={user} registerUser={registerUser}/>
+            </Col>
+            <Col>
+                <LoginForm user={user} loginUser={loginUser}/>
+            </Col>
+        </Row>
     </>
 }
 

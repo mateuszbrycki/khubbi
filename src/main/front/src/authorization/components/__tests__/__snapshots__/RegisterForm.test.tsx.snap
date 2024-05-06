@@ -1,83 +1,70 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`renders correctly 1`] = `
-[
+<React.Fragment>
   <h2>
     Register
-  </h2>,
-  <form
-    className=""
+  </h2>
+  <Form
     onSubmit={[Function]}
   >
-    <div
+    <FormGroup
       className="mb-3"
+      controlId="registerFormEmail"
     >
-      <label
-        className="form-label"
-        htmlFor="registerFormEmail"
-      >
+      <FormLabel>
         Email address
-      </label>
-      <input
-        className="form-control"
-        id="registerFormEmail"
+      </FormLabel>
+      <FormControl
         onChange={[Function]}
         placeholder="Enter email"
         required={true}
         type="text"
         value=""
       />
-    </div>
-    <div
+    </FormGroup>
+    <FormGroup
       className="mb-3"
+      controlId="registerFormPassword"
     >
-      <label
-        className="form-label"
-        htmlFor="registerFormPassword"
-      >
+      <FormLabel>
         Password
-      </label>
-      <input
-        className="form-control"
-        id="registerFormPassword"
+      </FormLabel>
+      <FormControl
         onChange={[Function]}
         placeholder="Password"
         required={true}
         type="password"
         value=""
       />
-    </div>
-    <div
+    </FormGroup>
+    <FormGroup
       className="mb-3"
+      controlId="registerFormPasswordRepeat"
     >
-      <label
-        className="form-label"
-        htmlFor="registerFormPasswordRepeat"
-      >
+      <FormLabel>
         Repeat Password
-      </label>
-      <input
-        className="form-control"
-        id="registerFormPasswordRepeat"
+      </FormLabel>
+      <FormControl
         onChange={[Function]}
         placeholder="Repeat Password"
         required={true}
         type="password"
         value=""
       />
-      <div
-        className="invalid-feedback"
+      <Feedback
+        type="invalid"
       >
         Passwords are not equal.
-      </div>
-    </div>
-    <button
-      className="btn btn-primary"
-      disabled={false}
+      </Feedback>
+    </FormGroup>
+    <Button
       type="submit"
+      variant="primary"
     >
       Submit
-    </button>
-  </form>,
-]
+    </Button>
+  </Form>
+  
+</React.Fragment>
 `;
