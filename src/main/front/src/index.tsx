@@ -34,6 +34,16 @@ const router = createBrowserRouter([
             },
         ]
     },
+    {
+        path: "/dashboard",
+        element: <App />,
+        children: [
+            {
+                path: "/dashboard",
+                element: <h1>Dashboard</h1>,
+            },
+        ]
+    },
 ]);
 
 root.render(
