@@ -2,56 +2,30 @@ import React from 'react';
 import ReactDOM from 'react-dom/client';
 import './index.css';
 import './App.css'
-import App from './App';
 import {Provider} from "react-redux";
-import store from "./store/store";
+import {history, store} from "./store/store";
 import reportWebVitals from './reportWebVitals';
-import {createBrowserRouter, RouterProvider} from "react-router-dom";
-import EntryForms from "./authorization/components/EntryForms";
+import {HistoryRouter as Router} from "redux-first-history/rr6";
+import {Route, Routes} from "react-router-dom";
 import AuthorizationContainer from "./authorization/containers/AuthorizationContainer";
 
 const root = ReactDOM.createRoot(
-  document.getElementById('root') as HTMLElement
+    document.getElementById('root') as HTMLElement
 );
 
-const router = createBrowserRouter([
-    {
-        path: "/login",
-        element: <App />,
-        children: [
-            {
-                path: "/login",
-                element: <AuthorizationContainer />,
-            },
-       ]},
-    {
-        path: "/",
-        element: <App />,
-        children: [
-            {
-                path: "/",
-                element: <h1>Welcome</h1>,
-            },
-        ]
-    },
-    {
-        path: "/dashboard",
-        element: <App />,
-        children: [
-            {
-                path: "/dashboard",
-                element: <h1>Dashboard</h1>,
-            },
-        ]
-    },
-]);
 
 root.render(
-  <React.StrictMode>
-    <Provider store={store}>
-        <RouterProvider router={router} />
-    </Provider>
-  </React.StrictMode>
+    <React.StrictMode>
+        <Provider store={store}>
+            <Router history={history}>
+                <Routes>
+                    <Route path="/" element={<h1>Welcome in bookkeeper</h1>}/>
+                    <Route path="/login" element={<AuthorizationContainer/>}/>
+                    <Route path="/dashboard" element={<h1>Dashboard</h1>}/>
+                </Routes>
+            </Router>
+        </Provider>
+    </React.StrictMode>
 );
 
 // If you want to start measuring performance in your app, pass a function

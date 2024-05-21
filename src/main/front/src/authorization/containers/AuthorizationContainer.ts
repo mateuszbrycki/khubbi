@@ -1,11 +1,10 @@
 import {connect, MapDispatchToProps, MapStateToProps} from 'react-redux'
-import {State} from "../../store/state";
+import {ApplicationState} from "../../store/state";
 import {getUserState} from '../store/selectors'
 import {LoginUserAction, RegisterUserAction} from "../store/actions";
-import {EntryFormsActionProps, EntryFormsProps} from "../components/EntryForms";
-import EntryForms from "../components/EntryForms";
+import EntryForms, {EntryFormsActionProps, EntryFormsProps} from "../components/EntryForms";
 
-const mapStateToProps: MapStateToProps<EntryFormsProps, {}, State> = (state: State) => ({
+const mapStateToProps: MapStateToProps<EntryFormsProps, {}, ApplicationState> = (state: ApplicationState) => ({
     user: getUserState(state)
 })
 
