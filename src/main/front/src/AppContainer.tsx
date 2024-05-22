@@ -4,6 +4,7 @@ import {State} from "./store/state";
 
 
 const mapStateToProps: MapStateToProps<AppProps, { }, State> = (state) => ({
+    children: null
 })
 
 const mapDispatchToProps: MapDispatchToProps<AppActionsProps, { }> = (dispatch) => ({

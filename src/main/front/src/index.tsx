@@ -8,6 +8,7 @@ import reportWebVitals from './reportWebVitals';
 import {HistoryRouter as Router} from "redux-first-history/rr6";
 import {Route, Routes} from "react-router-dom";
 import AuthorizationContainer from "./authorization/containers/AuthorizationContainer";
+import App from "./App";
 
 const root = ReactDOM.createRoot(
     document.getElementById('root') as HTMLElement
@@ -19,9 +20,9 @@ root.render(
         <Provider store={store}>
             <Router history={history}>
                 <Routes>
-                    <Route path="/" element={<h1>Welcome in bookkeeper</h1>}/>
+                    <Route path="/" element={<App><h1>Welcome in bookkeeper</h1></App>}/>
                     <Route path="/login" element={<AuthorizationContainer/>}/>
-                    <Route path="/dashboard" element={<h1>Dashboard</h1>}/>
+                    <Route path="/dashboard" element={<App><h1>Dashboard</h1></App>}/>
                 </Routes>
             </Router>
         </Provider>
