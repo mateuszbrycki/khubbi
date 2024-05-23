@@ -41,8 +41,55 @@ exports[`renders correctly 1`] = `
       </NavbarCollapse>
     </Container>
   </Navbar>
+  <Container />
+</React.Fragment>
+`;
+
+exports[`renders correctly with child component 1`] = `
+<React.Fragment>
+  <Navbar
+    className="bg-body-tertiary"
+    expand="lg"
+  >
+    <Container>
+      <NavbarBrand
+        href="#home"
+      >
+        bookkeeper
+      </NavbarBrand>
+      <NavbarToggle
+        aria-controls="basic-navbar-nav"
+      />
+      <NavbarCollapse
+        id="basic-navbar-nav"
+      >
+        <Nav
+          className="me-auto"
+        >
+          <NavLink>
+             
+            <Link
+              to="/"
+            >
+              Home
+            </Link>
+          </NavLink>
+          <NavLink>
+             
+            <Link
+              to="/login"
+            >
+              Login
+            </Link>
+          </NavLink>
+        </Nav>
+      </NavbarCollapse>
+    </Container>
+  </Navbar>
   <Container>
-    <Outlet />
+    <h1>
+      Child Component
+    </h1>
   </Container>
 </React.Fragment>
 `;
