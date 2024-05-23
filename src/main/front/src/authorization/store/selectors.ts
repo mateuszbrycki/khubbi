@@ -10,4 +10,12 @@ const getUserState = createSelector(
     (state: AuthorizationState) => state?.user
 )
 
-export {getUserState}
+const isAuthenticated = createSelector(
+    getAuthorizationState,
+    (state: AuthorizationState) => {
+        return state.jwtToken != null && state.expiresIn != null
+    }
+)
+
+
+export {getUserState, isAuthenticated}
