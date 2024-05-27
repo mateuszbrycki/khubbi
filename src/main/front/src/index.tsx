@@ -3,28 +3,43 @@ import ReactDOM from 'react-dom/client';
 import './index.css';
 import './App.css'
 import {Provider} from "react-redux";
-import {history, store} from "./store/store";
+import {history, persistor, store} from "./store/store";
 import reportWebVitals from './reportWebVitals';
 import {HistoryRouter as Router} from "redux-first-history/rr6";
 import {Route, Routes} from "react-router-dom";
 import AuthorizationContainer from "./authorization/containers/AuthorizationContainer";
 import App from "./App";
+import {isAuthenticated} from "./authorization/store/selectors";
+import {RequireAuth} from "./common/RequireAuth";
+import {PersistGate} from "redux-persist/integration/react";
 
 const root = ReactDOM.createRoot(
     document.getElementById('root') as HTMLElement
 );
 
 
+function LoadingView() {
+    return <h1>Loading</h1>;
+}
+
 root.render(
     <React.StrictMode>
         <Provider store={store}>
-            <Router history={history}>
-                <Routes>
-                    <Route path="/" element={<App><h1>Welcome in bookkeeper</h1></App>}/>
-                    <Route path="/login" element={<AuthorizationContainer/>}/>
-                    <Route path="/dashboard" element={<App><h1>Dashboard</h1></App>}/>
-                </Routes>
-            </Router>
+            <PersistGate loading={<LoadingView/>} persistor={persistor}>
+                <Router history={history}>
+                    <Routes>
+                        <Route path="/" element={<App><h1>Welcome in bookkeeper</h1></App>}/>
+                        <Route path="/login" element={<AuthorizationContainer/>}/>
+                        <Route path="/dashboard"
+                               element={
+                                   <RequireAuth isAuthenticated={() => isAuthenticated(store.getState())}>
+                                       <App>
+                                           <h1>Dashboard</h1>
+                                       </App>
+                                   </RequireAuth>}/>
+                    </Routes>
+                </Router>
+            </PersistGate>
         </Provider>
     </React.StrictMode>
 );

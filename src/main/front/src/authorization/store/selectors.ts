@@ -17,5 +17,12 @@ const isAuthenticated = createSelector(
     }
 )
 
+const getJWTToken = createSelector(
+    getAuthorizationState,
+    (state: AuthorizationState) => {
+        return state.jwtToken
+    }
+)
 
-export {getUserState, isAuthenticated}
+
+export {getUserState, isAuthenticated, getJWTToken}
