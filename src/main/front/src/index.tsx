@@ -28,11 +28,25 @@ root.render(
             <PersistGate loading={<LoadingView/>} persistor={persistor}>
                 <Router history={history}>
                     <Routes>
-                        <Route path="/" element={<App><h1>Welcome in bookkeeper</h1></App>}/>
-                        <Route path="/login" element={<AuthorizationContainer/>}/>
+                        <Route path="/" element={
+                            <RequireAuth isAuthenticated={() => isAuthenticated(store.getState())}
+                                         redirectToIfLogged={"/dashboard"}>
+                                <App><h1>Welcome in bookkeeper</h1></App>
+                            </RequireAuth>
+                        }/>
+                        <Route path="/login"
+                               element={
+                                   <RequireAuth isAuthenticated={() => isAuthenticated(store.getState())}
+                                                redirectToIfLogged={"/dashboard"}>
+                                       <App>
+                                           <AuthorizationContainer/>
+                                       </App>
+                                   </RequireAuth>
+                               }/>
                         <Route path="/dashboard"
                                element={
-                                   <RequireAuth isAuthenticated={() => isAuthenticated(store.getState())}>
+                                   <RequireAuth isAuthenticated={() => isAuthenticated(store.getState())}
+                                                redirectToIfNotLogged={"/login"}>
                                        <App>
                                            <h1>Dashboard</h1>
                                        </App>
