@@ -10,7 +10,7 @@ export interface AuthRouteProps {
 }
 
 
-export const RequireAuth : React.FC<AuthRouteProps> = ({isAuthenticated, children, redirectToIfLogged, redirectToIfNotLogged}) => {
+export const AuthenticationAwareGate : React.FC<AuthRouteProps> = ({isAuthenticated, children, redirectToIfLogged, redirectToIfNotLogged}) => {
 
     if (!isAuthenticated() && redirectToIfNotLogged) {
         return <Navigate to={redirectToIfNotLogged} />;
@@ -26,4 +26,4 @@ export const RequireAuth : React.FC<AuthRouteProps> = ({isAuthenticated, childre
 
 
 
-export default RequireAuth
+export default AuthenticationAwareGate

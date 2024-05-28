@@ -10,7 +10,7 @@ import {Route, Routes} from "react-router-dom";
 import AuthorizationContainer from "./authorization/containers/AuthorizationContainer";
 import App from "./App";
 import {isAuthenticated} from "./authorization/store/selectors";
-import {RequireAuth} from "./common/RequireAuth";
+import {AuthenticationAwareGate} from "./common/AuthenticationAwareGate";
 import {PersistGate} from "redux-persist/integration/react";
 
 const root = ReactDOM.createRoot(
@@ -29,28 +29,28 @@ root.render(
                 <Router history={history}>
                     <Routes>
                         <Route path="/" element={
-                            <RequireAuth isAuthenticated={() => isAuthenticated(store.getState())}
-                                         redirectToIfLogged={"/dashboard"}>
+                            <AuthenticationAwareGate isAuthenticated={() => isAuthenticated(store.getState())}
+                                                     redirectToIfLogged={"/dashboard"}>
                                 <App><h1>Welcome in bookkeeper</h1></App>
-                            </RequireAuth>
+                            </AuthenticationAwareGate>
                         }/>
                         <Route path="/login"
                                element={
-                                   <RequireAuth isAuthenticated={() => isAuthenticated(store.getState())}
-                                                redirectToIfLogged={"/dashboard"}>
+                                   <AuthenticationAwareGate isAuthenticated={() => isAuthenticated(store.getState())}
+                                                            redirectToIfLogged={"/dashboard"}>
                                        <App>
                                            <AuthorizationContainer/>
                                        </App>
-                                   </RequireAuth>
+                                   </AuthenticationAwareGate>
                                }/>
                         <Route path="/dashboard"
                                element={
-                                   <RequireAuth isAuthenticated={() => isAuthenticated(store.getState())}
-                                                redirectToIfNotLogged={"/login"}>
+                                   <AuthenticationAwareGate isAuthenticated={() => isAuthenticated(store.getState())}
+                                                            redirectToIfNotLogged={"/login"}>
                                        <App>
                                            <h1>Dashboard</h1>
                                        </App>
-                                   </RequireAuth>}/>
+                                   </AuthenticationAwareGate>}/>
                     </Routes>
                 </Router>
             </PersistGate>
