@@ -10,20 +10,27 @@ export interface AuthRouteProps {
 }
 
 
-export const AuthenticationAwareGate : React.FC<AuthRouteProps> = ({isAuthenticated, children, redirectToIfLogged, redirectToIfNotLogged}) => {
+export const AuthenticationAwareGate: React.FC<AuthRouteProps> = ({
+                                                                      isAuthenticated,
+                                                                      children,
+                                                                      redirectToIfLogged,
+                                                                      redirectToIfNotLogged
+                                                                  }) => {
 
-    if (!isAuthenticated() && redirectToIfNotLogged) {
-        return <Navigate to={redirectToIfNotLogged} />;
+    if (!isAuthenticated()) {
+        if (redirectToIfNotLogged) {
+            return <Navigate to={redirectToIfNotLogged}/>;
+        }
+
+        return <Navigate to="/login"/>;
     }
 
     if (isAuthenticated() && redirectToIfLogged) {
-        return <Navigate to={redirectToIfLogged} />;
+        return <Navigate to={redirectToIfLogged}/>;
     }
 
     return <>{children}</>;
 };
-
-
 
 
 export default AuthenticationAwareGate

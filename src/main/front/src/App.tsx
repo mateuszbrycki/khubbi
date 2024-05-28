@@ -12,7 +12,7 @@ export interface AppProps {
 }
 
 
-const App = ({children} :  AppProps) => {
+const App = ({children}: AppProps) => {
     return (
         <>
             <Navbar expand="lg" className="bg-body-tertiary">

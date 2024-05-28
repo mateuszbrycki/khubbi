@@ -1,0 +1,27 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`authentication aware gate when user is authenticated renders redirects to dashboard 1`] = `
+<Navigate
+  to="/dashboard"
+/>
+`;
+
+exports[`authentication aware gate when user is authenticated renders test child without redirections 1`] = `
+<React.Fragment>
+  <h1>
+    test child
+  </h1>
+</React.Fragment>
+`;
+
+exports[`authentication aware gate when user is not authenticated navigates to given url 1`] = `
+<Navigate
+  to="/login-test"
+/>
+`;
+
+exports[`authentication aware gate when user is not authenticated navigates to login 1`] = `
+<Navigate
+  to="/login"
+/>
+`;

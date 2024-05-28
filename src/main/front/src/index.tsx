@@ -12,6 +12,7 @@ import App from "./App";
 import {isAuthenticated} from "./authorization/store/selectors";
 import {AuthenticationAwareGate} from "./common/AuthenticationAwareGate";
 import {PersistGate} from "redux-persist/integration/react";
+import DashboardContainer from "./dashboard/containers/DashboardContainer";
 
 const root = ReactDOM.createRoot(
     document.getElementById('root') as HTMLElement
@@ -48,7 +49,7 @@ root.render(
                                    <AuthenticationAwareGate isAuthenticated={() => isAuthenticated(store.getState())}
                                                             redirectToIfNotLogged={"/login"}>
                                        <App>
-                                           <h1>Dashboard</h1>
+                                          <DashboardContainer/>
                                        </App>
                                    </AuthenticationAwareGate>}/>
                     </Routes>
