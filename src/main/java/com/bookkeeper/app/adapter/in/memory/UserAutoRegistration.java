@@ -7,21 +7,26 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class UserAutoRegistration {
-    private final AddUserUseCase addUserUseCase;
-    private final PasswordEncoder passwordEncoder;
+  private final AddUserUseCase addUserUseCase;
+  private final PasswordEncoder passwordEncoder;
 
+  public UserAutoRegistration(AddUserUseCase addUserUseCase, PasswordEncoder passwordEncoder) {
+    this.addUserUseCase = addUserUseCase;
+    this.passwordEncoder = passwordEncoder;
+  }
 
-    public UserAutoRegistration(AddUserUseCase addUserUseCase, PasswordEncoder passwordEncoder) {
-        this.addUserUseCase = addUserUseCase;
-        this.passwordEncoder = passwordEncoder;
-    }
+  @PostConstruct
+  void registerUser() {
 
-    @PostConstruct
-    void registerUser() {
-
-        addUserUseCase.addUser(new AddUserUseCase.AddUserCommand("test1@test.com", passwordEncoder.encode("test1"), "Test 1"))
-                .getOrElseThrow(() -> new RuntimeException("Cannot Register user Test 1"));
-        addUserUseCase.addUser(new AddUserUseCase.AddUserCommand("test2@test.com", passwordEncoder.encode("test2"), "Test 2"))
-                .getOrElseThrow(() -> new RuntimeException("Cannot Register user Test 2"));
-    }
+    addUserUseCase
+        .addUser(
+            new AddUserUseCase.AddUserCommand(
+                "test1@test.com", passwordEncoder.encode("test1"), "Test 1"))
+        .getOrElseThrow(() -> new RuntimeException("Cannot Register user Test 1"));
+    addUserUseCase
+        .addUser(
+            new AddUserUseCase.AddUserCommand(
+                "test2@test.com", passwordEncoder.encode("test2"), "Test 2"))
+        .getOrElseThrow(() -> new RuntimeException("Cannot Register user Test 2"));
+  }
 }
