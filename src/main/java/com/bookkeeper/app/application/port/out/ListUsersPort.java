@@ -5,5 +5,7 @@ import io.vavr.collection.List;
 import io.vavr.control.Try;
 
 public interface ListUsersPort {
-    Try<List<User>> listUsers();
+  Try<List<User>> listUsers();
+
+  Try<User> findByEmail(String email);
 }

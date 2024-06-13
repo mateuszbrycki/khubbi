@@ -1,7 +1,7 @@
 package com.bookkeeper.app.application.domain.service;
 
 import com.bookkeeper.app.adapter.out.persistance.ShelfInMemoryDatabase;
-import io.vavr.collection.List;
+import io.vavr.collection.HashMap;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -10,7 +10,7 @@ public class ShelfServiceConfiguration {
 
   @Bean
   ShelfService shelfService() {
-    ShelfInMemoryDatabase shelfInMemoryDatabase = new ShelfInMemoryDatabase(List.empty());
+    ShelfInMemoryDatabase shelfInMemoryDatabase = new ShelfInMemoryDatabase(HashMap.empty());
     return new ShelfService(shelfInMemoryDatabase, shelfInMemoryDatabase);
   }
 }

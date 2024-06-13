@@ -7,8 +7,10 @@ public class Shelf {
 
   private final UUID id;
   private final String name;
+  private final User owner;
 
-  public Shelf(String name) {
+  public Shelf(String name, User owner) {
+    this.owner = owner;
     this.id = UUID.randomUUID();
     this.name = name;
   }
@@ -21,16 +23,22 @@ public class Shelf {
     return name;
   }
 
+  public User getOwner() {
+    return owner;
+  }
+
   @Override
   public boolean equals(Object o) {
     if (this == o) return true;
     if (o == null || getClass() != o.getClass()) return false;
     Shelf shelf = (Shelf) o;
-    return Objects.equals(id, shelf.id) && Objects.equals(name, shelf.name);
+    return Objects.equals(id, shelf.id)
+        && Objects.equals(name, shelf.name)
+        && Objects.equals(owner, shelf.owner);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(id, name);
+    return Objects.hash(id, name, owner);
   }
 }

@@ -1,24 +1,24 @@
 package com.bookkeeper.app.application.domain.service;
 
+import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.*;
+
 import com.bookkeeper.app.application.domain.model.User;
+import com.bookkeeper.app.application.port.in.AddShelfUseCase;
 import com.bookkeeper.app.application.port.in.AddUserUseCase;
 import com.bookkeeper.app.application.port.out.AddUserPort;
 import com.bookkeeper.app.application.port.out.ListUsersPort;
 import io.vavr.collection.List;
 import io.vavr.control.Try;
+import java.time.Instant;
+import java.util.Date;
+import java.util.UUID;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-
-import java.time.Instant;
-import java.util.Date;
-import java.util.UUID;
-
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 class UserServiceTest {
@@ -26,11 +26,12 @@ class UserServiceTest {
   @Mock private AddUserPort addUserPort;
 
   @Mock private ListUsersPort listUsersPort;
+  @Mock private AddShelfUseCase addShelfUseCase;
 
   @InjectMocks private UserService underTest;
 
   @Test
-  public void shouldReturnUserWhenAddingUserSucceeded() {
+  public void shouldReturnUserAndAddsDefaultShelvesWhenAddingUserSucceeded() {
 
     // given
     when(listUsersPort.listUsers()).thenReturn(Try.success(List.empty()));
@@ -44,6 +45,7 @@ class UserServiceTest {
                     "password",
                     Date.from(Instant.now()),
                     Date.from(Instant.now()))));
+    when(addShelfUseCase.addDefaultShelves(any())).thenReturn(Try.success(List.empty()));
 
     // when
     Try<User> user =
@@ -53,6 +55,7 @@ class UserServiceTest {
     assertTrue(user.isSuccess());
     assertEquals("email", user.get().getEmail());
     assertEquals("fullName", user.get().getFullName());
+    verify(addShelfUseCase, times(1)).addDefaultShelves(any());
   }
 
   @Test
@@ -69,6 +72,7 @@ class UserServiceTest {
 
     // then
     assertTrue(user.isFailure());
+    verify(addShelfUseCase, never()).addDefaultShelves(any());
   }
 
   @Test
@@ -94,6 +98,7 @@ class UserServiceTest {
     // then
     assertTrue(user.isFailure());
     assertInstanceOf(UserWithEmailExistsException.class, user.getCause());
+    verify(addShelfUseCase, never()).addDefaultShelves(any());
   }
 
   @Test
@@ -111,5 +116,6 @@ class UserServiceTest {
     assertTrue(user.isFailure());
     assertInstanceOf(RuntimeException.class, user.getCause());
     assertEquals("Some random exception", user.getCause().getMessage());
+    verify(addShelfUseCase, never()).addDefaultShelves(any());
   }
 }

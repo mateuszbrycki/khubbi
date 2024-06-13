@@ -6,15 +6,18 @@ import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
-import org.springframework.security.core.userdetails.UserDetails;
-
 import java.security.Key;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Function;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.springframework.security.core.userdetails.UserDetails;
 
 public class JwtService {
+
+  private static final Logger LOG = LogManager.getLogger(JwtService.class);
 
   private final String secretKey;
   private final long jwtExpiration;
@@ -46,6 +49,7 @@ public class JwtService {
   }
 
   private String buildToken(Map<String, Object> extraClaims, String email, long expiration) {
+    LOG.debug("Building JWT token for {} with expiration {}", email, expiration);
     if (email == null || email.isEmpty()) {
       throw new IllegalArgumentException("Email cannot be null or empty");
     }
@@ -62,6 +66,8 @@ public class JwtService {
   // TODO mateusz.brycki introduce proper logging
   public boolean isTokenValid(String token, UserDetails userDetails) {
     try {
+      LOG.debug("Validating JWT token for {} ", userDetails.getUsername());
+
       final String email = extractEmail(token);
       return (email.equals(userDetails.getUsername())) && !isTokenExpired(token);
     } catch (ExpiredJwtException exception) {
@@ -71,7 +77,9 @@ public class JwtService {
   }
 
   private boolean isTokenExpired(String token) {
-    return extractExpiration(token).before(new Date());
+    boolean isValid = extractExpiration(token).before(new Date());
+    LOG.debug("Validating JWT token expiration time. Token valid: {} ", isValid);
+    return isValid;
   }
 
   private Date extractExpiration(String token) {

@@ -9,6 +9,8 @@ import com.bookkeeper.app.application.port.in.AddUserUseCase;
 import io.vavr.control.Try;
 import java.util.Date;
 import java.util.UUID;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -23,6 +25,8 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/auth")
 @RestController
 public class AuthenticationController {
+
+  private static final Logger LOG = LogManager.getLogger(AuthenticationController.class);
 
   private final AddUserUseCase addUserUseCase;
   private final JwtService jwtService;
@@ -42,7 +46,7 @@ public class AuthenticationController {
 
   @PostMapping("/signup")
   public ResponseEntity<?> register(@RequestBody RegisterUserDto registerUserDto) {
-
+    LOG.debug("Received registration request {}", registerUserDto);
     Try<RegisterResponse> user =
         addUserUseCase
             .addUser(
@@ -71,18 +75,21 @@ public class AuthenticationController {
 
   @PostMapping("/login")
   public ResponseEntity<?> authenticate(@RequestBody LoginUserDto loginUserDto) {
+    LOG.debug("Received login request {}", loginUserDto);
     Authentication authentication =
         authenticationManager.authenticate(
             new UsernamePasswordAuthenticationToken(
                 loginUserDto.getEmail(), loginUserDto.getPassword()));
 
     if (authentication.isAuthenticated()) {
+      LOG.debug("User logged in successfully. Generating JWT token.");
       String jwtToken = jwtService.generateToken(loginUserDto.getEmail());
       LoginResponse loginResponse =
           new LoginResponse().setToken(jwtToken).setExpiresIn(jwtService.getExpirationTime());
       return ResponseEntity.ok(loginResponse);
     }
 
+    LOG.debug("User not logged in.");
     return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
   }
 
@@ -165,6 +172,13 @@ public class AuthenticationController {
     public void setPassword(String password) {
       this.password = password;
     }
+
+    @Override
+    public String toString() {
+      return "LoginUserDto{" +
+              "email='" + email + '\'' +
+              '}';
+    }
   }
 
   public static class RegisterUserDto {
@@ -196,6 +210,14 @@ public class AuthenticationController {
 
     public void setFullName(String fullName) {
       this.fullName = fullName;
+    }
+
+    @Override
+    public String toString() {
+      return "RegisterUserDto{" +
+              "email='" + email + '\'' +
+              ", fullName='" + fullName + '\'' +
+              '}';
     }
   }
 }

@@ -10,6 +10,7 @@ import org.junit.jupiter.api.Test;
 
 import java.time.Instant;
 import java.util.Date;
+import java.util.NoSuchElementException;
 import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -54,7 +55,7 @@ class UserInMemoryRepositoryTest {
     when(users.get(USER.getEmail())).thenThrow(findingByEmailException);
 
     // when
-    Try<Option<User>> result = underTest.findByEmail(USER.getEmail());
+    Try<User> result = underTest.findByEmail(USER.getEmail());
 
     // then
     assertTrue(result.isFailure());
@@ -68,11 +69,11 @@ class UserInMemoryRepositoryTest {
     UserInMemoryRepository underTest = new UserInMemoryRepository(users);
 
     // when
-    Try<Option<User>> result = underTest.findByEmail(USER.getEmail());
+    Try<User> result = underTest.findByEmail(USER.getEmail());
 
     // then
-    assertTrue(result.isSuccess());
-    assertTrue(result.get().isEmpty());
+    assertTrue(result.isFailure());
+    assertEquals(result.getCause().getClass(), NoSuchElementException.class);
   }
 
   @Test
@@ -82,10 +83,10 @@ class UserInMemoryRepositoryTest {
     UserInMemoryRepository underTest = new UserInMemoryRepository(users);
 
     // when
-    Try<Option<User>> result = underTest.findByEmail(USER.getEmail());
+    Try<User> result = underTest.findByEmail(USER.getEmail());
 
     // then
     assertTrue(result.isSuccess());
-    assertEquals(USER, result.get().get());
+    assertEquals(USER, result.get());
   }
 }

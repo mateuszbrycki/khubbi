@@ -1,7 +1,6 @@
 package com.bookkeeper.app.adapter.in.web;
 
 import static org.hamcrest.Matchers.containsString;
-import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -16,6 +15,11 @@ import com.bookkeeper.app.application.domain.service.UserWithEmailExistsExceptio
 import com.bookkeeper.app.application.port.in.AddUserUseCase;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.vavr.control.Try;
+import java.time.Instant;
+import java.util.Collection;
+import java.util.Date;
+import java.util.List;
+import java.util.UUID;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.security.servlet.SecurityAutoConfiguration;
@@ -30,12 +34,6 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.web.servlet.MockMvc;
-
-import java.time.Instant;
-import java.util.Collection;
-import java.util.Date;
-import java.util.List;
-import java.util.UUID;
 
 @WebMvcTest(
     value = AuthenticationController.class,
@@ -194,7 +192,7 @@ class AuthenticationControllerTest {
     }
   }
 
-  class TestAuthentication implements Authentication {
+  static class TestAuthentication implements Authentication {
 
     private final boolean authenticated;
 
@@ -219,7 +217,7 @@ class AuthenticationControllerTest {
 
     @Override
     public Object getPrincipal() {
-      return null;
+      return "";
     }
 
     @Override
@@ -232,7 +230,7 @@ class AuthenticationControllerTest {
 
     @Override
     public String getName() {
-      return "";
+      return "test-authentication";
     }
   }
 }
