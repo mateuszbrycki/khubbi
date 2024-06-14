@@ -22,7 +22,7 @@ export const AuthenticationAwareGate: React.FC<AuthRouteProps> = ({
             return <Navigate to={redirectToIfNotLogged}/>;
         }
         // TODO mateusz.brycki this causes problem for the login page - the infinite redirection loop
-        return <Navigate to="/login"/>;
+        // return <Navigate to="/login"/>;
     }
 
     if (isAuthenticated() && redirectToIfLogged) {

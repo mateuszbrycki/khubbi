@@ -4,8 +4,11 @@ import static io.vavr.API.*;
 import static io.vavr.Predicates.instanceOf;
 
 import com.bookkeeper.app.adapter.in.web.security.JwtService;
+import com.bookkeeper.app.adapter.in.web.security.User;
+import com.bookkeeper.app.adapter.out.persistance.UserTokenRepository;
 import com.bookkeeper.app.application.domain.service.UserWithEmailExistsException;
 import com.bookkeeper.app.application.port.in.AddUserUseCase;
+import com.bookkeeper.app.application.port.out.ListUsersPort;
 import io.vavr.control.Try;
 import java.util.Date;
 import java.util.UUID;
@@ -16,6 +19,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -32,21 +36,27 @@ public class AuthenticationController {
   private final JwtService jwtService;
   private final AuthenticationManager authenticationManager;
   private final PasswordEncoder passwordEncoder;
+  private final UserTokenRepository userTokenRepository;
+  private final ListUsersPort listUsersPort;
 
   public AuthenticationController(
       AddUserUseCase addUserUseCase,
       JwtService jwtService,
       AuthenticationManager authenticationManager,
-      PasswordEncoder passwordEncoder) {
+      PasswordEncoder passwordEncoder,
+      UserTokenRepository userTokenRepository,
+      ListUsersPort listUsersPort) {
     this.addUserUseCase = addUserUseCase;
     this.jwtService = jwtService;
     this.authenticationManager = authenticationManager;
     this.passwordEncoder = passwordEncoder;
+    this.userTokenRepository = userTokenRepository;
+    this.listUsersPort = listUsersPort;
   }
 
   @PostMapping("/signup")
   public ResponseEntity<?> register(@RequestBody RegisterUserDto registerUserDto) {
-    LOG.debug("Received registration request {}", registerUserDto);
+    LOG.info("Received registration request {}", registerUserDto);
     Try<RegisterResponse> user =
         addUserUseCase
             .addUser(
@@ -75,23 +85,44 @@ public class AuthenticationController {
 
   @PostMapping("/login")
   public ResponseEntity<?> authenticate(@RequestBody LoginUserDto loginUserDto) {
-    LOG.debug("Received login request {}", loginUserDto);
+    LOG.info("Received login request {}", loginUserDto);
     Authentication authentication =
         authenticationManager.authenticate(
             new UsernamePasswordAuthenticationToken(
                 loginUserDto.getEmail(), loginUserDto.getPassword()));
 
     if (authentication.isAuthenticated()) {
-      LOG.debug("User logged in successfully. Generating JWT token.");
+      LOG.info("User logged in successfully. Generating JWT token.");
       String jwtToken = jwtService.generateToken(loginUserDto.getEmail());
+      markTokenAsActive(loginUserDto.getEmail(), jwtToken);
       LoginResponse loginResponse =
           new LoginResponse().setToken(jwtToken).setExpiresIn(jwtService.getExpirationTime());
       return ResponseEntity.ok(loginResponse);
     }
 
-    LOG.debug("User not logged in.");
+    LOG.info("User not logged in.");
     return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
   }
+
+  public UserDetails toUserDetails(com.bookkeeper.app.application.domain.model.User user) {
+    return new User(
+        user.getId(),
+        user.getFullName(),
+        user.getEmail(),
+        user.getPassword(),
+        user.getCreatedAt(),
+        user.getUpdatedAt());
+  }
+
+  private void markTokenAsActive(String email, String token) {
+    this.listUsersPort
+        .findByEmail(email)
+        .mapTry(this::toUserDetails)
+        .andThen(userDetails -> this.userTokenRepository.refreshToken(userDetails, token));
+  }
+
+  // TODO mateusz.brycki add the /logout endpoint that will remove the user-token pair from the
+  // database
 
   public static class RegisterResponse {
     private UUID id;
@@ -175,9 +206,7 @@ public class AuthenticationController {
 
     @Override
     public String toString() {
-      return "LoginUserDto{" +
-              "email='" + email + '\'' +
-              '}';
+      return "LoginUserDto{" + "email='" + email + '\'' + '}';
     }
   }
 
@@ -214,10 +243,7 @@ public class AuthenticationController {
 
     @Override
     public String toString() {
-      return "RegisterUserDto{" +
-              "email='" + email + '\'' +
-              ", fullName='" + fullName + '\'' +
-              '}';
+      return "RegisterUserDto{" + "email='" + email + '\'' + ", fullName='" + fullName + '\'' + '}';
     }
   }
 }

@@ -44,8 +44,6 @@ public class SecurityConfiguration {
                 authorize
                     .requestMatchers("/auth/**")
                     .permitAll()
-                    .requestMatchers("/*")
-                    .permitAll()
                     .requestMatchers("/static/**")
                     .permitAll()
                     .anyRequest()

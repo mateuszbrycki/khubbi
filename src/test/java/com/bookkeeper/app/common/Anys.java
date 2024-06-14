@@ -18,4 +18,14 @@ public class Anys {
           "any-password",
           Date.from(Instant.now()),
           Date.from(Instant.now()));
+
+  public static final com.bookkeeper.app.adapter.in.web.security.User ANY_SECURITY_USER =
+          new com.bookkeeper.app.adapter.in.web.security.User(
+                  UUID.randomUUID(),
+                  "any-fullname",
+                  ANY_EMAIL,
+                  "any-password",
+                  Date.from(Instant.now()),
+                  Date.from(Instant.now()));
+
 }

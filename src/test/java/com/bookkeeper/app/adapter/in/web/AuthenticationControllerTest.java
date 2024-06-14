@@ -1,8 +1,9 @@
 package com.bookkeeper.app.adapter.in.web;
 
+import static com.bookkeeper.app.common.Anys.ANY_USER;
 import static org.hamcrest.Matchers.containsString;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
@@ -10,9 +11,11 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 import com.bookkeeper.app.adapter.in.web.security.JwtAuthenticationFilter;
 import com.bookkeeper.app.adapter.in.web.security.JwtService;
+import com.bookkeeper.app.adapter.out.persistance.UserTokenRepository;
 import com.bookkeeper.app.application.domain.model.User;
 import com.bookkeeper.app.application.domain.service.UserWithEmailExistsException;
 import com.bookkeeper.app.application.port.in.AddUserUseCase;
+import com.bookkeeper.app.application.port.out.ListUsersPort;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.vavr.control.Try;
 import java.time.Instant;
@@ -56,6 +59,10 @@ class AuthenticationControllerTest {
   @MockBean private AuthenticationManager authenticationManager;
 
   @MockBean private PasswordEncoder passwordEncoder;
+
+  @MockBean private UserTokenRepository userTokenRepository;
+
+  @MockBean private ListUsersPort listUsersPort;
 
   @Test
   public void shouldReturnConflictWhenAddingUserFailed() throws Exception {
@@ -166,6 +173,8 @@ class AuthenticationControllerTest {
 
     when(jwtService.generateToken(any())).thenReturn(token);
     when(jwtService.getExpirationTime()).thenReturn(tokenExpirationTime);
+    when(listUsersPort.findByEmail(any())).thenReturn(Try.success(ANY_USER));
+    when(userTokenRepository.refreshToken(any(), any())).thenReturn(true);
 
     AuthenticationController.LoginUserDto loginUserDto =
         new AuthenticationController.LoginUserDto();
@@ -182,6 +191,8 @@ class AuthenticationControllerTest {
         .andExpect(status().isOk())
         .andExpect(content().string(containsString(token)))
         .andExpect(content().string(containsString(String.valueOf(tokenExpirationTime))));
+
+    verify(userTokenRepository, times(1)).refreshToken(any(), any());
   }
 
   private final String asJsonString(Object obj) {

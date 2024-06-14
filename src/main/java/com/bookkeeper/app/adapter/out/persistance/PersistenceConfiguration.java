@@ -11,4 +11,9 @@ public class PersistenceConfiguration {
   UserInMemoryRepository inMemoryUserRepository() {
     return new UserInMemoryRepository(HashMap.empty());
   }
+
+  @Bean
+  UserTokenRepository userTokenRepository() {
+    return new UserTokenRepository(HashMap.empty());
+  }
 }

@@ -38,7 +38,7 @@ public class UserService implements AddUserUseCase, FindUserUseCase {
         new User(
             UUID.randomUUID(), command.fullName(), command.email(), command.password(), now, now);
 
-    LOG.debug(
+    LOG.info(
         "Adding user {} ({} - {})",
         candidate.getId(),
         candidate.getEmail(),
@@ -61,7 +61,7 @@ public class UserService implements AddUserUseCase, FindUserUseCase {
 
   @Override
   public Try<User> findUser(FindUserCommand command) {
-    LOG.debug("Looking for user {}", command.email());
+    LOG.info("Looking for user {}", command.email());
 
     return this.listUsersPort.findByEmail(command.email()).toTry();
   }

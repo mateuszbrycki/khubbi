@@ -32,7 +32,7 @@ public class ShelfController {
 
   @PostMapping(consumes = "application/json", produces = "application/json")
   public ResponseEntity<?> addShelf(@RequestBody Shelf shelf, Authentication authentication) {
-    LOG.debug("Received add shelf request {}", shelf);
+    LOG.info("Received add shelf request {}", shelf);
 
     return findUserUseCase
         .findUser(new FindUserUseCase.FindUserCommand(authentication.getName()))

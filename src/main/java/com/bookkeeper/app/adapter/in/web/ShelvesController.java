@@ -27,7 +27,7 @@ public class ShelvesController {
 
   @GetMapping
   public ResponseEntity<?> listShelves(Authentication authentication) {
-    LOG.debug("Received list shelf request from {}", authentication.getName());
+    LOG.info("Received list shelf request from {}", authentication.getName());
 
     return findUserUseCase
         .findUser(new FindUserUseCase.FindUserCommand(authentication.getName()))

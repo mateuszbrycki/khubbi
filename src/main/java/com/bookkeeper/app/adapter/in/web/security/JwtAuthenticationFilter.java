@@ -1,9 +1,13 @@
 package com.bookkeeper.app.adapter.in.web.security;
 
+import com.bookkeeper.app.adapter.out.persistance.UserTokenRepository;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import java.io.IOException;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.lang.NonNull;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -15,21 +19,25 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 import org.springframework.web.servlet.HandlerExceptionResolver;
 
-import java.io.IOException;
-
 @Component
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
+
+  private static final Logger LOG = LogManager.getLogger(JwtAuthenticationFilter.class);
+
   private final HandlerExceptionResolver handlerExceptionResolver;
 
   private final JwtService jwtService;
   private final UserDetailsService userDetailsService;
+  private final UserTokenRepository userTokenRepository;
 
   public JwtAuthenticationFilter(
       JwtService jwtService,
       UserDetailsService userDetailsService,
+      UserTokenRepository userTokenRepository,
       HandlerExceptionResolver handlerExceptionResolver) {
     this.jwtService = jwtService;
     this.userDetailsService = userDetailsService;
+    this.userTokenRepository = userTokenRepository;
     this.handlerExceptionResolver = handlerExceptionResolver;
   }
 
@@ -51,11 +59,18 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
       final String userEmail = jwtService.extractEmail(jwt);
 
       Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-
       if (userEmail != null && authentication == null) {
-        UserDetails userDetails = this.userDetailsService.loadUserByUsername(userEmail);
+        UserDetails userDetails = userDetailsService.loadUserByUsername(userEmail);
 
-        if (jwtService.isTokenValid(jwt, userDetails)) {
+        Boolean isTokenActive = userTokenRepository.isTokenActive(userDetails, jwt);
+        Boolean isTokenValid = jwtService.isTokenValid(jwt, userDetails);
+        LOG.info(
+            "Token for {} is valid: {} and active: {} ",
+            userDetails.getUsername(),
+            isTokenValid,
+            isTokenActive);
+
+        if (isTokenValid && isTokenActive) {
           UsernamePasswordAuthenticationToken authToken =
               new UsernamePasswordAuthenticationToken(
                   userDetails, null, userDetails.getAuthorities());

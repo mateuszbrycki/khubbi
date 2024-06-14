@@ -25,7 +25,7 @@ public class ShelfService implements AddShelfUseCase, ListShelvesUseCase {
   @Override
   public Try<AddShelfUseCase.Shelf> addShelf(AddShelfCommand command) {
 
-    LOG.debug("Adding Shelf '{}' for {}", command.name(), command.owner().getId());
+    LOG.info("Adding Shelf '{}' for {}", command.name(), command.owner().getId());
     com.bookkeeper.app.application.domain.model.Shelf candidate =
         new com.bookkeeper.app.application.domain.model.Shelf(command.name(), command.owner());
 
@@ -44,7 +44,7 @@ public class ShelfService implements AddShelfUseCase, ListShelvesUseCase {
 
   @Override
   public Try<List<AddShelfUseCase.Shelf>> addDefaultShelves(AddDefaultShelvesCommand command) {
-    LOG.debug("Adding default shelves for {}", command.owner().getId());
+    LOG.info("Adding default shelves for {}", command.owner().getId());
 
     return Try.sequence(
             List.of("New", "Scanned")
@@ -55,7 +55,7 @@ public class ShelfService implements AddShelfUseCase, ListShelvesUseCase {
   @Override
   public Try<List<ListShelvesUseCase.Shelf>> listShelves(ListShelvesCommand command) {
 
-    LOG.debug("Listing shelves for {}", command.owner().getId());
+    LOG.info("Listing shelves for {}", command.owner().getId());
     return listShelvesPort
         .listShelves(command.owner())
         .map(

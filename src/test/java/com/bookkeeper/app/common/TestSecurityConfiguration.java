@@ -7,7 +7,9 @@ import static org.mockito.Mockito.when;
 
 import com.bookkeeper.app.adapter.in.web.security.SecurityConfiguration;
 import com.bookkeeper.app.adapter.out.persistance.UserInMemoryRepository;
+import com.bookkeeper.app.adapter.out.persistance.UserTokenRepository;
 import io.vavr.control.Try;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Import;
 
@@ -21,4 +23,6 @@ public class TestSecurityConfiguration {
 
     return mock;
   }
+
+  @MockBean UserTokenRepository userTokenRepository;
 }

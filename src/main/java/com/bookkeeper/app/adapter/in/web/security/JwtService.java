@@ -49,7 +49,7 @@ public class JwtService {
   }
 
   private String buildToken(Map<String, Object> extraClaims, String email, long expiration) {
-    LOG.debug("Building JWT token for {} with expiration {}", email, expiration);
+    LOG.info("Building JWT token for {} with expiration {}", email, expiration);
     if (email == null || email.isEmpty()) {
       throw new IllegalArgumentException("Email cannot be null or empty");
     }
@@ -63,10 +63,9 @@ public class JwtService {
         .compact();
   }
 
-  // TODO mateusz.brycki introduce proper logging
   public boolean isTokenValid(String token, UserDetails userDetails) {
     try {
-      LOG.debug("Validating JWT token for {} ", userDetails.getUsername());
+      LOG.info("Validating JWT token for {} ", userDetails.getUsername());
 
       final String email = extractEmail(token);
       return (email.equals(userDetails.getUsername())) && !isTokenExpired(token);
@@ -78,7 +77,7 @@ public class JwtService {
 
   private boolean isTokenExpired(String token) {
     boolean isValid = extractExpiration(token).before(new Date());
-    LOG.debug("Validating JWT token expiration time. Token valid: {} ", isValid);
+    LOG.info("Validating JWT token expiration time. Token valid: {} ", isValid);
     return isValid;
   }
 
