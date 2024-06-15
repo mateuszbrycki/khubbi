@@ -64,10 +64,10 @@ class JwtServiceTest {
 
     // given
     JwtService underTest = new JwtService(TEST_SECRET_KEY, TEST_JWT_EXPIRATION);
-    String token = underTest.generateToken(TEST_EMAIL);
+    JwtService.Token token = underTest.generateToken(TEST_EMAIL);
 
     // when
-    String email = underTest.extractEmail(token);
+    String email = underTest.extractEmail(token.getToken());
 
     // then
     assertEquals(TEST_EMAIL, email);
@@ -78,10 +78,10 @@ class JwtServiceTest {
 
     // given
     JwtService underTest = new JwtService(TEST_SECRET_KEY, TEST_JWT_EXPIRATION);
-    String token = underTest.generateToken(TEST_CLAIMS, TEST_EMAIL);
+    JwtService.Token token = underTest.generateToken(TEST_CLAIMS, TEST_EMAIL);
 
     // when
-    String email = underTest.extractEmail(token);
+    String email = underTest.extractEmail(token.getToken());
 
     // then
     assertEquals(TEST_EMAIL, email);
@@ -101,11 +101,30 @@ class JwtServiceTest {
   }
 
   @Test
+  public void testTokenExpirationTimeSetProperly() {
+
+    Date startDate = new Date(System.currentTimeMillis());
+
+    // given
+    JwtService underTest = new JwtService(TEST_SECRET_KEY, 1000);
+
+    // when
+    JwtService.Token token = underTest.generateToken(TEST_EMAIL);
+
+    // then
+    // TODO mateusz.brycki think of a better way of testing the token expiration time
+    // the token should be valid between test start time and check date (generation time + some
+    // random time) + expiration time
+    assertTrue(token.getExpirationTime().after(startDate));
+    assertTrue(token.getExpirationTime().before(new Date(System.currentTimeMillis() + 1000)));
+  }
+
+  @Test
   public void testTokenGetsExpired() throws InterruptedException {
 
     // given
     JwtService underTest = new JwtService(TEST_SECRET_KEY, 1000);
-    String token = underTest.generateToken(TEST_EMAIL);
+    JwtService.Token token = underTest.generateToken(TEST_EMAIL);
     UserDetails userDetails =
         new User(
             UUID.randomUUID(),
@@ -116,9 +135,9 @@ class JwtServiceTest {
             Date.from(Instant.now()));
 
     // then & then
-    assertTrue(underTest.isTokenValid(token, userDetails));
+    assertTrue(underTest.isTokenValid(token.getToken(), userDetails));
     Thread.sleep(1000);
-    assertFalse(underTest.isTokenValid(token, userDetails));
+    assertFalse(underTest.isTokenValid(token.getToken(), userDetails));
   }
 
   @Test
@@ -126,11 +145,12 @@ class JwtServiceTest {
 
     // given
     JwtService underTest = new JwtService(TEST_SECRET_KEY, TEST_JWT_EXPIRATION);
-    String token = underTest.generateToken(TEST_CLAIMS, TEST_EMAIL);
+    JwtService.Token token = underTest.generateToken(TEST_CLAIMS, TEST_EMAIL);
 
     // when
     String claim =
-        underTest.extractClaim(token, (Claims claims) -> claims.get("claim1", String.class));
+        underTest.extractClaim(
+            token.getToken(), (Claims claims) -> claims.get("claim1", String.class));
 
     // then
     assertEquals("claim1-value", claim);
@@ -141,11 +161,12 @@ class JwtServiceTest {
 
     // given
     JwtService underTest = new JwtService(TEST_SECRET_KEY, TEST_JWT_EXPIRATION);
-    String token = underTest.generateToken(TEST_CLAIMS, TEST_EMAIL);
+    JwtService.Token token = underTest.generateToken(TEST_CLAIMS, TEST_EMAIL);
 
     // when
     String claim =
-        underTest.extractClaim(token, (Claims claims) -> claims.get("claim2", String.class));
+        underTest.extractClaim(
+            token.getToken(), (Claims claims) -> claims.get("claim2", String.class));
 
     // then
     assertNull(claim);
@@ -156,11 +177,12 @@ class JwtServiceTest {
 
     // given
     JwtService underTest = new JwtService(TEST_SECRET_KEY, TEST_JWT_EXPIRATION);
-    String token = underTest.generateToken(TEST_EMAIL);
+    JwtService.Token token = underTest.generateToken(TEST_EMAIL);
 
     // when
     String claim =
-        underTest.extractClaim(token, (Claims claims) -> claims.get("claim1", String.class));
+        underTest.extractClaim(
+            token.getToken(), (Claims claims) -> claims.get("claim1", String.class));
 
     // then
     assertNull(claim);

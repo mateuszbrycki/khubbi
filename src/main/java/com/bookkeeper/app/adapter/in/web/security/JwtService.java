@@ -17,6 +17,28 @@ import org.springframework.security.core.userdetails.UserDetails;
 
 public class JwtService {
 
+  public static class Token {
+    private final String token;
+    private final Date expirationTime;
+
+    public Token(String token, Date expirationTime) {
+      this.token = token;
+      this.expirationTime = expirationTime;
+    }
+
+    public String getToken() {
+      return token;
+    }
+
+    public Date getExpirationTime() {
+      return expirationTime;
+    }
+
+    public long getExpirationTimeInMillis() {
+      return this.getExpirationTime().toInstant().toEpochMilli();
+    }
+  }
+
   private static final Logger LOG = LogManager.getLogger(JwtService.class);
 
   private final String secretKey;
@@ -36,11 +58,11 @@ public class JwtService {
     return claimsResolver.apply(claims);
   }
 
-  public String generateToken(String email) {
+  public Token generateToken(String email) {
     return generateToken(new HashMap<>(), email);
   }
 
-  public String generateToken(Map<String, Object> extraClaims, String email) {
+  public Token generateToken(Map<String, Object> extraClaims, String email) {
     return buildToken(extraClaims, email, jwtExpiration);
   }
 
@@ -48,19 +70,23 @@ public class JwtService {
     return jwtExpiration;
   }
 
-  private String buildToken(Map<String, Object> extraClaims, String email, long expiration) {
-    LOG.info("Building JWT token for {} with expiration {}", email, expiration);
+  private Token buildToken(Map<String, Object> extraClaims, String email, long expiration) {
+
     if (email == null || email.isEmpty()) {
       throw new IllegalArgumentException("Email cannot be null or empty");
     }
 
-    return Jwts.builder()
-        .setClaims(extraClaims)
-        .setSubject(email)
-        .setIssuedAt(new Date(System.currentTimeMillis()))
-        .setExpiration(new Date(System.currentTimeMillis() + expiration))
-        .signWith(getSignInKey(), SignatureAlgorithm.HS256)
-        .compact();
+    Date expirationTime = new Date(System.currentTimeMillis() + expiration);
+    String token = Jwts.builder()
+            .setClaims(extraClaims)
+            .setSubject(email)
+            .setIssuedAt(new Date(System.currentTimeMillis()))
+            .setExpiration(expirationTime)
+            .signWith(getSignInKey(), SignatureAlgorithm.HS256)
+            .compact();
+
+    LOG.info("Building JWT token for {} with expiration {}", email, expirationTime.toString());
+    return new Token(token, expirationTime);
   }
 
   public boolean isTokenValid(String token, UserDetails userDetails) {

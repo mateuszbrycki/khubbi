@@ -19,6 +19,7 @@ import com.bookkeeper.app.application.port.out.ListUsersPort;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.vavr.control.Try;
 import java.time.Instant;
+import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.Date;
 import java.util.List;
@@ -169,10 +170,10 @@ class AuthenticationControllerTest {
     when(authenticationManager.authenticate(any())).thenReturn(new TestAuthentication(true));
 
     String token = UUID.randomUUID().toString();
-    long tokenExpirationTime = Instant.now().toEpochMilli();
+    Date tokenExpirationTime = new Date();
 
-    when(jwtService.generateToken(any())).thenReturn(token);
-    when(jwtService.getExpirationTime()).thenReturn(tokenExpirationTime);
+    when(jwtService.generateToken(any()))
+        .thenReturn(new JwtService.Token(token, tokenExpirationTime));
     when(listUsersPort.findByEmail(any())).thenReturn(Try.success(ANY_USER));
     when(userTokenRepository.refreshToken(any(), any())).thenReturn(true);
 
@@ -190,7 +191,11 @@ class AuthenticationControllerTest {
         .andDo(print())
         .andExpect(status().isOk())
         .andExpect(content().string(containsString(token)))
-        .andExpect(content().string(containsString(String.valueOf(tokenExpirationTime))));
+        .andExpect(
+            content()
+                .string(
+                    containsString(
+                        String.valueOf(tokenExpirationTime.toInstant().toEpochMilli()))));
 
     verify(userTokenRepository, times(1)).refreshToken(any(), any());
   }

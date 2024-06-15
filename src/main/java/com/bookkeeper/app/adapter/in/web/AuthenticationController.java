@@ -93,10 +93,12 @@ public class AuthenticationController {
 
     if (authentication.isAuthenticated()) {
       LOG.info("User logged in successfully. Generating JWT token.");
-      String jwtToken = jwtService.generateToken(loginUserDto.getEmail());
-      markTokenAsActive(loginUserDto.getEmail(), jwtToken);
+      JwtService.Token token = jwtService.generateToken(loginUserDto.getEmail());
+      markTokenAsActive(loginUserDto.getEmail(), token);
       LoginResponse loginResponse =
-          new LoginResponse().setToken(jwtToken).setExpiresIn(jwtService.getExpirationTime());
+          new LoginResponse()
+              .setToken(token.getToken())
+              .setExpiresIn(token.getExpirationTimeInMillis());
       return ResponseEntity.ok(loginResponse);
     }
 
@@ -114,11 +116,12 @@ public class AuthenticationController {
         user.getUpdatedAt());
   }
 
-  private void markTokenAsActive(String email, String token) {
+  private void markTokenAsActive(String email, JwtService.Token token) {
     this.listUsersPort
         .findByEmail(email)
         .mapTry(this::toUserDetails)
-        .andThen(userDetails -> this.userTokenRepository.refreshToken(userDetails, token));
+        .andThen(
+            userDetails -> this.userTokenRepository.refreshToken(userDetails, token.getToken()));
   }
 
   // TODO mateusz.brycki add the /logout endpoint that will remove the user-token pair from the
