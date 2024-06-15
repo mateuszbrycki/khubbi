@@ -23,6 +23,8 @@ function LoadingView() {
     return <h1>Loading</h1>;
 }
 
+const authenticated:() => boolean = () => isAuthenticated(store.getState())
+
 root.render(
     <React.StrictMode>
         <Provider store={store}>
@@ -30,25 +32,25 @@ root.render(
                 <Router history={history}>
                     <Routes>
                         <Route path="/" element={
-                            <AuthenticationAwareGate isAuthenticated={() => isAuthenticated(store.getState())}
+                            <AuthenticationAwareGate isAuthenticated={authenticated}
                                                      redirectToIfLogged={"/dashboard"}>
-                                <App><h1>Welcome in bookkeeper</h1></App>
+                                <App isAuthenticated={authenticated}><h1>Welcome in bookkeeper</h1></App>
                             </AuthenticationAwareGate>
                         }/>
                         <Route path="/login"
                                element={
-                                   <AuthenticationAwareGate isAuthenticated={() => isAuthenticated(store.getState())}
+                                   <AuthenticationAwareGate isAuthenticated={authenticated}
                                                             redirectToIfLogged={"/dashboard"}>
-                                       <App>
+                                       <App isAuthenticated={authenticated}>
                                            <AuthorizationContainer/>
                                        </App>
                                    </AuthenticationAwareGate>
                                }/>
                         <Route path="/dashboard"
                                element={
-                                   <AuthenticationAwareGate isAuthenticated={() => isAuthenticated(store.getState())}
+                                   <AuthenticationAwareGate isAuthenticated={authenticated}
                                                             redirectToIfNotLogged={"/login"}>
-                                       <App>
+                                       <App isAuthenticated={authenticated}>
                                           <DashboardContainer/>
                                        </App>
                                    </AuthenticationAwareGate>}/>

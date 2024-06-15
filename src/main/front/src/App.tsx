@@ -9,10 +9,11 @@ export interface AppActionsProps {
 
 export interface AppProps {
     children?: React.ReactNode,
+    readonly isAuthenticated: () => boolean;
 }
 
 
-const App = ({children}: AppProps) => {
+const App = ({children, isAuthenticated}: AppProps) => {
     return (
         <>
             <Navbar expand="lg" className="bg-body-tertiary">
@@ -22,7 +23,7 @@ const App = ({children}: AppProps) => {
                     <Navbar.Collapse id="basic-navbar-nav">
                         <Nav className="me-auto">
                             <Nav.Link> <Link to={`/`}>Home</Link></Nav.Link>
-                            <Nav.Link> <Link to={`/login`}>Login</Link></Nav.Link>
+                            {isAuthenticated() ? <></> : <Nav.Link> <Link to={`/login`}>Login</Link></Nav.Link>}
                         </Nav>
                     </Navbar.Collapse>
                 </Container>
