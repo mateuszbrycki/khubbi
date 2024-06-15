@@ -13,8 +13,7 @@ const getUserState = createSelector(
 const isAuthenticated = createSelector(
     getAuthorizationState,
     (state: AuthorizationState) => {
-        // TODO mateusz.brycki compare expiresIn with the current date so that the token expires
-        return state.jwtToken != null && state.expiresIn != null
+        return state.jwtToken != null && state.expiresIn != null && state.expiresIn > Date.now()
     }
 )
 
