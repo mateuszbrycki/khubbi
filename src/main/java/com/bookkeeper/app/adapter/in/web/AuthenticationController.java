@@ -3,12 +3,13 @@ package com.bookkeeper.app.adapter.in.web;
 import static io.vavr.API.*;
 import static io.vavr.Predicates.instanceOf;
 
-import com.bookkeeper.app.adapter.in.web.security.JwtService;
-import com.bookkeeper.app.adapter.in.web.security.User;
-import com.bookkeeper.app.adapter.out.persistance.UserTokenRepository;
+import com.bookkeeper.app.adapter.in.web.security.jwt.JwtService;
+import com.bookkeeper.app.adapter.in.web.security.jwt.JwtToken;
+import com.bookkeeper.app.adapter.in.web.security.refresh.RefreshToken;
+import com.bookkeeper.app.adapter.in.web.security.refresh.RefreshTokenService;
 import com.bookkeeper.app.application.domain.service.UserWithEmailExistsException;
 import com.bookkeeper.app.application.port.in.AddUserUseCase;
-import com.bookkeeper.app.application.port.out.ListUsersPort;
+import io.vavr.control.Option;
 import io.vavr.control.Try;
 import java.util.Date;
 import java.util.UUID;
@@ -19,7 +20,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -36,22 +36,19 @@ public class AuthenticationController {
   private final JwtService jwtService;
   private final AuthenticationManager authenticationManager;
   private final PasswordEncoder passwordEncoder;
-  private final UserTokenRepository userTokenRepository;
-  private final ListUsersPort listUsersPort;
+  private final RefreshTokenService refreshTokenService;
 
   public AuthenticationController(
+      AuthenticationManager authenticationManager,
       AddUserUseCase addUserUseCase,
       JwtService jwtService,
-      AuthenticationManager authenticationManager,
-      PasswordEncoder passwordEncoder,
-      UserTokenRepository userTokenRepository,
-      ListUsersPort listUsersPort) {
+      RefreshTokenService refreshTokenService,
+      PasswordEncoder passwordEncoder) {
+    this.authenticationManager = authenticationManager;
     this.addUserUseCase = addUserUseCase;
     this.jwtService = jwtService;
-    this.authenticationManager = authenticationManager;
+    this.refreshTokenService = refreshTokenService;
     this.passwordEncoder = passwordEncoder;
-    this.userTokenRepository = userTokenRepository;
-    this.listUsersPort = listUsersPort;
   }
 
   @PostMapping("/signup")
@@ -93,12 +90,14 @@ public class AuthenticationController {
 
     if (authentication.isAuthenticated()) {
       LOG.info("User logged in successfully. Generating JWT token.");
-      JwtService.Token token = jwtService.generateToken(loginUserDto.getEmail());
-      markTokenAsActive(loginUserDto.getEmail(), token);
+      JwtToken jwtToken = jwtService.generateToken(loginUserDto.getEmail());
+      RefreshToken refreshToken = refreshTokenService.createRefreshToken(loginUserDto.getEmail());
+
       LoginResponse loginResponse =
           new LoginResponse()
-              .setToken(token.getToken())
-              .setExpiresIn(token.getExpirationTimeInMillis());
+              .setJwtToken(jwtToken.getToken())
+              .setRefreshToken(refreshToken.token())
+              .setExpiresIn(jwtToken.getExpirationTimeInMillis());
       return ResponseEntity.ok(loginResponse);
     }
 
@@ -106,26 +105,23 @@ public class AuthenticationController {
     return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
   }
 
-  public UserDetails toUserDetails(com.bookkeeper.app.application.domain.model.User user) {
-    return new User(
-        user.getId(),
-        user.getFullName(),
-        user.getEmail(),
-        user.getPassword(),
-        user.getCreatedAt(),
-        user.getUpdatedAt());
-  }
+  @PostMapping("/refreshToken")
+  public ResponseEntity<?> refreshToken(@RequestBody RefreshTokenDto refreshTokenDto) {
 
-  private void markTokenAsActive(String email, JwtService.Token token) {
-    this.listUsersPort
-        .findByEmail(email)
-        .mapTry(this::toUserDetails)
-        .andThen(
-            userDetails -> this.userTokenRepository.refreshToken(userDetails, token.getToken()));
+    Option<RefreshToken> maybeRefreshToken =
+        refreshTokenService.findToken(refreshTokenDto.getRefreshToken());
+    return maybeRefreshToken
+        .filter(refreshTokenService::isTokenValid)
+        .map(
+            refreshToken -> {
+              JwtToken jwtToken = jwtService.generateToken(refreshToken.email());
+              return ResponseEntity.ok(
+                  new RefreshTokenResponse()
+                      .setJwtToken(jwtToken.getToken())
+                      .setExpiresIn(jwtToken.getExpirationTimeInMillis()));
+            })
+        .getOrElse(() -> ResponseEntity.status(HttpStatus.BAD_REQUEST).build());
   }
-
-  // TODO mateusz.brycki add the /logout endpoint that will remove the user-token pair from the
-  // database
 
   public static class RegisterResponse {
     private UUID id;
@@ -163,16 +159,27 @@ public class AuthenticationController {
   }
 
   public static class LoginResponse {
-    private String token;
+    private String jwtToken;
+
+    private String refreshToken;
 
     private long expiresIn;
 
-    public String getToken() {
-      return token;
+    public String getJwtToken() {
+      return jwtToken;
     }
 
-    public LoginResponse setToken(String token) {
-      this.token = token;
+    public LoginResponse setJwtToken(String jwtToken) {
+      this.jwtToken = jwtToken;
+      return this;
+    }
+
+    public String getRefreshToken() {
+      return refreshToken;
+    }
+
+    public LoginResponse setRefreshToken(String refreshToken) {
+      this.refreshToken = refreshToken;
       return this;
     }
 
@@ -181,6 +188,30 @@ public class AuthenticationController {
     }
 
     public LoginResponse setExpiresIn(long expiresIn) {
+      this.expiresIn = expiresIn;
+      return this;
+    }
+  }
+
+  public static class RefreshTokenResponse {
+    private String jwtToken;
+
+    private long expiresIn;
+
+    public String getJwtToken() {
+      return jwtToken;
+    }
+
+    public RefreshTokenResponse setJwtToken(String jwtToken) {
+      this.jwtToken = jwtToken;
+      return this;
+    }
+
+    public long getExpiresIn() {
+      return expiresIn;
+    }
+
+    public RefreshTokenResponse setExpiresIn(long expiresIn) {
       this.expiresIn = expiresIn;
       return this;
     }
@@ -247,6 +278,23 @@ public class AuthenticationController {
     @Override
     public String toString() {
       return "RegisterUserDto{" + "email='" + email + '\'' + ", fullName='" + fullName + '\'' + '}';
+    }
+  }
+
+  public static class RefreshTokenDto {
+    private String refreshToken;
+
+    public String getRefreshToken() {
+      return refreshToken;
+    }
+
+    public void setRefreshToken(String refreshToken) {
+      this.refreshToken = refreshToken;
+    }
+
+    @Override
+    public String toString() {
+      return "RefreshTokenDto{" + "refreshToken='" + refreshToken + '\'' + '}';
     }
   }
 }

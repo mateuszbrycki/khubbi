@@ -1,6 +1,5 @@
 package com.bookkeeper.app.adapter.in.web;
 
-import static com.bookkeeper.app.common.Anys.ANY_USER;
 import static org.hamcrest.Matchers.containsString;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
@@ -9,17 +8,17 @@ import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-import com.bookkeeper.app.adapter.in.web.security.JwtAuthenticationFilter;
-import com.bookkeeper.app.adapter.in.web.security.JwtService;
-import com.bookkeeper.app.adapter.out.persistance.UserTokenRepository;
+import com.bookkeeper.app.adapter.in.web.security.jwt.JwtAuthenticationFilter;
+import com.bookkeeper.app.adapter.in.web.security.jwt.JwtService;
+import com.bookkeeper.app.adapter.in.web.security.jwt.JwtToken;
+import com.bookkeeper.app.adapter.in.web.security.refresh.RefreshToken;
+import com.bookkeeper.app.adapter.in.web.security.refresh.RefreshTokenService;
 import com.bookkeeper.app.application.domain.model.User;
 import com.bookkeeper.app.application.domain.service.UserWithEmailExistsException;
 import com.bookkeeper.app.application.port.in.AddUserUseCase;
-import com.bookkeeper.app.application.port.out.ListUsersPort;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.vavr.control.Try;
 import java.time.Instant;
-import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.Date;
 import java.util.List;
@@ -61,9 +60,7 @@ class AuthenticationControllerTest {
 
   @MockBean private PasswordEncoder passwordEncoder;
 
-  @MockBean private UserTokenRepository userTokenRepository;
-
-  @MockBean private ListUsersPort listUsersPort;
+  @MockBean private RefreshTokenService refreshTokenService;
 
   @Test
   public void shouldReturnConflictWhenAddingUserFailed() throws Exception {
@@ -172,10 +169,10 @@ class AuthenticationControllerTest {
     String token = UUID.randomUUID().toString();
     Date tokenExpirationTime = new Date();
 
-    when(jwtService.generateToken(any()))
-        .thenReturn(new JwtService.Token(token, tokenExpirationTime));
-    when(listUsersPort.findByEmail(any())).thenReturn(Try.success(ANY_USER));
-    when(userTokenRepository.refreshToken(any(), any())).thenReturn(true);
+    when(jwtService.generateToken(any())).thenReturn(new JwtToken(token, tokenExpirationTime));
+
+    when(refreshTokenService.createRefreshToken(any()))
+        .thenReturn(new RefreshToken(UUID.randomUUID().toString(), new Date(), "any-email"));
 
     AuthenticationController.LoginUserDto loginUserDto =
         new AuthenticationController.LoginUserDto();
@@ -196,8 +193,6 @@ class AuthenticationControllerTest {
                 .string(
                     containsString(
                         String.valueOf(tokenExpirationTime.toInstant().toEpochMilli()))));
-
-    verify(userTokenRepository, times(1)).refreshToken(any(), any());
   }
 
   private final String asJsonString(Object obj) {

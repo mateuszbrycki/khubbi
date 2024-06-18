@@ -4,4 +4,7 @@ security.jwt.secret-key: deff1af56cce746d7cd3eeef041e4938b11dd214b7bfa97357f9217
 # 1h in millisecond
 security.jwt.expiration-time: 3600000
 
+# 30 days in milliseconds
+security.refresh-token.expiration-time: 2592000000
+
 logging.level.root: INFO

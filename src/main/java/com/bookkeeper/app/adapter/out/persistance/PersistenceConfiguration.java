@@ -16,4 +16,9 @@ public class PersistenceConfiguration {
   UserTokenRepository userTokenRepository() {
     return new UserTokenRepository(HashMap.empty());
   }
+
+  @Bean
+  RefreshTokenRepository refreshTokenRepository() {
+    return new RefreshTokenRepository(HashMap.empty());
+  }
 }

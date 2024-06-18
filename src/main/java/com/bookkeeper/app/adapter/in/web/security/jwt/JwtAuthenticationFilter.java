@@ -1,4 +1,4 @@
-package com.bookkeeper.app.adapter.in.web.security;
+package com.bookkeeper.app.adapter.in.web.security.jwt;
 
 import com.bookkeeper.app.adapter.out.persistance.UserTokenRepository;
 import jakarta.servlet.FilterChain;

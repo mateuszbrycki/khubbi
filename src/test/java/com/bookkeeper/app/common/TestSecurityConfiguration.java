@@ -6,6 +6,7 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 import com.bookkeeper.app.adapter.in.web.security.SecurityConfiguration;
+import com.bookkeeper.app.adapter.out.persistance.RefreshTokenRepository;
 import com.bookkeeper.app.adapter.out.persistance.UserInMemoryRepository;
 import com.bookkeeper.app.adapter.out.persistance.UserTokenRepository;
 import io.vavr.control.Try;
@@ -25,4 +26,5 @@ public class TestSecurityConfiguration {
   }
 
   @MockBean UserTokenRepository userTokenRepository;
+  @MockBean RefreshTokenRepository refreshTokenRepository;
 }

@@ -1,6 +1,12 @@
 package com.bookkeeper.app.adapter.in.web.security;
 
+import com.bookkeeper.app.adapter.in.web.security.jwt.JwtAuthenticationFilter;
+import com.bookkeeper.app.adapter.in.web.security.jwt.JwtService;
+import com.bookkeeper.app.adapter.in.web.security.refresh.RefreshTokenService;
+import com.bookkeeper.app.adapter.out.persistance.RefreshTokenRepository;
 import com.bookkeeper.app.adapter.out.persistance.UserInMemoryRepository;
+import com.bookkeeper.app.adapter.out.persistance.UserTokenRepository;
+import com.bookkeeper.app.application.port.out.ListUsersPort;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -27,8 +33,17 @@ public class SecurityConfiguration {
   @Bean
   JwtService jwtService(
       @Value("${security.jwt.secret-key}") String secretKey,
-      @Value("${security.jwt.expiration-time}") long jwtExpiration) {
-    return new JwtService(secretKey, jwtExpiration);
+      @Value("${security.jwt.expiration-time}") long jwtExpiration,
+      UserTokenRepository userTokenRepository,
+      ListUsersPort listUsersPort) {
+    return new JwtService(userTokenRepository, listUsersPort, secretKey, jwtExpiration);
+  }
+
+  @Bean
+  RefreshTokenService refreshTokenService(
+      @Value("${security.refresh-token.expiration-time}") long refreshTokenExpiration,
+      RefreshTokenRepository refreshTokenRepository) {
+    return new RefreshTokenService(refreshTokenRepository, refreshTokenExpiration);
   }
 
   @Bean

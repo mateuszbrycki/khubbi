@@ -1,5 +1,8 @@
-package com.bookkeeper.app.adapter.in.web.security;
+package com.bookkeeper.app.adapter.in.web.security.jwt;
 
+import com.bookkeeper.app.adapter.in.web.security.User;
+import com.bookkeeper.app.adapter.out.persistance.UserTokenRepository;
+import com.bookkeeper.app.application.port.out.ListUsersPort;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.Jwts;
@@ -17,34 +20,20 @@ import org.springframework.security.core.userdetails.UserDetails;
 
 public class JwtService {
 
-  public static class Token {
-    private final String token;
-    private final Date expirationTime;
-
-    public Token(String token, Date expirationTime) {
-      this.token = token;
-      this.expirationTime = expirationTime;
-    }
-
-    public String getToken() {
-      return token;
-    }
-
-    public Date getExpirationTime() {
-      return expirationTime;
-    }
-
-    public long getExpirationTimeInMillis() {
-      return this.getExpirationTime().toInstant().toEpochMilli();
-    }
-  }
-
   private static final Logger LOG = LogManager.getLogger(JwtService.class);
 
   private final String secretKey;
   private final long jwtExpiration;
+  private final UserTokenRepository userTokenRepository;
+  private final ListUsersPort listUsersPort;
 
-  public JwtService(String secretKey, long jwtExpiration) {
+  public JwtService(
+      UserTokenRepository userTokenRepository,
+      ListUsersPort listUsersPort,
+      String secretKey,
+      long jwtExpiration) {
+    this.userTokenRepository = userTokenRepository;
+    this.listUsersPort = listUsersPort;
     this.secretKey = secretKey;
     this.jwtExpiration = jwtExpiration;
   }
@@ -58,26 +47,30 @@ public class JwtService {
     return claimsResolver.apply(claims);
   }
 
-  public Token generateToken(String email) {
+  public JwtToken generateToken(String email) {
     return generateToken(new HashMap<>(), email);
   }
 
-  public Token generateToken(Map<String, Object> extraClaims, String email) {
-    return buildToken(extraClaims, email, jwtExpiration);
+  public JwtToken generateToken(Map<String, Object> extraClaims, String email) {
+    JwtToken jwtToken = buildToken(extraClaims, email, jwtExpiration);
+    markTokenAsActive(email, jwtToken);
+
+    return jwtToken;
   }
 
   public long getExpirationTime() {
     return jwtExpiration;
   }
 
-  private Token buildToken(Map<String, Object> extraClaims, String email, long expiration) {
+  private JwtToken buildToken(Map<String, Object> extraClaims, String email, long expiration) {
 
     if (email == null || email.isEmpty()) {
       throw new IllegalArgumentException("Email cannot be null or empty");
     }
 
     Date expirationTime = new Date(System.currentTimeMillis() + expiration);
-    String token = Jwts.builder()
+    String token =
+        Jwts.builder()
             .setClaims(extraClaims)
             .setSubject(email)
             .setIssuedAt(new Date(System.currentTimeMillis()))
@@ -86,7 +79,7 @@ public class JwtService {
             .compact();
 
     LOG.info("Building JWT token for {} with expiration {}", email, expirationTime.toString());
-    return new Token(token, expirationTime);
+    return new JwtToken(token, expirationTime);
   }
 
   public boolean isTokenValid(String token, UserDetails userDetails) {
@@ -122,5 +115,24 @@ public class JwtService {
   private Key getSignInKey() {
     byte[] keyBytes = Decoders.BASE64.decode(secretKey);
     return Keys.hmacShaKeyFor(keyBytes);
+  }
+
+  private void markTokenAsActive(String email, JwtToken token) {
+    LOG.info("Marking JWT Token as active for {}", email);
+    this.listUsersPort
+        .findByEmail(email)
+        .mapTry(this::toUserDetails)
+        .andThen(
+            userDetails -> this.userTokenRepository.refreshToken(userDetails, token.getToken()));
+  }
+
+  private UserDetails toUserDetails(com.bookkeeper.app.application.domain.model.User user) {
+    return new User(
+        user.getId(),
+        user.getFullName(),
+        user.getEmail(),
+        user.getPassword(),
+        user.getCreatedAt(),
+        user.getUpdatedAt());
   }
 }
