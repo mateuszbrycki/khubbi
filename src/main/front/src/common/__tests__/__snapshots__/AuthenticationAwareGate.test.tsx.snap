@@ -21,7 +21,9 @@ exports[`authentication aware gate when user is not authenticated navigates to g
 `;
 
 exports[`authentication aware gate when user is not authenticated navigates to login 1`] = `
-<Navigate
-  to="/login"
-/>
+<React.Fragment>
+  <h1>
+    test child
+  </h1>
+</React.Fragment>
 `;

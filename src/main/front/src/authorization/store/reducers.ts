@@ -1,4 +1,4 @@
-import {initialAuthorizationState, AuthorizationState } from "./state";
+import {initialAuthorizationState, AuthorizationState} from "./state";
 import {Action, combineReducers, Reducer} from "redux";
 import {Types, UserLoggedIn} from "./actions";
 
@@ -15,8 +15,10 @@ const authorizationReducer = (
         case Types.UserLoggedIn:
             return {
                 ...state,
-                jwtToken: action.payload.jwtToken,
-                expiresIn: action.payload.expiresIn
+                jwtToken: {
+                    token: action.payload.jwtToken,
+                    expiresIn: action.payload.expiresIn
+                },
             }
         default:
             return state

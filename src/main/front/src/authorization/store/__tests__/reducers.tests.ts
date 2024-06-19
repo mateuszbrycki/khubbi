@@ -10,6 +10,6 @@ test('should return the initial state', () => {
 
 test('should store JWT Token and expiration period', () => {
     expect(authorizationReducer(initialAuthorizationState, UserLoggedInAction("token", 123))).toEqual(
-        {...initialAuthorizationState, jwtToken: "token", expiresIn: 123}
+        {...initialAuthorizationState, jwtToken: {token: "token", expiresIn: 123}}
     )
 })

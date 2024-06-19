@@ -5,6 +5,7 @@ import {AuthorizationState} from "./state";
 const getAuthorizationState = (state: ApplicationState): AuthorizationState => {
     return state.application.authorizationState
 }
+
 const getUserState = createSelector(
     getAuthorizationState,
     (state: AuthorizationState) => state?.user
@@ -13,14 +14,14 @@ const getUserState = createSelector(
 const isAuthenticated = createSelector(
     getAuthorizationState,
     (state: AuthorizationState) => {
-        return state.jwtToken != null && state.expiresIn != null && state.expiresIn > Date.now()
+        return state.jwtToken != null && state.jwtToken.token != null && state.jwtToken.expiresIn > Date.now()
     }
 )
 
 const getJWTToken = createSelector(
     getAuthorizationState,
     (state: AuthorizationState) => {
-        return state.jwtToken
+        return state.jwtToken?.token
     }
 )
 
