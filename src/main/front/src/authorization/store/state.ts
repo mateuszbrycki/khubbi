@@ -1,7 +1,4 @@
-import {User} from "../../types";
-
 export interface AuthorizationState {
-    readonly user: User | null
     readonly jwtToken: TokenState | null
     readonly refreshToken: TokenState | null
 }
@@ -12,7 +9,6 @@ export interface TokenState {
 }
 
 const initialState: AuthorizationState = {
-    user: null,
     jwtToken: null,
     refreshToken: null
 }
