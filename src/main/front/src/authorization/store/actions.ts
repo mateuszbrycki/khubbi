@@ -12,6 +12,7 @@ export interface RegisterUser {
         password: string,
     }
 }
+
 export interface LoginUser {
     readonly type: Types.LoginUser
     readonly payload: {
@@ -32,8 +33,8 @@ export interface UserRegistered {
 export interface UserLoggedIn {
     readonly type: Types.UserLoggedIn
     readonly payload: {
-        jwtToken: string,
-        expiresIn: number,
+        jwtToken: { token: string, expiresIn: number },
+        refreshToken: { token: string, expiresIn: number },
     }
 }
 
@@ -62,14 +63,22 @@ const LoginUserAction = (email: string, password: string): LoginUser => ({
     }
 })
 
-const UserLoggedInAction = (jwtToken: string, expiresIn: number): UserLoggedIn => ({
+const UserLoggedInAction = (jwtToken: { token: string, expiresIn: number }, refreshToken: {
+    token: string,
+    expiresIn: number
+}): UserLoggedIn => ({
     type: Types.UserLoggedIn,
     payload: {
-        jwtToken: jwtToken,
-        expiresIn: expiresIn,
+        jwtToken: {
+            token: jwtToken.token,
+            expiresIn: jwtToken.expiresIn
+        },
+        refreshToken: {
+            token: refreshToken.token,
+            expiresIn: refreshToken.expiresIn
+        }
     }
 })
-
 
 
 export {

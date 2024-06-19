@@ -30,7 +30,7 @@ function* onAuthorization(api: AuthorizationHttpApi): IterableIterator<unknown> 
 
     yield takeEvery((a: Action): a is LoginUser => a.type === Types.LoginUser, function* (a: LoginUser) {
         const response: LoginResponse = yield call(callLogin, api, a.payload.email, a.payload.password);
-        yield put(UserLoggedInAction(response.token, response.expiresIn))
+        yield put(UserLoggedInAction(response.jwtToken, response.refreshToken))
         yield put(push("/dashboard"))
     })
 

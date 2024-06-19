@@ -16,9 +16,13 @@ const authorizationReducer = (
             return {
                 ...state,
                 jwtToken: {
-                    token: action.payload.jwtToken,
-                    expiresIn: action.payload.expiresIn
+                    token: action.payload.jwtToken.token,
+                    expiresIn: action.payload.jwtToken.expiresIn
                 },
+                refreshToken: {
+                    token: action.payload.refreshToken.token,
+                    expiresIn: action.payload.refreshToken.expiresIn
+                }
             }
         default:
             return state

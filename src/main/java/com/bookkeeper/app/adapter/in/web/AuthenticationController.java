@@ -95,9 +95,15 @@ public class AuthenticationController {
 
       LoginResponse loginResponse =
           new LoginResponse()
-              .setJwtToken(jwtToken.getToken())
-              .setRefreshToken(refreshToken.token())
-              .setExpiresIn(jwtToken.getExpirationTimeInMillis());
+              .setJwtToken(
+                  new LoginResponse.Token()
+                      .setToken(jwtToken.getToken())
+                      .setExpiresIn(jwtToken.getExpirationTimeInMillis()))
+              .setRefreshToken(
+                  new LoginResponse.Token()
+                      .setToken(refreshToken.token())
+                      .setExpiresIn(refreshToken.getExpirationTimeInMillis()));
+
       return ResponseEntity.ok(loginResponse);
     }
 
@@ -159,37 +165,48 @@ public class AuthenticationController {
   }
 
   public static class LoginResponse {
-    private String jwtToken;
+    private Token jwtToken;
+    private Token refreshToken;
 
-    private String refreshToken;
-
-    private long expiresIn;
-
-    public String getJwtToken() {
+    public Token getJwtToken() {
       return jwtToken;
     }
 
-    public LoginResponse setJwtToken(String jwtToken) {
+    public LoginResponse setJwtToken(Token jwtToken) {
       this.jwtToken = jwtToken;
       return this;
     }
 
-    public String getRefreshToken() {
+    public Token getRefreshToken() {
       return refreshToken;
     }
 
-    public LoginResponse setRefreshToken(String refreshToken) {
+    public LoginResponse setRefreshToken(Token refreshToken) {
       this.refreshToken = refreshToken;
       return this;
     }
 
-    public long getExpiresIn() {
-      return expiresIn;
-    }
+    public static class Token {
+      private String token;
+      private long expiresIn;
 
-    public LoginResponse setExpiresIn(long expiresIn) {
-      this.expiresIn = expiresIn;
-      return this;
+      public String getToken() {
+        return token;
+      }
+
+      public Token setToken(String token) {
+        this.token = token;
+        return this;
+      }
+
+      public long getExpiresIn() {
+        return expiresIn;
+      }
+
+      public Token setExpiresIn(long expiresIn) {
+        this.expiresIn = expiresIn;
+        return this;
+      }
     }
   }
 

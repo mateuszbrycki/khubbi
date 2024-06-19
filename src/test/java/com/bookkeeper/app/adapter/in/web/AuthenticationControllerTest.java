@@ -166,13 +166,15 @@ class AuthenticationControllerTest {
     // given
     when(authenticationManager.authenticate(any())).thenReturn(new TestAuthentication(true));
 
-    String token = UUID.randomUUID().toString();
-    Date tokenExpirationTime = new Date();
+    String jwtToken = UUID.randomUUID().toString();
+    Date jwtTokenExpirationTime = new Date();
+    when(jwtService.generateToken(any()))
+        .thenReturn(new JwtToken(jwtToken, jwtTokenExpirationTime));
 
-    when(jwtService.generateToken(any())).thenReturn(new JwtToken(token, tokenExpirationTime));
-
+    String refreshToken = UUID.randomUUID().toString();
+    Date refreshTokenExpirationTime = new Date();
     when(refreshTokenService.createRefreshToken(any()))
-        .thenReturn(new RefreshToken(UUID.randomUUID().toString(), new Date(), "any-email"));
+        .thenReturn(new RefreshToken(refreshToken, refreshTokenExpirationTime, "any-email"));
 
     AuthenticationController.LoginUserDto loginUserDto =
         new AuthenticationController.LoginUserDto();
@@ -187,12 +189,18 @@ class AuthenticationControllerTest {
                 .content(asJsonString(loginUserDto)))
         .andDo(print())
         .andExpect(status().isOk())
-        .andExpect(content().string(containsString(token)))
+        .andExpect(content().string(containsString(jwtToken)))
+        .andExpect(content().string(containsString(refreshToken)))
         .andExpect(
             content()
                 .string(
                     containsString(
-                        String.valueOf(tokenExpirationTime.toInstant().toEpochMilli()))));
+                        String.valueOf(jwtTokenExpirationTime.toInstant().toEpochMilli()))))
+        .andExpect(
+            content()
+                .string(
+                    containsString(
+                        String.valueOf(refreshTokenExpirationTime.toInstant().toEpochMilli()))));
   }
 
   private final String asJsonString(Object obj) {

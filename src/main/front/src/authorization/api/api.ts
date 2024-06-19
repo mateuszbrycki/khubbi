@@ -1,8 +1,14 @@
 import axios from '../../common/axios';
 
 export interface LoginResponse {
-    readonly token: string
-    readonly expiresIn: number
+    readonly jwtToken: {
+        readonly token: string,
+        readonly expiresIn: number
+    },
+    readonly refreshToken: {
+        readonly token: string,
+        readonly expiresIn: number
+    }
 }
 
 export interface RegisterResponse {
