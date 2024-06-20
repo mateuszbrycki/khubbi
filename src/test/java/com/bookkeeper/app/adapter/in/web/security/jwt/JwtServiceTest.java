@@ -1,5 +1,6 @@
 package com.bookkeeper.app.adapter.in.web.security.jwt;
 
+import static com.bookkeeper.app.common.Anys.ANY_EMAIL;
 import static com.bookkeeper.app.common.Anys.ANY_USER;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
@@ -257,5 +258,20 @@ class JwtServiceTest {
                 ANY_USER.getCreatedAt(),
                 ANY_USER.getUpdatedAt()),
             token.getToken());
+  }
+
+  @Test
+  public void shouldRemoveActiveTokens() {
+    // given
+    when(userTokenRepository.removeTokens(any())).thenReturn(true);
+    JwtService underTest =
+        new JwtService(userTokenRepository, listUsersPort, TEST_SECRET_KEY, TEST_JWT_EXPIRATION);
+
+    // when
+    Try<Boolean> result = underTest.invalidateUserTokens(ANY_EMAIL);
+
+    // then
+    verify(userTokenRepository, times(1)).removeTokens(ANY_EMAIL);
+    assertTrue(result.isSuccess());
   }
 }

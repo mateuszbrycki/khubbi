@@ -24,4 +24,11 @@ public class RefreshTokenRepository {
     LOG.info("Saving refresh token for {}", refreshToken.email());
     this.refreshTokens = this.refreshTokens.put(refreshToken.token(), refreshToken);
   }
+
+  public Boolean removeTokens(String email) {
+    this.refreshTokens =
+        this.refreshTokens.filter(
+            (String token, RefreshToken refreshToken) -> !refreshToken.email().equals(email));
+    return true;
+  }
 }

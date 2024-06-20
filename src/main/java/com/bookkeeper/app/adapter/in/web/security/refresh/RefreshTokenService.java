@@ -2,6 +2,7 @@ package com.bookkeeper.app.adapter.in.web.security.refresh;
 
 import com.bookkeeper.app.adapter.out.persistance.RefreshTokenRepository;
 import io.vavr.control.Option;
+import io.vavr.control.Try;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -46,5 +47,10 @@ public class RefreshTokenService {
   public Boolean isTokenValid(RefreshToken refreshToken) {
     LOG.info("Checking refresh token validity for {}", refreshToken.email());
     return refreshToken.expiration().compareTo(new Date(Instant.now().toEpochMilli())) > 0;
+  }
+
+  public Try<Boolean> invalidateUserTokens(String email) {
+    LOG.info("Invalidating Refresh Tokens for {}", email);
+    return Try.of(() -> this.refreshTokenRepository.removeTokens(email));
   }
 }

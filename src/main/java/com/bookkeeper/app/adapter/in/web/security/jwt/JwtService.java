@@ -14,6 +14,8 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Function;
+
+import io.vavr.control.Try;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -95,9 +97,9 @@ public class JwtService {
   }
 
   private boolean isTokenExpired(String token) {
-    boolean isValid = extractExpiration(token).before(new Date());
-    LOG.info("Validating JWT token expiration time. Token valid: {} ", isValid);
-    return isValid;
+    boolean isExpired = extractExpiration(token).before(new Date());
+    LOG.info("Validating JWT token expiration time. Token expired: {} ", isExpired);
+    return isExpired;
   }
 
   private Date extractExpiration(String token) {
@@ -124,6 +126,11 @@ public class JwtService {
         .mapTry(this::toUserDetails)
         .andThen(
             userDetails -> this.userTokenRepository.refreshToken(userDetails, token.getToken()));
+  }
+
+  public Try<Boolean> invalidateUserTokens(String email) {
+    LOG.info("Invalidating JWT Tokens for {}", email);
+    return Try.of(() -> this.userTokenRepository.removeTokens(email));
   }
 
   private UserDetails toUserDetails(com.bookkeeper.app.application.domain.model.User user) {

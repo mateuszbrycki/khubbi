@@ -3,12 +3,12 @@ package com.bookkeeper.app.adapter.in.web;
 import static org.hamcrest.Matchers.containsString;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-import com.bookkeeper.app.adapter.in.web.security.jwt.JwtAuthenticationFilter;
 import com.bookkeeper.app.adapter.in.web.security.jwt.JwtService;
 import com.bookkeeper.app.adapter.in.web.security.jwt.JwtToken;
 import com.bookkeeper.app.adapter.in.web.security.refresh.RefreshToken;
@@ -16,6 +16,8 @@ import com.bookkeeper.app.adapter.in.web.security.refresh.RefreshTokenService;
 import com.bookkeeper.app.application.domain.model.User;
 import com.bookkeeper.app.application.domain.service.UserWithEmailExistsException;
 import com.bookkeeper.app.application.port.in.AddUserUseCase;
+import com.bookkeeper.app.common.Anys;
+import com.bookkeeper.app.common.TestSecurityConfiguration;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.vavr.control.Try;
 import java.time.Instant;
@@ -25,29 +27,18 @@ import java.util.List;
 import java.util.UUID;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.autoconfigure.security.servlet.SecurityAutoConfiguration;
-import org.springframework.boot.autoconfigure.security.servlet.SecurityFilterAutoConfiguration;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.context.annotation.ComponentScan;
-import org.springframework.context.annotation.FilterType;
+import org.springframework.context.annotation.Import;
 import org.springframework.http.MediaType;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.test.context.support.WithUserDetails;
 import org.springframework.test.web.servlet.MockMvc;
 
-@WebMvcTest(
-    value = AuthenticationController.class,
-    excludeAutoConfiguration = {
-      SecurityAutoConfiguration.class,
-      SecurityFilterAutoConfiguration.class
-    },
-    excludeFilters =
-        @ComponentScan.Filter(
-            type = FilterType.ASSIGNABLE_TYPE,
-            value = JwtAuthenticationFilter.class))
+@Import(TestSecurityConfiguration.class)
+@WebMvcTest(AuthenticationController.class)
 class AuthenticationControllerTest {
 
   @Autowired private MockMvc mockMvc;
@@ -57,8 +48,6 @@ class AuthenticationControllerTest {
   @MockBean private JwtService jwtService;
 
   @MockBean private AuthenticationManager authenticationManager;
-
-  @MockBean private PasswordEncoder passwordEncoder;
 
   @MockBean private RefreshTokenService refreshTokenService;
 
@@ -201,6 +190,51 @@ class AuthenticationControllerTest {
                 .string(
                     containsString(
                         String.valueOf(refreshTokenExpirationTime.toInstant().toEpochMilli()))));
+  }
+
+  @Test
+  @WithUserDetails(Anys.ANY_EMAIL)
+  public void shouldReturnBadRequestWhenJwtTokenDeletionFailedDuringLogout() throws Exception {
+
+    // given
+    when(jwtService.invalidateUserTokens(any()))
+        .thenReturn(Try.failure(new RuntimeException("any deletion failure")));
+
+    // when & then
+    this.mockMvc.perform(get("/auth/logout")).andDo(print()).andExpect(status().isBadRequest());
+  }
+
+  @Test
+  @WithUserDetails(Anys.ANY_EMAIL)
+  public void shouldReturnBadRequestWhenRefreshTokenDeletionFailedDuringLogout() throws Exception {
+
+    // given
+    when(jwtService.invalidateUserTokens(any())).thenReturn(Try.success(true));
+    when(refreshTokenService.invalidateUserTokens(eq(Anys.ANY_EMAIL)))
+        .thenReturn(Try.failure(new RuntimeException("any deletion failure")));
+
+    // when & then
+    this.mockMvc.perform(get("/auth/logout")).andDo(print()).andExpect(status().isBadRequest());
+  }
+
+  @Test
+  @WithUserDetails(Anys.ANY_EMAIL)
+  public void shouldOkWhenUserLoggedOutFailed() throws Exception {
+
+    // given
+    when(jwtService.invalidateUserTokens(eq(Anys.ANY_EMAIL))).thenReturn(Try.success(true));
+    when(refreshTokenService.invalidateUserTokens(eq(Anys.ANY_EMAIL)))
+        .thenReturn(Try.success(true));
+
+    // when & then
+    this.mockMvc.perform(get("/auth/logout")).andDo(print()).andExpect(status().isOk());
+  }
+
+  @Test
+  public void shouldFailDueToNotLoggedUserDuringLogout() throws Exception {
+
+    // when & then
+    this.mockMvc.perform(get("/auth/logout")).andDo(print()).andExpect(status().isForbidden());
   }
 
   private final String asJsonString(Object obj) {

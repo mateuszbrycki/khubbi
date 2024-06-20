@@ -2,6 +2,7 @@ package com.bookkeeper.app.adapter.in.web.security.refresh;
 
 import com.bookkeeper.app.adapter.out.persistance.RefreshTokenRepository;
 import io.vavr.control.Option;
+import io.vavr.control.Try;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
@@ -14,8 +15,7 @@ import java.util.UUID;
 import static com.bookkeeper.app.common.Anys.ANY_EMAIL;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 class RefreshTokenServiceTest {
@@ -128,5 +128,20 @@ class RefreshTokenServiceTest {
 
     // then
     assertTrue(tokenValid);
+  }
+
+  @Test
+  public void shouldRemoveActiveTokens() {
+    // given
+    when(refreshTokenRepository.removeTokens(any())).thenReturn(true);
+    RefreshTokenService underTest =
+            new RefreshTokenService(refreshTokenRepository, REFRESH_TOKEN_EXPIRATION);
+
+    // when
+    Try<Boolean> result = underTest.invalidateUserTokens(ANY_EMAIL);
+
+    // then
+    verify(refreshTokenRepository, times(1)).removeTokens(ANY_EMAIL);
+    assertTrue(result.isSuccess());
   }
 }

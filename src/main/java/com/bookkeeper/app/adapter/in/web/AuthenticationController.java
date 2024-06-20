@@ -21,10 +21,7 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RequestMapping("/auth")
 @RestController
@@ -127,6 +124,23 @@ public class AuthenticationController {
                       .setExpiresIn(jwtToken.getExpirationTimeInMillis()));
             })
         .getOrElse(() -> ResponseEntity.status(HttpStatus.BAD_REQUEST).build());
+  }
+
+  @GetMapping("/logout")
+  // removes all the existing tokens at one go
+  // will need to be refactored for multiple devices support
+  public ResponseEntity<?> refreshToken(Authentication authentication) {
+
+    if (!authentication.isAuthenticated()) {
+      return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+    }
+    String email = authentication.getName();
+
+    return jwtService
+        .invalidateUserTokens(email)
+        .flatMapTry(result -> refreshTokenService.invalidateUserTokens(email))
+        .mapTry(result -> ResponseEntity.ok(null))
+        .fold(failure -> ResponseEntity.status(HttpStatus.BAD_REQUEST).build(), success -> success);
   }
 
   public static class RegisterResponse {

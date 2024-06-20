@@ -57,6 +57,8 @@ public class SecurityConfiguration {
         .authorizeHttpRequests(
             authorize ->
                 authorize
+                    .requestMatchers("/auth/logout")
+                    .authenticated()
                     .requestMatchers("/auth/**")
                     .permitAll()
                     .requestMatchers("/static/**")

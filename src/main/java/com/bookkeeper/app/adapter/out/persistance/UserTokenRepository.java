@@ -20,9 +20,18 @@ public class UserTokenRepository {
         && this.activeUserTokens.get(user).get().equals(token);
   }
 
-  public boolean refreshToken(UserDetails user, String token) {
+  public Boolean refreshToken(UserDetails user, String token) {
     LOG.info("Refreshing token for {}", user.getUsername());
     this.activeUserTokens = this.activeUserTokens.put(user, token);
+    // TODO mateusz.brycki fix that
+    return true;
+  }
+
+  public Boolean removeTokens(String email) {
+    this.activeUserTokens =
+        this.activeUserTokens.filter(
+            (UserDetails key, String value) -> !key.getUsername().equals(email));
+
     // TODO mateusz.brycki fix that
     return true;
   }

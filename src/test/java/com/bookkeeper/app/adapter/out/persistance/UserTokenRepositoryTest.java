@@ -1,5 +1,6 @@
 package com.bookkeeper.app.adapter.out.persistance;
 
+import static com.bookkeeper.app.common.Anys.ANY_EMAIL;
 import static com.bookkeeper.app.common.Anys.ANY_SECURITY_USER;
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -75,5 +76,36 @@ class UserTokenRepositoryTest {
     // then
     assertFalse(underTest.isTokenActive(ANY_SECURITY_USER, "any-token-1"));
     assertTrue(underTest.isTokenActive(ANY_SECURITY_USER, "any-token-2"));
+  }
+
+  @Test
+  public void shouldNotFailWhenRemovingNonExistentToken() {
+    // given
+    UserTokenRepository underTest =
+            new UserTokenRepository(HashMap.empty());
+
+    // when
+    Boolean result = underTest.removeTokens(ANY_EMAIL);
+
+    // then
+    assertTrue(result);
+  }
+
+  @Test
+  public void shouldRemoveExistingTokens() {
+    // given
+    UserTokenRepository underTest =
+            new UserTokenRepository(HashMap.of(ANY_SECURITY_USER, "any-token-1"));
+    // then
+    Boolean isTokenActive = underTest.isTokenActive(ANY_SECURITY_USER, "any-token-1");
+    assertTrue(isTokenActive);
+
+    // when
+    Boolean result = underTest.removeTokens(ANY_EMAIL);
+
+    // then
+    assertTrue(result);
+    isTokenActive = underTest.isTokenActive(ANY_SECURITY_USER, "any-token-1");
+    assertFalse(isTokenActive);
   }
 }
