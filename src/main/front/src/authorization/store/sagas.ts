@@ -1,7 +1,15 @@
 import {Action} from "redux";
-import {AuthorizationHttpApi, LoginResponse, RegisterResponse} from "../api/api";
+import {AuthorizationHttpApi, LoginResponse, LogoutResponse, RegisterResponse} from "../api/api";
 import {call, put, takeEvery} from '@redux-saga/core/effects'
-import {LoginUser, RegisterUser, Types, UserLoggedInAction, UserRegisteredAction} from './actions'
+import {
+    LoginUser,
+    LogoutUser,
+    RegisterUser,
+    Types,
+    UserLoggedInAction,
+    UserLoggedOutAction,
+    UserRegisteredAction
+} from './actions'
 import {push} from "redux-first-history";
 
 function* callLogin(api: AuthorizationHttpApi, email: string, password: string): Generator<any, any, LoginResponse> {
@@ -22,6 +30,15 @@ function* callRegister(api: AuthorizationHttpApi, email: string, password: strin
         .catch(err => console.error(err))
 }
 
+function* callLogout(api: AuthorizationHttpApi): Generator<any, any, LogoutResponse> {
+    return yield api.logout()
+        .then(response => {
+            return response
+        })
+        // TODO mateusz.brycki - dispatch error and show notification
+        .catch(err => console.error(err))
+}
+
 function* onAuthorization(api: AuthorizationHttpApi): IterableIterator<unknown> {
     yield takeEvery((a: Action): a is RegisterUser => a.type === Types.RegisterUser, function* (a: RegisterUser) {
         const response: RegisterResponse = yield call(callRegister, api, a.payload.email, a.payload.password);
@@ -34,6 +51,11 @@ function* onAuthorization(api: AuthorizationHttpApi): IterableIterator<unknown> 
         yield put(push("/dashboard"))
     })
 
+    yield takeEvery((a: Action): a is LogoutUser => a.type === Types.LogoutUser, function* (a: LogoutUser) {
+        const response: LogoutResponse = yield call(callLogout, api);
+        yield put(UserLoggedOutAction())
+        yield put(push("/login"))
+    })
 }
 
 export {

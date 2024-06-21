@@ -3,6 +3,6 @@ import Dashboard from "../Dashboard";
 
 it('renders correctly', () => {
     const renderer = ShallowRenderer.createRenderer()
-    renderer.render(<Dashboard user={null} loadUserShelves={() => null}/>)
+    renderer.render(<Dashboard loadUserShelves={() => null}/>)
     expect(renderer.getRenderOutput()).toMatchSnapshot()
 });

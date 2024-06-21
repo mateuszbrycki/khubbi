@@ -4,7 +4,7 @@ import {Navigate} from "react-router-dom";
 
 export interface AuthRouteProps {
     readonly children: React.ReactNode;
-    readonly isAuthenticated: () => boolean;
+    readonly isAuthenticated: boolean;
     readonly redirectToIfLogged?: string;
     readonly redirectToIfNotLogged?: string;
 }
@@ -17,7 +17,7 @@ export const AuthenticationAwareGate: React.FC<AuthRouteProps> = ({
                                                                       redirectToIfNotLogged
                                                                   }) => {
 
-    if (!isAuthenticated()) {
+    if (!isAuthenticated) {
         if (redirectToIfNotLogged) {
             return <Navigate to={redirectToIfNotLogged}/>;
         }
@@ -25,7 +25,7 @@ export const AuthenticationAwareGate: React.FC<AuthRouteProps> = ({
         // return <Navigate to="/login"/>;
     }
 
-    if (isAuthenticated() && redirectToIfLogged) {
+    if (isAuthenticated && redirectToIfLogged) {
         return <Navigate to={redirectToIfLogged}/>;
     }
 

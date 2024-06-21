@@ -1,0 +1,234 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`application component user is authenticated renders correctly 1`] = `
+<React.Fragment>
+   
+  <HistoryRouter
+    history={
+      {
+        "action": "POP",
+        "back": [Function],
+        "block": [Function],
+        "createHref": [Function],
+        "forward": [Function],
+        "go": [Function],
+        "goBack": [Function],
+        "goForward": [Function],
+        "length": undefined,
+        "listen": [Function],
+        "listenObject": false,
+        "location": {
+          "hash": "",
+          "key": "default",
+          "pathname": "/",
+          "search": "",
+          "state": null,
+        },
+        "push": [Function],
+        "replace": [Function],
+      }
+    }
+  >
+    <Navbar
+      className="bg-body-tertiary"
+      expand="lg"
+    >
+      <Container>
+        <NavbarBrand
+          href="#home"
+        >
+          bookkeeper
+        </NavbarBrand>
+        <NavbarToggle
+          aria-controls="basic-navbar-nav"
+        />
+        <NavbarCollapse
+          id="basic-navbar-nav"
+        >
+          <Nav
+            className="me-auto"
+          >
+            <NavLink>
+               
+              <Link
+                to="/"
+              >
+                Home
+              </Link>
+            </NavLink>
+            <React.Fragment />
+          </Nav>
+          <Nav
+            className="ml-auto"
+          >
+            <NavLink>
+               
+              <Link
+                onClick={[Function]}
+                to="/"
+              >
+                Logout
+              </Link>
+            </NavLink>
+          </Nav>
+        </NavbarCollapse>
+      </Container>
+    </Navbar>
+    <Container>
+      <Routes>
+        <Route
+          element={
+            <AuthenticationAwareGate
+              isAuthenticated={true}
+              redirectToIfLogged="/dashboard"
+            >
+              <h1>
+                Welcome in bookkeeper
+              </h1>
+            </AuthenticationAwareGate>
+          }
+          path="/"
+        />
+        <Route
+          element={
+            <AuthenticationAwareGate
+              isAuthenticated={true}
+              redirectToIfLogged="/dashboard"
+            >
+              <Memo(Connect(EntryForms)) />
+            </AuthenticationAwareGate>
+          }
+          path="/login"
+        />
+        <Route
+          element={
+            <AuthenticationAwareGate
+              isAuthenticated={true}
+              redirectToIfNotLogged="/login"
+            >
+              <Memo(Connect(Dashboard)) />
+            </AuthenticationAwareGate>
+          }
+          path="/dashboard"
+        />
+      </Routes>
+    </Container>
+  </HistoryRouter>
+</React.Fragment>
+`;
+
+exports[`application component user is not authenticated renders correctly 1`] = `
+<React.Fragment>
+   
+  <HistoryRouter
+    history={
+      {
+        "action": "POP",
+        "back": [Function],
+        "block": [Function],
+        "createHref": [Function],
+        "forward": [Function],
+        "go": [Function],
+        "goBack": [Function],
+        "goForward": [Function],
+        "length": undefined,
+        "listen": [Function],
+        "listenObject": false,
+        "location": {
+          "hash": "",
+          "key": "default",
+          "pathname": "/",
+          "search": "",
+          "state": null,
+        },
+        "push": [Function],
+        "replace": [Function],
+      }
+    }
+  >
+    <Navbar
+      className="bg-body-tertiary"
+      expand="lg"
+    >
+      <Container>
+        <NavbarBrand
+          href="#home"
+        >
+          bookkeeper
+        </NavbarBrand>
+        <NavbarToggle
+          aria-controls="basic-navbar-nav"
+        />
+        <NavbarCollapse
+          id="basic-navbar-nav"
+        >
+          <Nav
+            className="me-auto"
+          >
+            <NavLink>
+               
+              <Link
+                to="/"
+              >
+                Home
+              </Link>
+            </NavLink>
+            <NavLink>
+               
+              <Link
+                to="/login"
+              >
+                Login
+              </Link>
+            </NavLink>
+          </Nav>
+          <Nav
+            className="ml-auto"
+          >
+            <React.Fragment />
+          </Nav>
+        </NavbarCollapse>
+      </Container>
+    </Navbar>
+    <Container>
+      <Routes>
+        <Route
+          element={
+            <AuthenticationAwareGate
+              isAuthenticated={false}
+              redirectToIfLogged="/dashboard"
+            >
+              <h1>
+                Welcome in bookkeeper
+              </h1>
+            </AuthenticationAwareGate>
+          }
+          path="/"
+        />
+        <Route
+          element={
+            <AuthenticationAwareGate
+              isAuthenticated={false}
+              redirectToIfLogged="/dashboard"
+            >
+              <Memo(Connect(EntryForms)) />
+            </AuthenticationAwareGate>
+          }
+          path="/login"
+        />
+        <Route
+          element={
+            <AuthenticationAwareGate
+              isAuthenticated={false}
+              redirectToIfNotLogged="/login"
+            >
+              <Memo(Connect(Dashboard)) />
+            </AuthenticationAwareGate>
+          }
+          path="/dashboard"
+        />
+      </Routes>
+    </Container>
+  </HistoryRouter>
+</React.Fragment>
+`;

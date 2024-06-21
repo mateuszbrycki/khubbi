@@ -3,6 +3,8 @@ enum Types {
     LoginUser = "LOGIN_USER",
     UserRegistered = "USER_REGISTERED",
     UserLoggedIn = "USER_LOGGED_IN",
+    LogoutUser = "LOGOUT_USER",
+    UserLoggedOut = "USER_LOGGED_OUT",
 }
 
 export interface RegisterUser {
@@ -36,6 +38,16 @@ export interface UserLoggedIn {
         jwtToken: { token: string, expiresIn: number },
         refreshToken: { token: string, expiresIn: number },
     }
+}
+
+export interface LogoutUser {
+    readonly type: Types.LogoutUser
+    readonly payload: {}
+}
+
+export interface UserLoggedOut {
+    readonly type: Types.UserLoggedOut
+    readonly payload: {}
 }
 
 const RegisterUserAction = (email: string, password: string): RegisterUser => ({
@@ -80,11 +92,23 @@ const UserLoggedInAction = (jwtToken: { token: string, expiresIn: number }, refr
     }
 })
 
+const LogoutUserAction = (): LogoutUser => ({
+    type: Types.LogoutUser,
+    payload: {}
+})
+
+const UserLoggedOutAction = (): UserLoggedOut => ({
+    type: Types.UserLoggedOut,
+    payload: {}
+})
+
 
 export {
     Types,
     RegisterUserAction,
     LoginUserAction,
     UserRegisteredAction,
-    UserLoggedInAction
+    UserLoggedInAction,
+    LogoutUserAction,
+    UserLoggedOutAction,
 }

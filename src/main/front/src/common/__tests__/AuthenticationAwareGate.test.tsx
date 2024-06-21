@@ -8,14 +8,14 @@ describe('authentication aware gate', () => {
         it('renders test child without redirections', () => {
             const renderer = ShallowRenderer.createRenderer()
             renderer.render(<AuthenticationAwareGate children={<h1>test child</h1>}
-                                                     isAuthenticated={() => isAuthenticated}/>)
+                                                     isAuthenticated={isAuthenticated}/>)
             expect(renderer.getRenderOutput()).toMatchSnapshot()
         })
 
         it('renders redirects to dashboard', () => {
             const renderer = ShallowRenderer.createRenderer()
             renderer.render(<AuthenticationAwareGate children={<h1>test child</h1>}
-                                                     isAuthenticated={() => isAuthenticated}
+                                                     isAuthenticated={isAuthenticated}
                                                      redirectToIfLogged={"/dashboard"}/>)
             expect(renderer.getRenderOutput()).toMatchSnapshot()
         })
@@ -27,14 +27,14 @@ describe('authentication aware gate', () => {
         it('navigates to login', () => {
             const renderer = ShallowRenderer.createRenderer()
             renderer.render(<AuthenticationAwareGate children={<h1>test child</h1>}
-                                                     isAuthenticated={() => isAuthenticated}/>)
+                                                     isAuthenticated={isAuthenticated}/>)
             expect(renderer.getRenderOutput()).toMatchSnapshot()
         })
 
         it('navigates to given url', () => {
             const renderer = ShallowRenderer.createRenderer()
             renderer.render(<AuthenticationAwareGate children={<h1>test child</h1>}
-                                                     isAuthenticated={() => isAuthenticated}
+                                                     isAuthenticated={isAuthenticated}
                                                      redirectToIfNotLogged={"/login-test"}/>)
             expect(renderer.getRenderOutput()).toMatchSnapshot()
         })

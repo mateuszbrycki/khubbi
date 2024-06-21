@@ -1,10 +1,11 @@
-import {initialAuthorizationState, AuthorizationState} from "./state";
-import {Action, combineReducers, Reducer} from "redux";
-import {Types, UserLoggedIn} from "./actions";
+import {AuthorizationState, initialAuthorizationState} from "./state";
+import {Action} from "redux";
+import {Types, UserLoggedIn, UserLoggedOut} from "./actions";
 
 
 type AuthorizationActions =
     | UserLoggedIn
+    | UserLoggedOut
 
 const authorizationReducer = (
     state: AuthorizationState | undefined = initialAuthorizationState,
@@ -23,6 +24,12 @@ const authorizationReducer = (
                     token: action.payload.refreshToken.token,
                     expiresIn: action.payload.refreshToken.expiresIn
                 }
+            }
+        case Types.UserLoggedOut:
+            return {
+                ...state,
+                jwtToken: null,
+                refreshToken: null
             }
         default:
             return state
