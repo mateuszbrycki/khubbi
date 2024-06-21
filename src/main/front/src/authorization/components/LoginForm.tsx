@@ -4,7 +4,6 @@ import Button from 'react-bootstrap/Button';
 import Form from 'react-bootstrap/Form';
 
 export interface LoginFormProps {
-    readonly user: {} | null;
 }
 
 export interface LoginFormActionProps {
@@ -13,7 +12,7 @@ export interface LoginFormActionProps {
 
 const RegisterForm: React.FC<LoginFormProps & LoginFormActionProps> = (props) => {
 
-    const {user, loginUser} = props
+    const {loginUser} = props
 
     const [email, setEmail] = useState<string>("")
     const [password, setPassword] = useState<string>("")

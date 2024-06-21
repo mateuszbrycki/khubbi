@@ -6,7 +6,6 @@ import {Col, Row} from "react-bootstrap";
 
 
 export interface EntryFormsProps {
-    readonly user: {} | null;
 }
 
 export interface EntryFormsActionProps {
@@ -15,15 +14,15 @@ export interface EntryFormsActionProps {
 }
 
 const EntryForms: React.FC<EntryFormsProps & EntryFormsActionProps> = (props) => {
-    const {user, registerUser, loginUser} = props
+    const {registerUser, loginUser} = props
 
     return <>
         <Row>
             <Col>
-                <RegisterForm user={user} registerUser={registerUser}/>
+                <RegisterForm registerUser={registerUser}/>
             </Col>
             <Col>
-                <LoginForm user={user} loginUser={loginUser}/>
+                <LoginForm loginUser={loginUser}/>
             </Col>
         </Row>
     </>

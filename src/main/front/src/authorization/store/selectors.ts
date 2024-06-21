@@ -6,11 +6,6 @@ const getAuthorizationState = (state: ApplicationState): AuthorizationState => {
     return state.application.authorizationState
 }
 
-const getUserState = createSelector(
-    getAuthorizationState,
-    (state: AuthorizationState) => state?.user
-)
-
 const isAuthenticated = createSelector(
     getAuthorizationState,
     (state: AuthorizationState) => {
@@ -26,4 +21,4 @@ const getJWTToken = createSelector(
 )
 
 
-export {getUserState, isAuthenticated, getJWTToken}
+export {isAuthenticated, getJWTToken}

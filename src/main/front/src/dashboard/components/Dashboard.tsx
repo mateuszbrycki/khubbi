@@ -1,7 +1,6 @@
 import React from "react";
 
 export interface DashboardProps {
-    readonly user: {} | null;
 }
 
 export interface DashboardActionProps {
