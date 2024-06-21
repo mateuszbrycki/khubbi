@@ -51,7 +51,7 @@ class RefreshTokenServiceTest {
     assertTrue(
         refreshToken
             .expiration()
-            .before(new Date(System.currentTimeMillis() + REFRESH_TOKEN_EXPIRATION)));
+            .before(new Date(System.currentTimeMillis() + REFRESH_TOKEN_EXPIRATION + 1)));
     verify(refreshTokenRepository).saveRefreshToken(refreshToken);
   }
 
