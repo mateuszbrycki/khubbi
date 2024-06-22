@@ -1,26 +1,20 @@
 enum Types {
-    LoadShelves = "LOAD_SHELVES",
+    LoadDashboard = "LOAD_DASHBOARD",
 }
 
-export interface LoadShelves {
-    readonly type: Types.LoadShelves
-    readonly payload: {
-        email: string,
-        password: string,
-    }
+export interface LoadDashboard {
+    readonly type: Types.LoadDashboard
+    readonly payload: {}
 }
 
 
-const LoadShelvesAction = (email: string, password: string): LoadShelves => ({
-    type: Types.LoadShelves,
-    payload: {
-        email: email,
-        password: password,
-    }
+const LoadDashboardAction = (): LoadDashboard => ({
+    type: Types.LoadDashboard,
+    payload: {}
 })
 
 
 export {
     Types,
-    LoadShelvesAction,
+    LoadDashboardAction,
 }

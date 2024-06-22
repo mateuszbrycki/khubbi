@@ -1,7 +1,7 @@
 import React from "react";
 import {Navigate} from "react-router-dom";
 
-
+// TODO mateusz.brycki consider resigning from <Navigate>, dispatch actions instead, maybe current page will be available
 export interface AuthRouteProps {
     readonly children: React.ReactNode;
     readonly isAuthenticated: boolean;

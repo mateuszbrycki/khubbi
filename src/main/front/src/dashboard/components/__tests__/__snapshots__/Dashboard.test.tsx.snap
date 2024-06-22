@@ -1,7 +1,26 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`renders correctly 1`] = `
-<h1>
-  Dashboard
-</h1>
+exports[`renders empty list 1`] = `
+<React.Fragment>
+  <h1>
+    Shelves
+  </h1>
+  Immutable.List []
+</React.Fragment>
+`;
+
+exports[`renders list of shelves 1`] = `
+<React.Fragment>
+  <h1>
+    Shelves
+  </h1>
+  Immutable.List [
+    <li>
+      shelf-1
+    </li>,
+    <li>
+      shelf-2
+    </li>,
+  ]
+</React.Fragment>
 `;

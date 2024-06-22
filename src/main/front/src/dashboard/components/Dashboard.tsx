@@ -1,15 +1,27 @@
 import React from "react";
+import {Shelf} from "../../types";
+import {List} from "immutable";
 
 export interface DashboardProps {
+    readonly shelves: List<Shelf>
 }
 
 export interface DashboardActionProps {
-    readonly loadUserShelves: (email: string, password: string) => void
+    readonly loadShelves: () => void
 }
 
 const Dashboard: React.FC<DashboardProps & DashboardActionProps> = (props) => {
+    const {shelves, loadShelves} = props
 
-    return <h1>Dashboard</h1>
+    React.useEffect((): void => {
+        loadShelves()
+    }, [loadShelves])
+
+
+    return <>
+        <h1>Shelves</h1>
+        {shelves.map(shelf => <li>{shelf.name}</li>)}
+    </>
 }
 
 export default Dashboard

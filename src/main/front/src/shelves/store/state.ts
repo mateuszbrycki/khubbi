@@ -1,24 +1,14 @@
 import {Shelf} from "../../types";
-import {List,Set} from "immutable";
+import {List} from "immutable";
 
-export interface ShelvesListState {
+export interface ShelvesState {
     readonly shelves: List<Shelf>
 }
 
-export interface ShelvesState {
-    readonly shelves: ShelvesListState
-}
-
-const initialShelvesListState: ShelvesListState = {
-    shelves: List()
-}
-
-
 const initialState: ShelvesState = {
-    shelves: initialShelvesListState
+    shelves: List()
 }
 
 export {
     initialState as initialShelvesState,
-    initialShelvesListState
 }

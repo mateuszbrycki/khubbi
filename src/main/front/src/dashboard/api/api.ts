@@ -1,5 +1,3 @@
-import {LoginResponse, RegisterResponse} from "../../authorization/api/api";
-
 export interface DashboardHttpApi {
 }
 

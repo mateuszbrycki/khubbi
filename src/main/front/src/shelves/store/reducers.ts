@@ -1,22 +1,26 @@
-import {initialShelvesListState, ShelvesListState, ShelvesState } from "./state";
-import {Action, combineReducers, Reducer} from "redux";
+import {initialShelvesState, ShelvesState} from "./state";
+import {Action} from "redux";
+import {ShelvesLoaded, Types} from "./actions";
 
-const shelvesListReducer = (
-    state: ShelvesListState | undefined = initialShelvesListState,
+
+type ShelvesActions =
+    | ShelvesLoaded
+
+const shelvesReducer = (
+    state: ShelvesState | undefined = initialShelvesState,
     incomingAction: Action,
-): ShelvesListState => {
-    /* const action = incomingAction as RidesListActions
+): ShelvesState => {
+    const action = incomingAction as ShelvesActions
     switch (action.type) {
+        case Types.ShelvesLoaded:
+            return {
+                ...state,
+                shelves: action.payload.shelves
+            }
         default:
             return state
-    } */
-    return state
-}
-
-const shelvesReducer: Reducer<ShelvesState> = combineReducers({
-        shelves: shelvesListReducer
     }
-)
+}
 
 export {
     shelvesReducer

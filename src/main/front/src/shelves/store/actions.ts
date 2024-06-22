@@ -2,7 +2,7 @@ import {Shelf} from "../../types";
 import {List, Set} from "immutable";
 
 enum Types {
-    LoadShelves = "SHELVES_LOAD",
+    LoadShelves = "LOAD_SHELVES",
     ShelvesLoaded = "SHELVES_LOADED",
 }
 

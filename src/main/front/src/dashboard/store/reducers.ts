@@ -1,10 +1,10 @@
 import {DashboardState, initialDashboardState} from "./state";
 import {Action} from "redux";
-import {LoadShelves, Types} from "./actions";
+import {LoadDashboard, Types} from "./actions";
 
 
 type DashboardActions =
-    | LoadShelves
+    | LoadDashboard
 
 const dashboardReducer = (
     state: DashboardState | undefined = initialDashboardState,
@@ -12,7 +12,7 @@ const dashboardReducer = (
 ): DashboardState => {
     const action = incomingAction as DashboardActions
     switch (action.type) {
-        case Types.LoadShelves:
+        case Types.LoadDashboard:
             return {
                 ...state,
             }
