@@ -17,3 +17,11 @@ Authorization: Bearer {{jwt_token}}
 ### logout
 GET http://localhost:8080/auth/logout
 Authorization: Bearer {{jwt_token}}
+
+### refresh token
+POST http://localhost:8080/auth/refreshToken
+Content-Type: application/json
+
+{
+    "refreshToken": "70fbcb20-3e40-4a5c-ac6f-2d9170a69f07"
+}
