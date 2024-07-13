@@ -6,6 +6,7 @@ import {
     LogoutUser,
     RegisterUser,
     Types,
+    UserJWTTokenRefreshFailed,
     UserLoggedInAction,
     UserLoggedOutAction,
     UserRegisteredAction
@@ -53,6 +54,11 @@ function* onAuthorization(api: AuthorizationHttpApi): IterableIterator<unknown> 
 
     yield takeEvery((a: Action): a is LogoutUser => a.type === Types.LogoutUser, function* (a: LogoutUser) {
         const response: LogoutResponse = yield call(callLogout, api);
+        yield put(UserLoggedOutAction())
+        yield put(push("/login"))
+    })
+
+    yield takeEvery((a: Action): a is UserJWTTokenRefreshFailed => a.type === Types.UserJWTTokenRefreshFailed, function* (a: UserJWTTokenRefreshFailed) {
         yield put(UserLoggedOutAction())
         yield put(push("/login"))
     })

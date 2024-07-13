@@ -129,7 +129,7 @@ public class AuthenticationController {
   @GetMapping("/logout")
   // removes all the existing tokens at one go
   // will need to be refactored for multiple devices support
-  public ResponseEntity<?> refreshToken(Authentication authentication) {
+  public ResponseEntity<?> logout(Authentication authentication) {
 
     if (!authentication.isAuthenticated()) {
       return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();

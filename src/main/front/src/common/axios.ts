@@ -1,7 +1,7 @@
 import axios from "axios";
 import {store} from "../store/store";
 import {getJWTToken, getRefreshToken} from "../authorization/store/selectors";
-import {UserJWTTokenRefreshedAction} from "../authorization/store/actions";
+import {UserJWTTokenRefreshedAction, UserJWTTokenRefreshFailedAction} from "../authorization/store/actions";
 import {AUTH_BASE_URL} from "../authorization/api/api";
 
 axios.interceptors.request.use(config => {
@@ -46,6 +46,7 @@ axios.interceptors.response.use(
                 return axios(originalRequest);
             } catch (error) {
                 // Handle refresh token error or redirect to login
+                store.dispatch(UserJWTTokenRefreshFailedAction())
                 console.error(error)
             }
         }
