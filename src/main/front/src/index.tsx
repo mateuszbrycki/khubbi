@@ -21,14 +21,12 @@ function LoadingView() {
 const authenticated: () => boolean = () => isAuthenticated(store.getState())
 
 root.render(
-    <React.StrictMode>
-        <Provider store={store}>
-            <PersistGate loading={<LoadingView/>} persistor={persistor}>
+    <Provider store={store}>
+        <PersistGate loading={<LoadingView/>} persistor={persistor}>
 
-                    <AppContainer />
-            </PersistGate>
-        </Provider>
-    </React.StrictMode>
+            <AppContainer/>
+        </PersistGate>
+    </Provider>
 );
 
 // If you want to start measuring performance in your app, pass a function
