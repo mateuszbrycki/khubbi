@@ -20,5 +20,12 @@ const getJWTToken = createSelector(
     }
 )
 
+const getRefreshToken = createSelector(
+    getAuthorizationState,
+    (state: AuthorizationState) => {
+        return state.refreshToken?.token
+    }
+)
 
-export {isAuthenticated, getJWTToken}
+
+export {isAuthenticated, getJWTToken, getRefreshToken}

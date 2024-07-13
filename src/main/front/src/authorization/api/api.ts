@@ -1,5 +1,7 @@
 import axios from '../../common/axios';
 
+const AUTH_BASE_URL = "http://localhost:8080/auth";
+
 export interface LoginResponse {
     readonly jwtToken: {
         readonly token: string,
@@ -28,24 +30,24 @@ export interface AuthorizationHttpApi {
 
 const Api: AuthorizationHttpApi = {
     register: (email: string, password: string) => {
-        return axios.post(`http://localhost:8080/auth/signup`, {"email": email, "password": password})
+        return axios.post(`${AUTH_BASE_URL}/signup`, {"email": email, "password": password})
             .then(res => {
                 return res.data
             })
 
     },
     login: (email: string, password: string) => {
-        return axios.post(`http://localhost:8080/auth/login`, {"email": email, "password": password})
+        return axios.post(`${AUTH_BASE_URL}/login`, {"email": email, "password": password})
             .then(res => {
                 return res.data
             })
     },
     logout: () => {
-        return axios.get(`http://localhost:8080/auth/logout`)
+        return axios.get(`${AUTH_BASE_URL}/logout`)
             .then(res => {
                 return res.data
             })
     }
 }
 
-export {Api as AuthorizationApi}
+export {Api as AuthorizationApi, AUTH_BASE_URL}

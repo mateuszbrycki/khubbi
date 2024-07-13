@@ -6,7 +6,7 @@ export interface ShelvesState {
 }
 
 const initialState: ShelvesState = {
-    shelves: List()
+    shelves: List<Shelf>()
 }
 
 export {

@@ -1,4 +1,4 @@
-import {getJWTToken, isAuthenticated} from "../selectors";
+import {getJWTToken, getRefreshToken, isAuthenticated} from "../selectors";
 import {initialShelvesState} from "../../../shelves/store/state";
 import {initialAuthorizationState} from "../state";
 
@@ -63,6 +63,38 @@ describe('getJWTToken', () => {
             }
         }
         const result = getJWTToken(state)
+        expect(result).toEqual("some-token")
+    })
+})
+
+describe('getRefreshToken', () => {
+    test('should return null as token is empty', () => {
+        const state = {
+            application: {
+                shelvesState: initialShelvesState,
+                authorizationState: {
+                    ...initialAuthorizationState,
+                    refreshToken: null
+                },
+            }
+        }
+        const result = getRefreshToken(state)
+        expect(result).toEqual(undefined)
+    })
+    test('should return token', () => {
+        const state = {
+            application: {
+                shelvesState: initialShelvesState,
+                authorizationState: {
+                    ...initialAuthorizationState,
+                    refreshToken: {
+                        token: "some-token",
+                        expiresIn: Date.now()
+                    }
+                },
+            }
+        }
+        const result = getRefreshToken(state)
         expect(result).toEqual("some-token")
     })
 })

@@ -1,5 +1,5 @@
 import {authorizationReducer} from "../reducers";
-import {UserLoggedInAction, UserLoggedOutAction} from "../actions";
+import {UserJWTTokenRefreshedAction, UserLoggedInAction, UserLoggedOutAction} from "../actions";
 import {initialAuthorizationState} from "../state";
 
 test('should return the initial state', () => {
@@ -16,6 +16,16 @@ test('should store JWT Token and expiration period', () => {
             ...initialAuthorizationState,
             jwtToken: {token: "jwt-token", expiresIn: 123},
             refreshToken: {token: "refresh-token", expiresIn: 456}
+        }
+    )
+})
+
+test('should store new JWT Token and expiration period', () => {
+    expect(authorizationReducer(initialAuthorizationState, UserJWTTokenRefreshedAction(
+        "jwt-token", 123))).toEqual(
+        {
+            ...initialAuthorizationState,
+            jwtToken: {token: "jwt-token", expiresIn: 123},
         }
     )
 })

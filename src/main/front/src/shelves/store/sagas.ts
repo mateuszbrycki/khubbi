@@ -10,14 +10,14 @@ function* fetchShelves(api: ShelvesHttpApi): Generator<any, any, List<Shelf>> {
         .then(response => response)
         .catch(err => {
             // TODO mateusz.brycki - dispatch error and show notification
-            console.error(err)
+            return List.of()
         })
 }
 
 function* onLoadShelves(api: ShelvesHttpApi): IterableIterator<unknown> {
     yield takeEvery((a: Action): a is LoadShelves => a.type === Types.LoadShelves, function* (a: LoadShelves) {
         const response: List<Shelf> = yield call(fetchShelves, api);
-        yield put(ShelvesLoadedAction(response))
+        yield put(ShelvesLoadedAction(response));
     })
 }
 
