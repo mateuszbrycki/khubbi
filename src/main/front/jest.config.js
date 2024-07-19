@@ -4,5 +4,8 @@ module.exports = {
   moduleFileExtensions: ['ts', 'tsx', 'js', 'jsx', 'json', 'node'],
   modulePaths: ['<rootDir>'],
   testEnvironment: 'jsdom',
-  reporters: [ "default", "jest-junit" ]
+  reporters: [ "default", "jest-junit" ],
+  moduleNameMapper: {
+    "^axios$": "axios/dist/node/axios.cjs"
+  }
 };
