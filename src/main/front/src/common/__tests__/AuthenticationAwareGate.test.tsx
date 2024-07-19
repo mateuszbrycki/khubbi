@@ -1,6 +1,14 @@
 import ShallowRenderer from "react-test-renderer/shallow";
 import AuthenticationAwareGate from "../AuthenticationAwareGate";
 
+jest.mock("react-router-dom", () => ({
+    ...jest.requireActual("react-router-dom"),
+    useLocation: () => ({
+        pathname: "localhost:3000/test"
+    })
+}));
+
+
 describe('authentication aware gate', () => {
     describe('when user is authenticated', () => {
         const isAuthenticated = true

@@ -1,8 +1,7 @@
 import axios from "axios";
 import {store} from "../store/store";
-import {getJWTToken, getRefreshToken} from "../authorization/store/selectors";
-import {UserJWTTokenRefreshedAction, UserJWTTokenRefreshFailedAction} from "../authorization/store/actions";
-import {AUTH_BASE_URL} from "../authorization/api/api";
+import {getJWTToken} from "../authorization/store/selectors";
+import {RefreshUserJWTAction, UserJWTTokenRefreshFailedAction} from "../authorization/store/actions";
 
 axios.interceptors.request.use(config => {
         // TODO mateusz.brycki implement pattern-based URL matching
@@ -18,14 +17,6 @@ axios.interceptors.request.use(config => {
         Promise.reject(error)
 );
 
-async function refreshJWTToken() {
-    const refreshToken = getRefreshToken(store.getState());
-    const response = await axios.post(`${AUTH_BASE_URL}/refreshToken`, {"refreshToken": refreshToken});
-    const data = response.data;
-    store.dispatch(UserJWTTokenRefreshedAction(data.jwtToken, data.expiresIn));
-    return data;
-}
-
 axios.interceptors.response.use(
     (response) => response,
     async (error) => {
@@ -37,10 +28,18 @@ axios.interceptors.response.use(
 
             originalRequest._retry = true;
             try {
-                const data = await refreshJWTToken();
+                const oldJWTToken = getJWTToken(store.getState())
+                await store.dispatch(RefreshUserJWTAction());
+
+                // await doesn't wait for saga to complete, so we have to wait like this...
+                do {
+                    await new Promise(f => setTimeout(f, 1000));
+                } while (oldJWTToken === getJWTToken(store.getState()))
+
+                const jwtToken = getJWTToken(store.getState());
 
                 // Retry the original request with the new tokenx
-                originalRequest.headers.Authorization = `Bearer ${data.jwtToken}`;
+                originalRequest.headers.Authorization = `Bearer ${jwtToken}`;
 
                 // It might be not worth handling this logic in saga since a new instance of axios is returned
                 return axios(originalRequest);

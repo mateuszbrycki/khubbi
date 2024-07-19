@@ -1,5 +1,5 @@
 import React from "react";
-import {Navigate} from "react-router-dom";
+import {Navigate, useLocation} from "react-router-dom";
 
 // TODO mateusz.brycki consider resigning from <Navigate>, dispatch actions instead, maybe current page will be available
 export interface AuthRouteProps {
@@ -17,12 +17,16 @@ export const AuthenticationAwareGate: React.FC<AuthRouteProps> = ({
                                                                       redirectToIfNotLogged
                                                                   }) => {
 
+    const currentURL = useLocation().pathname
+
     if (!isAuthenticated) {
         if (redirectToIfNotLogged) {
             return <Navigate to={redirectToIfNotLogged}/>;
         }
-        // TODO mateusz.brycki this causes problem for the login page - the infinite redirection loop
-        // return <Navigate to="/login"/>;
+
+        if (currentURL != "/login") {
+            return <Navigate to="/login"/>;
+        }
     }
 
     if (isAuthenticated && redirectToIfLogged) {

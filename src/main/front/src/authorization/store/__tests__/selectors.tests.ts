@@ -1,4 +1,4 @@
-import {getJWTToken, getRefreshToken, isAuthenticated} from "../selectors";
+import {getJWTToken, getRefreshToken, isAuthenticated, isRefreshTokenValid} from "../selectors";
 import {initialShelvesState} from "../../../shelves/store/state";
 import {initialAuthorizationState} from "../state";
 
@@ -96,5 +96,53 @@ describe('getRefreshToken', () => {
         }
         const result = getRefreshToken(state)
         expect(result).toEqual("some-token")
+    })
+})
+
+describe('isRefreshTokenValid', () => {
+    test('should return false as token is empty', () => {
+        const state = {
+            application: {
+                shelvesState: initialShelvesState,
+                authorizationState: {
+                    ...initialAuthorizationState,
+                    refreshToken: null
+                },
+            }
+        }
+        const result = isRefreshTokenValid(state)
+        expect(result).toEqual(false)
+    })
+    test('should return true if token is valid', () => {
+        const state = {
+            application: {
+                shelvesState: initialShelvesState,
+                authorizationState: {
+                    ...initialAuthorizationState,
+                    refreshToken: {
+                        token: "some-token",
+                        expiresIn: Date.now() + 1000000
+                    }
+                },
+            }
+        }
+        const result = isRefreshTokenValid(state)
+        expect(result).toEqual(true)
+    })
+    test('should return false if token expired', () => {
+        const state = {
+            application: {
+                shelvesState: initialShelvesState,
+                authorizationState: {
+                    ...initialAuthorizationState,
+                    refreshToken: {
+                        token: "some-token",
+                        expiresIn: Date.now() - 1000000
+                    }
+                },
+            }
+        }
+        const result = isRefreshTokenValid(state)
+        expect(result).toEqual(false)
     })
 })

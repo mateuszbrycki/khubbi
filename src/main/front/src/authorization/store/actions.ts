@@ -7,6 +7,8 @@ enum Types {
     UserLoggedOut = "USER_LOGGED_OUT",
     UserJWTTokenRefreshed = "USER_JWT_TOKEN_REFRESHED",
     UserJWTTokenRefreshFailed = "USER_JWT_TOKEN_REFRESH_FAILED",
+    CheckJWTExpired = "CHECK_JWT_EXPIRED",
+    RefreshUserJWT = "REFRESH_USER_JWT",
 }
 
 export interface RegisterUser {
@@ -66,6 +68,16 @@ export interface UserJWTTokenRefreshFailed {
     readonly [extraProps: string]: unknown;
 
     readonly type: Types.UserJWTTokenRefreshFailed
+}
+
+export interface CheckJWTExpired {
+    readonly type: Types.CheckJWTExpired
+}
+
+export interface RefreshUserJWT {
+    readonly [extraProps: string]: unknown;
+
+    readonly type: Types.RefreshUserJWT
 }
 
 const RegisterUserAction = (email: string, password: string): RegisterUser => ({
@@ -132,6 +144,14 @@ const UserLoggedOutAction = (): UserLoggedOut => ({
     payload: {}
 })
 
+const CheckJWTExpiredAction = (): CheckJWTExpired => ({
+    type: Types.CheckJWTExpired,
+})
+
+const RefreshUserJWTAction = (): RefreshUserJWT => ({
+    type: Types.RefreshUserJWT,
+})
+
 
 export {
     Types,
@@ -142,5 +162,7 @@ export {
     LogoutUserAction,
     UserLoggedOutAction,
     UserJWTTokenRefreshedAction,
-    UserJWTTokenRefreshFailedAction
+    UserJWTTokenRefreshFailedAction,
+    CheckJWTExpiredAction,
+    RefreshUserJWTAction
 }

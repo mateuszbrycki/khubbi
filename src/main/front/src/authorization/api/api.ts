@@ -21,11 +21,16 @@ export interface RegisterResponse {
 
 export interface LogoutResponse {
 }
+export interface RefreshTokenResponse {
+    readonly jwtToken: string,
+    readonly expiresIn: number
+}
 
 export interface AuthorizationHttpApi {
     readonly register: (email: string, password: string) => Promise<RegisterResponse>
     readonly login: (email: string, password: string) => Promise<LoginResponse>
     readonly logout: () => Promise<LogoutResponse>
+    readonly refreshToken: (refreshToken: string) => Promise<RefreshTokenResponse>
 }
 
 const Api: AuthorizationHttpApi = {
@@ -44,6 +49,12 @@ const Api: AuthorizationHttpApi = {
     },
     logout: () => {
         return axios.get(`${AUTH_BASE_URL}/logout`)
+            .then(res => {
+                return res.data
+            })
+    },
+    refreshToken: (refreshToken: string) => {
+        return axios.post(`${AUTH_BASE_URL}/refreshToken`, {"refreshToken": refreshToken})
             .then(res => {
                 return res.data
             })

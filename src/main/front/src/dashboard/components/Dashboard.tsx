@@ -20,7 +20,7 @@ const Dashboard: React.FC<DashboardProps & DashboardActionProps> = (props) => {
 
     return <>
         <h1>Shelves</h1>
-        {shelves.map(shelf => <li>{shelf.name}</li>)}
+        {shelves.map(shelf => <li key={shelf.name}>{shelf.name}</li>)}
     </>
 }
 

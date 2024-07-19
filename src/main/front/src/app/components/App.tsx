@@ -11,15 +11,29 @@ import Nav from "react-bootstrap/Nav";
 
 export interface AppProps {
     readonly isAuthenticated: boolean
+    readonly authenticationCheckInterval: number
 }
 
 export interface AppActionProps {
     readonly logoutUser: () => void
+    readonly checkIfUserIsAuthenticated: () => void
 }
 
 const App: React.FC<AppProps & AppActionProps> = (props) => {
 
-    const {isAuthenticated, logoutUser} = props
+    const {isAuthenticated, authenticationCheckInterval, logoutUser, checkIfUserIsAuthenticated} = props
+
+    React.useEffect(() => {
+
+        if (isAuthenticated) {
+            const interval = setInterval(() => {
+                checkIfUserIsAuthenticated()
+            }, authenticationCheckInterval);
+
+            return () => clearInterval(interval);
+        }
+
+    }, [isAuthenticated])
 
     return <> <Router history={history}>
         <Navbar expand="lg" className="bg-body-tertiary">

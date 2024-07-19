@@ -1,17 +1,23 @@
 import {Action} from "redux";
-import {AuthorizationHttpApi, LoginResponse, LogoutResponse, RegisterResponse} from "../api/api";
-import {call, put, takeEvery} from '@redux-saga/core/effects'
+import {AuthorizationHttpApi, LoginResponse, LogoutResponse, RefreshTokenResponse, RegisterResponse} from "../api/api";
+import {call, put, select, takeEvery} from '@redux-saga/core/effects'
 import {
+    CheckJWTExpired,
     LoginUser,
     LogoutUser,
+    RefreshUserJWT,
+    RefreshUserJWTAction,
     RegisterUser,
     Types,
+    UserJWTTokenRefreshedAction,
     UserJWTTokenRefreshFailed,
+    UserJWTTokenRefreshFailedAction,
     UserLoggedInAction,
     UserLoggedOutAction,
     UserRegisteredAction
 } from './actions'
 import {push} from "redux-first-history";
+import {getRefreshToken, isAuthenticated, isRefreshTokenValid} from "./selectors";
 
 function* callLogin(api: AuthorizationHttpApi, email: string, password: string): Generator<any, any, LoginResponse> {
     return yield api.login(email, password)
@@ -40,6 +46,15 @@ function* callLogout(api: AuthorizationHttpApi): Generator<any, any, LogoutRespo
         .catch(err => console.error(err))
 }
 
+function* callRefreshToken(api: AuthorizationHttpApi, refreshToken: string): Generator<any, any, RefreshTokenResponse> {
+    return yield api.refreshToken(refreshToken)
+        .then(response => {
+            return response
+        })
+        // TODO mateusz.brycki - dispatch error and show notification
+        .catch(err => console.error(err))
+}
+
 function* onAuthorization(api: AuthorizationHttpApi): IterableIterator<unknown> {
     yield takeEvery((a: Action): a is RegisterUser => a.type === Types.RegisterUser, function* (a: RegisterUser) {
         const response: RegisterResponse = yield call(callRegister, api, a.payload.email, a.payload.password);
@@ -58,10 +73,40 @@ function* onAuthorization(api: AuthorizationHttpApi): IterableIterator<unknown> 
         yield put(push("/login"))
     })
 
+    yield takeEvery((a: Action): a is RefreshUserJWT => a.type === Types.RefreshUserJWT, function* (a: RefreshUserJWT): any {
+
+        const refreshToken = yield select(getRefreshToken)
+        const response: RefreshTokenResponse = yield call(callRefreshToken, api, refreshToken);
+
+        if (response) {
+            yield put(UserJWTTokenRefreshedAction(response.jwtToken, response.expiresIn));
+        } else {
+            yield put(UserJWTTokenRefreshFailedAction())
+        }
+
+    })
+
     yield takeEvery((a: Action): a is UserJWTTokenRefreshFailed => a.type === Types.UserJWTTokenRefreshFailed, function* (a: UserJWTTokenRefreshFailed) {
         yield put(UserLoggedOutAction())
         yield put(push("/login"))
     })
+
+    yield takeEvery((a: Action): a is CheckJWTExpired => a.type === Types.CheckJWTExpired, function* (a: CheckJWTExpired): any {
+        const isUserAuthenticated = yield select(isAuthenticated)
+        if (!isUserAuthenticated) {
+            const isUserRefreshTokenValid = yield select(isRefreshTokenValid)
+
+            if (isUserRefreshTokenValid) {
+                yield put(RefreshUserJWTAction())
+            } else {
+                // TODO mateusz.brycki might logout user in the middle of browsing the page
+                // TODO consider showing an error - unexpected error
+                yield put(UserLoggedOutAction())
+                yield put(push("/login"))
+            }
+        }
+    })
+
 }
 
 export {
