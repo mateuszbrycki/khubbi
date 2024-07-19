@@ -14,7 +14,7 @@ function* fetchShelves(api: ShelvesHttpApi): Generator<any, any, List<Shelf>> {
         })
 }
 
-function* onLoadShelves(api: ShelvesHttpApi): IterableIterator<unknown> {
+function* loadShelvesSaga(api: ShelvesHttpApi): IterableIterator<unknown> {
     yield takeEvery((a: Action): a is LoadShelves => a.type === Types.LoadShelves, function* (a: LoadShelves) {
         const response: List<Shelf> = yield call(fetchShelves, api);
         yield put(ShelvesLoadedAction(response));
@@ -22,5 +22,5 @@ function* onLoadShelves(api: ShelvesHttpApi): IterableIterator<unknown> {
 }
 
 export {
-    onLoadShelves
+    loadShelvesSaga
 }

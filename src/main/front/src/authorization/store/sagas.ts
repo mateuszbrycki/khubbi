@@ -55,24 +55,31 @@ function* callRefreshToken(api: AuthorizationHttpApi, refreshToken: string): Gen
         .catch(err => console.error(err))
 }
 
-function* onAuthorization(api: AuthorizationHttpApi): IterableIterator<unknown> {
+function* registerUserSaga(api: AuthorizationHttpApi): IterableIterator<unknown> {
     yield takeEvery((a: Action): a is RegisterUser => a.type === Types.RegisterUser, function* (a: RegisterUser) {
         const response: RegisterResponse = yield call(callRegister, api, a.payload.email, a.payload.password);
         yield put(UserRegisteredAction(response.id, response.email, response.createdAt))
     })
+}
 
+function* loginUserSaga(api: AuthorizationHttpApi): IterableIterator<unknown> {
     yield takeEvery((a: Action): a is LoginUser => a.type === Types.LoginUser, function* (a: LoginUser) {
         const response: LoginResponse = yield call(callLogin, api, a.payload.email, a.payload.password);
         yield put(UserLoggedInAction(response.jwtToken, response.refreshToken))
         yield put(push("/dashboard"))
     })
+}
 
+function* logoutUserSaga(api: AuthorizationHttpApi): IterableIterator<unknown> {
     yield takeEvery((a: Action): a is LogoutUser => a.type === Types.LogoutUser, function* (a: LogoutUser) {
         const response: LogoutResponse = yield call(callLogout, api);
         yield put(UserLoggedOutAction())
         yield put(push("/login"))
     })
 
+}
+
+function* refreshJWTTokenSaga(api: AuthorizationHttpApi): IterableIterator<unknown> {
     yield takeEvery((a: Action): a is RefreshUserJWT => a.type === Types.RefreshUserJWT, function* (a: RefreshUserJWT): any {
 
         const refreshToken = yield select(getRefreshToken)
@@ -85,12 +92,17 @@ function* onAuthorization(api: AuthorizationHttpApi): IterableIterator<unknown> 
         }
 
     })
+}
 
+function* userJWTTokenRefreshFailedSaga(api: AuthorizationHttpApi): IterableIterator<unknown> {
     yield takeEvery((a: Action): a is UserJWTTokenRefreshFailed => a.type === Types.UserJWTTokenRefreshFailed, function* (a: UserJWTTokenRefreshFailed) {
         yield put(UserLoggedOutAction())
         yield put(push("/login"))
     })
+}
 
+
+function* checkJWTExpiredSaga(api: AuthorizationHttpApi): IterableIterator<unknown> {
     yield takeEvery((a: Action): a is CheckJWTExpired => a.type === Types.CheckJWTExpired, function* (a: CheckJWTExpired): any {
         const isUserAuthenticated = yield select(isAuthenticated)
         if (!isUserAuthenticated) {
@@ -110,5 +122,10 @@ function* onAuthorization(api: AuthorizationHttpApi): IterableIterator<unknown> 
 }
 
 export {
-    onAuthorization
+    registerUserSaga,
+    loginUserSaga,
+    logoutUserSaga,
+    refreshJWTTokenSaga,
+    userJWTTokenRefreshFailedSaga,
+    checkJWTExpiredSaga
 }

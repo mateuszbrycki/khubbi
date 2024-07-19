@@ -46,12 +46,10 @@ export interface UserLoggedIn {
 
 export interface LogoutUser {
     readonly type: Types.LogoutUser
-    readonly payload: {}
 }
 
 export interface UserLoggedOut {
     readonly type: Types.UserLoggedOut
-    readonly payload: {}
 }
 
 export interface UserJWTTokenRefreshed {
@@ -136,12 +134,10 @@ const UserJWTTokenRefreshFailedAction = (): UserJWTTokenRefreshFailed => ({
 
 const LogoutUserAction = (): LogoutUser => ({
     type: Types.LogoutUser,
-    payload: {}
 })
 
 const UserLoggedOutAction = (): UserLoggedOut => ({
-    type: Types.UserLoggedOut,
-    payload: {}
+    type: Types.UserLoggedOut
 })
 
 const CheckJWTExpiredAction = (): CheckJWTExpired => ({
