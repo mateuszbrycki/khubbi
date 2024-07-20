@@ -6,6 +6,6 @@ module.exports = {
   testEnvironment: 'jsdom',
   reporters: [ "default", "jest-junit" ],
   moduleNameMapper: {
-    "^axios$": "axios/dist/node/axios.cjs"
+    '^axios$': require.resolve('axios'),
   }
 };
