@@ -4,13 +4,13 @@ import {List} from "immutable";
 
 it('renders empty list', () => {
     const renderer = ShallowRenderer.createRenderer()
-    renderer.render(<Dashboard shelves={List.of()} loadShelves={() => null}/>)
+    renderer.render(<Dashboard events={List.of()} loadEvents={() => null}/>)
     expect(renderer.getRenderOutput()).toMatchSnapshot()
 });
 
-it('renders list of shelves', () => {
+it('renders list of events', () => {
     const renderer = ShallowRenderer.createRenderer()
-    renderer.render(<Dashboard shelves={List.of({name: "shelf-1", id: "shelf-1"}, {name: "shelf-2", id: "shelf-2"})}
-                               loadShelves={() => null}/>)
+    renderer.render(<Dashboard events={List.of({name: "event-1", id: "event-1"}, {name: "event-2", id: "event-2"})}
+                               loadEvents={() => null}/>)
     expect(renderer.getRenderOutput()).toMatchSnapshot()
 });

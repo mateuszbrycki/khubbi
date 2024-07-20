@@ -3,8 +3,8 @@ package com.bookkeeper.app.adapter.in.web;
 import static io.vavr.API.*;
 import static io.vavr.Predicates.instanceOf;
 
-import com.bookkeeper.app.application.domain.service.ShelfWithNameExistsException;
-import com.bookkeeper.app.application.port.in.AddShelfUseCase;
+import com.bookkeeper.app.application.domain.service.EventWithNameExistsException;
+import com.bookkeeper.app.application.port.in.AddEventUseCase;
 import com.bookkeeper.app.application.port.in.FindUserUseCase;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -17,34 +17,34 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("/shelf")
-public class ShelfController {
+@RequestMapping("/event")
+public class EventController {
 
-  private static final Logger LOG = LogManager.getLogger(ShelfController.class);
+  private static final Logger LOG = LogManager.getLogger(EventController.class);
 
-  private final AddShelfUseCase addShelfUseCase;
+  private final AddEventUseCase addEventUseCase;
   private final FindUserUseCase findUserUseCase;
 
-  public ShelfController(AddShelfUseCase addShelfUseCase, FindUserUseCase findUserUseCase) {
-    this.addShelfUseCase = addShelfUseCase;
+  public EventController(AddEventUseCase addEventUseCase, FindUserUseCase findUserUseCase) {
+    this.addEventUseCase = addEventUseCase;
     this.findUserUseCase = findUserUseCase;
   }
 
   @PostMapping(consumes = "application/json", produces = "application/json")
-  public ResponseEntity<?> addShelf(@RequestBody Shelf shelf, Authentication authentication) {
-    LOG.info("Received add shelf request {}", shelf);
+  public ResponseEntity<?> addEvent(@RequestBody Event event, Authentication authentication) {
+    LOG.info("Received add event request {}", event);
 
     return findUserUseCase
         .findUser(new FindUserUseCase.FindUserCommand(authentication.getName()))
-        .mapTry(user -> new AddShelfUseCase.AddShelfCommand(shelf.name(), user))
-        .flatMap(this.addShelfUseCase::addShelf)
+        .mapTry(user -> new AddEventUseCase.AddEventCommand(event.name(), user))
+        .flatMap(this.addEventUseCase::addEvent)
         .fold(
             failure -> {
               HttpStatus status =
                   Match(failure)
                       .of(
                           Case(
-                              $(instanceOf(ShelfWithNameExistsException.class)),
+                              $(instanceOf(EventWithNameExistsException.class)),
                               HttpStatus.CONFLICT),
                           Case($(), HttpStatus.INTERNAL_SERVER_ERROR));
               return new ResponseEntity<>(
@@ -53,5 +53,5 @@ public class ShelfController {
             result -> new ResponseEntity<>(result, HttpStatus.CREATED));
   }
 
-  record Shelf(String name) {}
+  record Event(String name) {}
 }

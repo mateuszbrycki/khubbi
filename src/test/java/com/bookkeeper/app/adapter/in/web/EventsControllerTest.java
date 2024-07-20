@@ -8,7 +8,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 import com.bookkeeper.app.application.port.in.FindUserUseCase;
-import com.bookkeeper.app.application.port.in.ListShelvesUseCase;
+import com.bookkeeper.app.application.port.in.ListEventsUseCase;
 import com.bookkeeper.app.common.Anys;
 import com.bookkeeper.app.common.TestSecurityConfiguration;
 import io.vavr.collection.List;
@@ -23,13 +23,13 @@ import org.springframework.security.test.context.support.WithUserDetails;
 import org.springframework.test.web.servlet.MockMvc;
 
 @Import(TestSecurityConfiguration.class)
-@WebMvcTest(ShelvesController.class)
+@WebMvcTest(EventsController.class)
 @WithUserDetails(Anys.ANY_EMAIL)
-class ShelvesControllerTest {
+class EventsControllerTest {
 
   @Autowired private MockMvc mockMvc;
 
-  @MockBean private ListShelvesUseCase listShelvesUseCase;
+  @MockBean private ListEventsUseCase listEventsUseCase;
 
   @MockBean private FindUserUseCase findUserUseCase;
 
@@ -42,48 +42,48 @@ class ShelvesControllerTest {
 
     // when & then
     this.mockMvc
-        .perform(get("/shelves"))
+        .perform(get("/events"))
         .andDo(print())
         .andExpect(status().isInternalServerError())
         .andExpect(content().string(containsString("Cannot find the owner")));
   }
 
   @Test
-  public void shouldReturnEmptyListWhenNoShelvesArePresent() throws Exception {
+  public void shouldReturnEmptyListWhenNoEventsArePresent() throws Exception {
 
     // given
     when(findUserUseCase.findUser(any())).thenReturn(Try.success(Anys.ANY_USER));
-    when(listShelvesUseCase.listShelves(new ListShelvesUseCase.ListShelvesCommand(any())))
+    when(listEventsUseCase.listEvents(new ListEventsUseCase.ListEventsCommand(any())))
         .thenReturn(Try.success(List.empty()));
 
     // when & then
     this.mockMvc
-        .perform(get("/shelves"))
+        .perform(get("/events"))
         .andDo(print())
         .andExpect(status().is2xxSuccessful())
         .andExpect(jsonPath("$").isEmpty());
   }
 
   @Test
-  public void shouldReturnListWithTwoElementsWhenTwoShelvesArePresent() throws Exception {
+  public void shouldReturnListWithTwoElementsWhenTwoEventsArePresent() throws Exception {
 
     // given
     when(findUserUseCase.findUser(any())).thenReturn(Try.success(Anys.ANY_USER));
 
-    ListShelvesUseCase.Shelf shelf1 = new ListShelvesUseCase.Shelf(UUID.randomUUID(), "shelf-1");
-    ListShelvesUseCase.Shelf shelf2 = new ListShelvesUseCase.Shelf(UUID.randomUUID(), "shelf-2");
-    when(listShelvesUseCase.listShelves(new ListShelvesUseCase.ListShelvesCommand(any())))
-        .thenReturn(Try.success(List.of(shelf1, shelf2)));
+    ListEventsUseCase.Event event1 = new ListEventsUseCase.Event(UUID.randomUUID(), "event-1");
+    ListEventsUseCase.Event event2 = new ListEventsUseCase.Event(UUID.randomUUID(), "event-2");
+    when(listEventsUseCase.listEvents(new ListEventsUseCase.ListEventsCommand(any())))
+        .thenReturn(Try.success(List.of(event1, event2)));
 
     // when & then
     this.mockMvc
-        .perform(get("/shelves"))
+        .perform(get("/events"))
         .andDo(print())
         .andExpect(status().is2xxSuccessful())
-        .andExpect(jsonPath("$[0].id").value(shelf1.id().toString()))
-        .andExpect(jsonPath("$[0].name").value(shelf1.name()))
-        .andExpect(jsonPath("$[1].id").value(shelf2.id().toString()))
-        .andExpect(jsonPath("$[1].name").value(shelf2.name()));
+        .andExpect(jsonPath("$[0].id").value(event1.id().toString()))
+        .andExpect(jsonPath("$[0].name").value(event1.name()))
+        .andExpect(jsonPath("$[1].id").value(event2.id().toString()))
+        .andExpect(jsonPath("$[1].name").value(event2.name()));
   }
 
   @Test
@@ -91,12 +91,12 @@ class ShelvesControllerTest {
 
     // given
     when(findUserUseCase.findUser(any())).thenReturn(Try.success(Anys.ANY_USER));
-    when(listShelvesUseCase.listShelves(new ListShelvesUseCase.ListShelvesCommand(any())))
-        .thenReturn(Try.failure(new RuntimeException("Cannot retrieve shelves")));
+    when(listEventsUseCase.listEvents(new ListEventsUseCase.ListEventsCommand(any())))
+        .thenReturn(Try.failure(new RuntimeException("Cannot retrieve events")));
 
     // when & then
     this.mockMvc
-        .perform(get("/shelves"))
+        .perform(get("/events"))
         .andDo(print())
         .andExpect(status().isInternalServerError());
   }

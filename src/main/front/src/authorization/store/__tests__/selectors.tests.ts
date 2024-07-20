@@ -1,5 +1,5 @@
 import {getJWTToken, getRefreshToken, isAuthenticated, isRefreshTokenValid} from "../selectors";
-import {initialShelvesState} from "../../../shelves/store/state";
+import {initialEventsState} from "../../../events/store/state";
 import {initialAuthorizationState} from "../state";
 
 describe('isAuthenticated', () => {
@@ -7,7 +7,7 @@ describe('isAuthenticated', () => {
     test('should confirm authentication', () => {
         const state = {
             application: {
-                shelvesState: initialShelvesState,
+                eventsState: initialEventsState,
                 authorizationState: {
                     ...initialAuthorizationState,
                     jwtToken: {
@@ -23,7 +23,7 @@ describe('isAuthenticated', () => {
     test('should confirm that user is not authenticated', () => {
         const state = {
             application: {
-                shelvesState: initialShelvesState,
+                eventsState: initialEventsState,
                 authorizationState: {
                     ...initialAuthorizationState,
                     jwtToken: null
@@ -39,7 +39,7 @@ describe('getJWTToken', () => {
     test('should return null as token is empty', () => {
         const state = {
             application: {
-                shelvesState: initialShelvesState,
+                eventsState: initialEventsState,
                 authorizationState: {
                     ...initialAuthorizationState,
                     jwtToken: null
@@ -52,7 +52,7 @@ describe('getJWTToken', () => {
     test('should return token', () => {
         const state = {
             application: {
-                shelvesState: initialShelvesState,
+                eventsState: initialEventsState,
                 authorizationState: {
                     ...initialAuthorizationState,
                     jwtToken: {
@@ -71,7 +71,7 @@ describe('getRefreshToken', () => {
     test('should return null as token is empty', () => {
         const state = {
             application: {
-                shelvesState: initialShelvesState,
+                eventsState: initialEventsState,
                 authorizationState: {
                     ...initialAuthorizationState,
                     refreshToken: null
@@ -84,7 +84,7 @@ describe('getRefreshToken', () => {
     test('should return token', () => {
         const state = {
             application: {
-                shelvesState: initialShelvesState,
+                eventsState: initialEventsState,
                 authorizationState: {
                     ...initialAuthorizationState,
                     refreshToken: {
@@ -103,7 +103,7 @@ describe('isRefreshTokenValid', () => {
     test('should return false as token is empty', () => {
         const state = {
             application: {
-                shelvesState: initialShelvesState,
+                eventsState: initialEventsState,
                 authorizationState: {
                     ...initialAuthorizationState,
                     refreshToken: null
@@ -116,7 +116,7 @@ describe('isRefreshTokenValid', () => {
     test('should return true if token is valid', () => {
         const state = {
             application: {
-                shelvesState: initialShelvesState,
+                eventsState: initialEventsState,
                 authorizationState: {
                     ...initialAuthorizationState,
                     refreshToken: {
@@ -132,7 +132,7 @@ describe('isRefreshTokenValid', () => {
     test('should return false if token expired', () => {
         const state = {
             application: {
-                shelvesState: initialShelvesState,
+                eventsState: initialEventsState,
                 authorizationState: {
                     ...initialAuthorizationState,
                     refreshToken: {

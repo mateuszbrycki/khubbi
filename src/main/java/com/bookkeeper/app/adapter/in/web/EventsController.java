@@ -1,7 +1,7 @@
 package com.bookkeeper.app.adapter.in.web;
 
 import com.bookkeeper.app.application.port.in.FindUserUseCase;
-import com.bookkeeper.app.application.port.in.ListShelvesUseCase;
+import com.bookkeeper.app.application.port.in.ListEventsUseCase;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.http.HttpStatus;
@@ -12,29 +12,29 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("/shelves")
-public class ShelvesController {
+@RequestMapping("/events")
+public class EventsController {
 
-  private static final Logger LOG = LogManager.getLogger(ShelvesController.class);
+  private static final Logger LOG = LogManager.getLogger(EventsController.class);
 
-  private final ListShelvesUseCase listShelvesUseCase;
+  private final ListEventsUseCase listEventsUseCase;
   private final FindUserUseCase findUserUseCase;
 
-  public ShelvesController(ListShelvesUseCase listShelvesUseCase, FindUserUseCase findUserUseCase) {
-    this.listShelvesUseCase = listShelvesUseCase;
+  public EventsController(ListEventsUseCase listEventsUseCase, FindUserUseCase findUserUseCase) {
+    this.listEventsUseCase = listEventsUseCase;
     this.findUserUseCase = findUserUseCase;
   }
 
   @GetMapping
-  public ResponseEntity<?> listShelves(Authentication authentication) {
-    LOG.info("Received list shelf request from {}", authentication.getName());
+  public ResponseEntity<?> listEvents(Authentication authentication) {
+    LOG.info("Received list events request from {}", authentication.getName());
 
     return findUserUseCase
         .findUser(new FindUserUseCase.FindUserCommand(authentication.getName()))
         .flatMapTry(
             user ->
-                this.listShelvesUseCase.listShelves(
-                    new ListShelvesUseCase.ListShelvesCommand(user)))
+                this.listEventsUseCase.listEvents(
+                    new ListEventsUseCase.ListEventsCommand(user)))
         .fold(
             failure ->
                 new ResponseEntity<>(

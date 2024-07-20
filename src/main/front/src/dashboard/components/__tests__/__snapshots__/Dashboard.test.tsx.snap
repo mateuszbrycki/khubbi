@@ -3,23 +3,23 @@
 exports[`renders empty list 1`] = `
 <React.Fragment>
   <h1>
-    Shelves
+    Events
   </h1>
   Immutable.List []
 </React.Fragment>
 `;
 
-exports[`renders list of shelves 1`] = `
+exports[`renders list of events 1`] = `
 <React.Fragment>
   <h1>
-    Shelves
+    Events
   </h1>
   Immutable.List [
     <li>
-      shelf-1
+      event-1
     </li>,
     <li>
-      shelf-2
+      event-2
     </li>,
   ]
 </React.Fragment>

@@ -5,7 +5,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
 import com.bookkeeper.app.application.domain.model.User;
-import com.bookkeeper.app.application.port.in.AddShelfUseCase;
+import com.bookkeeper.app.application.port.in.AddEventUseCase;
 import com.bookkeeper.app.application.port.in.AddUserUseCase;
 import com.bookkeeper.app.application.port.out.AddUserPort;
 import com.bookkeeper.app.application.port.out.ListUsersPort;
@@ -26,12 +26,12 @@ class UserServiceTest {
   @Mock private AddUserPort addUserPort;
 
   @Mock private ListUsersPort listUsersPort;
-  @Mock private AddShelfUseCase addShelfUseCase;
+  @Mock private AddEventUseCase addEventUseCase;
 
   @InjectMocks private UserService underTest;
 
   @Test
-  public void shouldReturnUserAndAddsDefaultShelvesWhenAddingUserSucceeded() {
+  public void shouldReturnUserAndAddsDefaultEventsWhenAddingUserSucceeded() {
 
     // given
     when(listUsersPort.listUsers()).thenReturn(Try.success(List.empty()));
@@ -45,7 +45,7 @@ class UserServiceTest {
                     "password",
                     Date.from(Instant.now()),
                     Date.from(Instant.now()))));
-    when(addShelfUseCase.addDefaultShelves(any())).thenReturn(Try.success(List.empty()));
+    when(addEventUseCase.addDefaultEvents(any())).thenReturn(Try.success(List.empty()));
 
     // when
     Try<User> user =
@@ -55,7 +55,7 @@ class UserServiceTest {
     assertTrue(user.isSuccess());
     assertEquals("email", user.get().getEmail());
     assertEquals("fullName", user.get().getFullName());
-    verify(addShelfUseCase, times(1)).addDefaultShelves(any());
+    verify(addEventUseCase, times(1)).addDefaultEvents(any());
   }
 
   @Test
@@ -72,7 +72,7 @@ class UserServiceTest {
 
     // then
     assertTrue(user.isFailure());
-    verify(addShelfUseCase, never()).addDefaultShelves(any());
+    verify(addEventUseCase, never()).addDefaultEvents(any());
   }
 
   @Test
@@ -98,7 +98,7 @@ class UserServiceTest {
     // then
     assertTrue(user.isFailure());
     assertInstanceOf(UserWithEmailExistsException.class, user.getCause());
-    verify(addShelfUseCase, never()).addDefaultShelves(any());
+    verify(addEventUseCase, never()).addDefaultEvents(any());
   }
 
   @Test
@@ -116,6 +116,6 @@ class UserServiceTest {
     assertTrue(user.isFailure());
     assertInstanceOf(RuntimeException.class, user.getCause());
     assertEquals("Some random exception", user.getCause().getMessage());
-    verify(addShelfUseCase, never()).addDefaultShelves(any());
+    verify(addEventUseCase, never()).addDefaultEvents(any());
   }
 }

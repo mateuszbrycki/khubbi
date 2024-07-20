@@ -1,4 +1,4 @@
-import {initialShelvesState, ShelvesState} from "../shelves/store/state";
+import {initialEventsState, EventsState} from "../events/store/state";
 import {initialAuthorizationState, AuthorizationState} from "../authorization/store/state";
 
 export interface ApplicationState {
@@ -6,14 +6,14 @@ export interface ApplicationState {
 }
 
 export interface State {
-    readonly shelvesState: ShelvesState
+    readonly eventsState: EventsState
     readonly authorizationState: AuthorizationState
 
 }
 
 const initialState: ApplicationState = {
     application: {
-        shelvesState: initialShelvesState,
+        eventsState: initialEventsState,
         authorizationState: initialAuthorizationState,
     }
 }

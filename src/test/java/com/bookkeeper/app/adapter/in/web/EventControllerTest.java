@@ -8,8 +8,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-import com.bookkeeper.app.application.domain.service.ShelfWithNameExistsException;
-import com.bookkeeper.app.application.port.in.AddShelfUseCase;
+import com.bookkeeper.app.application.domain.service.EventWithNameExistsException;
+import com.bookkeeper.app.application.port.in.AddEventUseCase;
 import com.bookkeeper.app.application.port.in.FindUserUseCase;
 import com.bookkeeper.app.common.Anys;
 import com.bookkeeper.app.common.TestSecurityConfiguration;
@@ -26,12 +26,12 @@ import org.springframework.security.test.context.support.WithUserDetails;
 import org.springframework.test.web.servlet.MockMvc;
 
 @Import(TestSecurityConfiguration.class)
-@WebMvcTest(ShelfController.class)
+@WebMvcTest(EventController.class)
 @WithUserDetails(Anys.ANY_EMAIL)
-class ShelfControllerTest {
+class EventControllerTest {
   @Autowired private MockMvc mockMvc;
 
-  @MockBean private AddShelfUseCase addShelfUseCase;
+  @MockBean private AddEventUseCase addEventUseCase;
 
   @MockBean private FindUserUseCase findUserUseCase;
 
@@ -45,73 +45,73 @@ class ShelfControllerTest {
     // when & then
     this.mockMvc
         .perform(
-            post("/shelf")
+            post("/event")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(asJsonString(new ShelfController.Shelf("any-name"))))
+                .content(asJsonString(new EventController.Event("any-name"))))
         .andDo(print())
         .andExpect(status().isInternalServerError())
         .andExpect(content().string(containsString("Cannot find the owner")));
   }
 
   @Test
-  public void shouldReturnRequestErrorWhenShelfAdditionFailedDueToAnyError() throws Exception {
+  public void shouldReturnRequestErrorWhenEventAdditionFailedDueToAnyError() throws Exception {
 
     // given
     when(findUserUseCase.findUser(any())).thenReturn(Try.success(Anys.ANY_USER));
-    when(addShelfUseCase.addShelf(new AddShelfUseCase.AddShelfCommand("any-name", Anys.ANY_USER)))
-        .thenReturn(Try.failure(new Exception("Cannot add a shelf")));
+    when(addEventUseCase.addEvent(new AddEventUseCase.AddEventCommand("any-name", Anys.ANY_USER)))
+        .thenReturn(Try.failure(new Exception("Cannot add a event")));
 
     // when & then
     this.mockMvc
         .perform(
-            post("/shelf")
+            post("/event")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(asJsonString(new ShelfController.Shelf("any-name"))))
+                .content(asJsonString(new EventController.Event("any-name"))))
         .andDo(print())
         .andExpect(status().isInternalServerError())
-        .andExpect(content().string(containsString("Cannot add a shelf")));
+        .andExpect(content().string(containsString("Cannot add a event")));
   }
 
   @Test
-  public void shouldReturnRequestConflictWhenShelfAdditionFailedDueShelfWithNameExistsException()
+  public void shouldReturnRequestConflictWhenEventAdditionFailedDueEventWithNameExistsException()
       throws Exception {
 
     // given
     when(findUserUseCase.findUser(any())).thenReturn(Try.success(Anys.ANY_USER));
-    when(addShelfUseCase.addShelf(new AddShelfUseCase.AddShelfCommand("any-name", Anys.ANY_USER)))
-        .thenReturn(Try.failure(new ShelfWithNameExistsException("Cannot add a shelf")));
+    when(addEventUseCase.addEvent(new AddEventUseCase.AddEventCommand("any-name", Anys.ANY_USER)))
+        .thenReturn(Try.failure(new EventWithNameExistsException("Cannot add a event")));
 
     // when & then
     this.mockMvc
         .perform(
-            post("/shelf")
+            post("/event")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(asJsonString(new ShelfController.Shelf("any-name"))))
+                .content(asJsonString(new EventController.Event("any-name"))))
         .andDo(print())
         .andExpect(status().isConflict())
-        .andExpect(content().string(containsString("Cannot add a shelf")));
+        .andExpect(content().string(containsString("Cannot add a event")));
   }
 
   @Test
-  public void shouldReturnCreatedWhenShelfAdditionSucceeded() throws Exception {
+  public void shouldReturnCreatedWhenEventAdditionSucceeded() throws Exception {
 
     // given
     when(findUserUseCase.findUser(any())).thenReturn(Try.success(Anys.ANY_USER));
     UUID id = UUID.randomUUID();
-    AddShelfUseCase.Shelf shelf = new AddShelfUseCase.Shelf(id, "shelf-name");
-    when(addShelfUseCase.addShelf(new AddShelfUseCase.AddShelfCommand(shelf.name(), Anys.ANY_USER)))
-        .thenReturn(Try.success(shelf));
+    AddEventUseCase.Event event = new AddEventUseCase.Event(id, "event-name");
+    when(addEventUseCase.addEvent(new AddEventUseCase.AddEventCommand(event.name(), Anys.ANY_USER)))
+        .thenReturn(Try.success(event));
 
     // when & then
     this.mockMvc
         .perform(
-            post("/shelf")
+            post("/event")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(asJsonString(new ShelfController.Shelf(shelf.name()))))
+                .content(asJsonString(new EventController.Event(event.name()))))
         .andDo(print())
         .andExpect(status().isCreated())
         .andExpect(content().string(containsString(id.toString())))
-        .andExpect(content().string(containsString(shelf.name())));
+        .andExpect(content().string(containsString(event.name())));
   }
 
   private final String asJsonString(Object obj) {

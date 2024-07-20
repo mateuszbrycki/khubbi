@@ -1,26 +1,26 @@
 import React from "react";
-import {Shelf} from "../../types";
+import {Event} from "../../types";
 import {List} from "immutable";
 
 export interface DashboardProps {
-    readonly shelves: List<Shelf>
+    readonly events: List<Event>
 }
 
 export interface DashboardActionProps {
-    readonly loadShelves: () => void
+    readonly loadEvents: () => void
 }
 
 const Dashboard: React.FC<DashboardProps & DashboardActionProps> = (props) => {
-    const {shelves, loadShelves} = props
+    const {events, loadEvents} = props
 
     React.useEffect((): void => {
-        loadShelves()
-    }, [loadShelves])
+        loadEvents()
+    }, [loadEvents])
 
 
     return <>
-        <h1>Shelves</h1>
-        {shelves.map(shelf => <li key={shelf.name}>{shelf.name}</li>)}
+        <h1>Events</h1>
+        {events.map(event => <li key={event.name}>{event.name}</li>)}
     </>
 }
 

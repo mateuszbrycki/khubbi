@@ -6,11 +6,11 @@ import io.vavr.control.Try;
 
 import java.util.UUID;
 
-public interface ListShelvesUseCase {
+public interface ListEventsUseCase {
 
-  Try<List<Shelf>> listShelves(ListShelvesCommand command);
+  Try<List<Event>> listEvents(ListEventsCommand command);
 
-  record ListShelvesCommand(User owner) {}
+  record ListEventsCommand(User owner) {}
 
-  record Shelf(UUID id, String name) {}
+  record Event(UUID id, String name) {}
 }

@@ -1,7 +1,7 @@
 package com.bookkeeper.app.application.domain.service;
 
 import com.bookkeeper.app.application.domain.model.User;
-import com.bookkeeper.app.application.port.in.AddShelfUseCase;
+import com.bookkeeper.app.application.port.in.AddEventUseCase;
 import com.bookkeeper.app.application.port.in.AddUserUseCase;
 import com.bookkeeper.app.application.port.in.FindUserUseCase;
 import com.bookkeeper.app.application.port.out.AddUserPort;
@@ -21,13 +21,13 @@ public class UserService implements AddUserUseCase, FindUserUseCase {
 
   private final AddUserPort addUserPort;
   private final ListUsersPort listUsersPort;
-  private final AddShelfUseCase addShelfUseCase;
+  private final AddEventUseCase addEventUseCase;
 
   public UserService(
-      AddUserPort addUserPort, ListUsersPort listUsersPort, AddShelfUseCase addShelfUseCase) {
+      AddUserPort addUserPort, ListUsersPort listUsersPort, AddEventUseCase addEventUseCase) {
     this.addUserPort = addUserPort;
     this.listUsersPort = listUsersPort;
-    this.addShelfUseCase = addShelfUseCase;
+    this.addEventUseCase = addEventUseCase;
   }
 
   @Override
@@ -55,8 +55,8 @@ public class UserService implements AddUserUseCase, FindUserUseCase {
         .flatMapTry(user -> this.addUserPort.addUser(candidate))
         .andThen(
             user ->
-                this.addShelfUseCase.addDefaultShelves(
-                    new AddShelfUseCase.AddDefaultShelvesCommand(user)));
+                this.addEventUseCase.addDefaultEvents(
+                    new AddEventUseCase.AddDefaultEventsCommand(user)));
   }
 
   @Override

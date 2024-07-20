@@ -1,5 +1,5 @@
 import {all} from '@redux-saga/core/effects'
-import {loadShelvesSaga} from "../shelves/store/sagas";
+import {loadEventsSaga} from "../events/store/sagas";
 import {
     loginUserSaga,
     logoutUserSaga,
@@ -7,12 +7,12 @@ import {
     refreshJWTTokenSaga,
     registerUserSaga, userJWTTokenRefreshFailedSaga
 } from "../authorization/store/sagas";
-import {ShelvesApi} from "../shelves/api/api";
+import {EventsApi} from "../events/api/api";
 import {AuthorizationApi} from "../authorization/api/api";
 
 function* rootSaga(): IterableIterator<unknown> {
     yield all([
-        loadShelvesSaga(ShelvesApi),
+        loadEventsSaga(EventsApi),
         registerUserSaga(AuthorizationApi),
         loginUserSaga(AuthorizationApi),
         logoutUserSaga(AuthorizationApi),

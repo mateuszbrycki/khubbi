@@ -4,7 +4,7 @@ import {Types} from "../actions";
 import {AuthorizationApi, AuthorizationHttpApi} from "../../api/api";
 import {push} from "redux-first-history";
 import {initialState} from "../../../store/state";
-import {initialShelvesState} from "../../../shelves/store/state";
+import {initialEventsState} from "../../../events/store/state";
 import {initialAuthorizationState} from "../state";
 
 const generateValidTokenExpiration: () => number =
@@ -142,7 +142,7 @@ describe('Refresh JWT Token Saga', () => {
             .withState({
                 ...initialState,
                 application: {
-                    shelvesState: {...initialShelvesState},
+                    eventsState: {...initialEventsState},
                     authorizationState: {
                         ...initialAuthorizationState,
                         refreshToken: {
@@ -182,7 +182,7 @@ describe('Refresh JWT Token Saga', () => {
             .withState({
                 ...initialState,
                 application: {
-                    shelvesState: {...initialShelvesState},
+                    eventsState: {...initialEventsState},
                     authorizationState: {
                         ...initialAuthorizationState,
                         refreshToken: {
@@ -231,7 +231,7 @@ describe('Check JWT Token Expired Saga', () => {
             .withState({
                 ...initialState,
                 application: {
-                    shelvesState: {...initialShelvesState},
+                    eventsState: {...initialEventsState},
                     authorizationState: {
                         ...initialAuthorizationState,
                         jwtToken: {
@@ -261,7 +261,7 @@ describe('Check JWT Token Expired Saga', () => {
             .withState({
                 ...initialState,
                 application: {
-                    shelvesState: {...initialShelvesState},
+                    eventsState: {...initialEventsState},
                     authorizationState: {
                         ...initialAuthorizationState,
                         jwtToken: {
