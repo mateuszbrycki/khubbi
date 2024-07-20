@@ -10,8 +10,8 @@ Content-Type: application/json
 > {% client.global.set("jwt_token", response.body.jwtToken.token); %}
 > {% client.global.set("refresh_token", response.body.refreshToken.token); %}
 
-### list shelves
-GET http://localhost:8080/shelves
+### list events
+GET http://localhost:8080/events
 Authorization: Bearer {{jwt_token}}
 
 ### logout
