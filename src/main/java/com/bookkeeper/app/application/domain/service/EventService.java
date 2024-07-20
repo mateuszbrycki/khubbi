@@ -42,15 +42,6 @@ public class EventService implements AddEventUseCase, ListEventsUseCase {
         .mapTry(event -> new AddEventUseCase.Event(event.getId(), event.getName()));
   }
 
-  @Override
-  public Try<List<AddEventUseCase.Event>> addDefaultEvents(AddDefaultEventsCommand command) {
-    LOG.info("Adding default events for {}", command.owner().getId());
-
-    return Try.sequence(
-            List.of("New", "Scanned")
-                .map(name -> this.addEvent(new AddEventCommand(name, command.owner()))))
-        .mapTry(Value::toList);
-  }
 
   @Override
   public Try<List<ListEventsUseCase.Event>> listEvents(ListEventsCommand command) {

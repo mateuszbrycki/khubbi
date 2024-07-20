@@ -45,7 +45,6 @@ class UserServiceTest {
                     "password",
                     Date.from(Instant.now()),
                     Date.from(Instant.now()))));
-    when(addEventUseCase.addDefaultEvents(any())).thenReturn(Try.success(List.empty()));
 
     // when
     Try<User> user =
@@ -55,7 +54,6 @@ class UserServiceTest {
     assertTrue(user.isSuccess());
     assertEquals("email", user.get().getEmail());
     assertEquals("fullName", user.get().getFullName());
-    verify(addEventUseCase, times(1)).addDefaultEvents(any());
   }
 
   @Test
@@ -72,7 +70,6 @@ class UserServiceTest {
 
     // then
     assertTrue(user.isFailure());
-    verify(addEventUseCase, never()).addDefaultEvents(any());
   }
 
   @Test
@@ -98,7 +95,6 @@ class UserServiceTest {
     // then
     assertTrue(user.isFailure());
     assertInstanceOf(UserWithEmailExistsException.class, user.getCause());
-    verify(addEventUseCase, never()).addDefaultEvents(any());
   }
 
   @Test
@@ -116,6 +112,5 @@ class UserServiceTest {
     assertTrue(user.isFailure());
     assertInstanceOf(RuntimeException.class, user.getCause());
     assertEquals("Some random exception", user.getCause().getMessage());
-    verify(addEventUseCase, never()).addDefaultEvents(any());
   }
 }

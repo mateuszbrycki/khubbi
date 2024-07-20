@@ -10,7 +10,7 @@ public class UserServiceConfiguration {
 
   @Bean
   UserService userService(
-      UserInMemoryRepository userInMemoryRepository, AddEventUseCase addEventUseCase) {
-    return new UserService(userInMemoryRepository, userInMemoryRepository, addEventUseCase);
+      UserInMemoryRepository userInMemoryRepository) {
+    return new UserService(userInMemoryRepository, userInMemoryRepository);
   }
 }

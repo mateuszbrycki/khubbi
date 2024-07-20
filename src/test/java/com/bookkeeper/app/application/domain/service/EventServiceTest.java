@@ -68,36 +68,4 @@ class EventServiceTest {
     assertInstanceOf(RuntimeException.class, result.getCause());
   }
 
-  @Test
-  public void testAddingDefaultEventsWithOneError() {
-
-    when(listEventsPort.listEvents(Anys.ANY_USER)).thenReturn(Try.success(List.empty()));
-    when(addEventPort.addEvent(any()))
-        .thenReturn(Try.success(new Event("New", Anys.ANY_USER)))
-        .thenThrow(new RuntimeException("Any random failure"));
-
-    Try<List<AddEventUseCase.Event>> result =
-        this.underTest.addDefaultEvents(
-            new AddEventUseCase.AddDefaultEventsCommand(Anys.ANY_USER));
-
-    assertTrue(result.isFailure());
-    assertInstanceOf(RuntimeException.class, result.getCause());
-  }
-
-  @Test
-  public void testAddingDefaultEventsWithoutAnyError() {
-
-    when(listEventsPort.listEvents(Anys.ANY_USER)).thenReturn(Try.success(List.empty()));
-    when(addEventPort.addEvent(any()))
-        .thenReturn(Try.success(new Event("New", Anys.ANY_USER)))
-        .thenReturn(Try.success(new Event("Scanned", Anys.ANY_USER)));
-
-    Try<List<AddEventUseCase.Event>> result =
-        this.underTest.addDefaultEvents(
-            new AddEventUseCase.AddDefaultEventsCommand(Anys.ANY_USER));
-
-    assertTrue(result.isSuccess());
-    assertEquals(2, result.get().size());
-    verify(addEventPort, times(2)).addEvent(any());
-  }
 }

@@ -21,13 +21,11 @@ public class UserService implements AddUserUseCase, FindUserUseCase {
 
   private final AddUserPort addUserPort;
   private final ListUsersPort listUsersPort;
-  private final AddEventUseCase addEventUseCase;
 
   public UserService(
-      AddUserPort addUserPort, ListUsersPort listUsersPort, AddEventUseCase addEventUseCase) {
+      AddUserPort addUserPort, ListUsersPort listUsersPort) {
     this.addUserPort = addUserPort;
     this.listUsersPort = listUsersPort;
-    this.addEventUseCase = addEventUseCase;
   }
 
   @Override
@@ -52,11 +50,7 @@ public class UserService implements AddUserUseCase, FindUserUseCase {
                     ? Try.success(List.empty())
                     : Try.failure(
                         new UserWithEmailExistsException("A user with given email already exists")))
-        .flatMapTry(user -> this.addUserPort.addUser(candidate))
-        .andThen(
-            user ->
-                this.addEventUseCase.addDefaultEvents(
-                    new AddEventUseCase.AddDefaultEventsCommand(user)));
+        .flatMapTry(user -> this.addUserPort.addUser(candidate));
   }
 
   @Override
