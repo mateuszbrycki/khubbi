@@ -4,11 +4,12 @@ import com.bookkeeper.app.application.port.in.AddEventUseCase;
 import com.bookkeeper.app.application.port.in.ListEventsUseCase;
 import com.bookkeeper.app.application.port.out.AddEventPort;
 import com.bookkeeper.app.application.port.out.ListEventsPort;
-import io.vavr.Value;
 import io.vavr.collection.List;
 import io.vavr.control.Try;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+
+import java.time.LocalDateTime;
 
 public class EventService implements AddEventUseCase, ListEventsUseCase {
 
@@ -25,23 +26,17 @@ public class EventService implements AddEventUseCase, ListEventsUseCase {
   @Override
   public Try<AddEventUseCase.Event> addEvent(AddEventCommand command) {
 
-    LOG.info("Adding Event '{}' for {}", command.name(), command.owner().getId());
+    LOG.info(
+        "Adding Event '{}' ({}) for {}", command.note(), command.date(), command.owner().getId());
     com.bookkeeper.app.application.domain.model.Event candidate =
-        new com.bookkeeper.app.application.domain.model.Event(command.name(), command.owner());
+        new com.bookkeeper.app.application.domain.model.Event(
+            command.note(), command.date(), command.owner());
 
     return this.listEventsPort
         .listEvents(command.owner())
-        .map(events -> events.filter(event -> event.getName().equals(candidate.getName())))
-        .flatMapTry(
-            events ->
-                events.isEmpty()
-                    ? Try.success(List.empty())
-                    : Try.failure(
-                        new EventWithNameExistsException("A event with given name already exists")))
         .flatMapTry(event -> this.addEventPort.addEvent(candidate))
-        .mapTry(event -> new AddEventUseCase.Event(event.getId(), event.getName()));
+        .mapTry(event -> new AddEventUseCase.Event(event.getId(), event.getNote(), event.getDate()));
   }
-
 
   @Override
   public Try<List<ListEventsUseCase.Event>> listEvents(ListEventsCommand command) {
@@ -49,8 +44,12 @@ public class EventService implements AddEventUseCase, ListEventsUseCase {
     LOG.info("Listing events for {}", command.owner().getId());
     return listEventsPort
         .listEvents(command.owner())
+        .map(events -> events.sortBy(com.bookkeeper.app.application.domain.model.Event::getDate))
         .map(
             events ->
-                events.map(event -> new ListEventsUseCase.Event(event.getId(), event.getName())));
+                events.map(
+                    event ->
+                        new ListEventsUseCase.Event(
+                            event.getId(), event.getNote(), event.getDate())));
   }
 }

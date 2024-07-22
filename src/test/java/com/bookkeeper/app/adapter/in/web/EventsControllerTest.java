@@ -13,6 +13,8 @@ import com.bookkeeper.app.common.Anys;
 import com.bookkeeper.app.common.TestSecurityConfiguration;
 import io.vavr.collection.List;
 import io.vavr.control.Try;
+
+import java.time.LocalDateTime;
 import java.util.UUID;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -70,8 +72,8 @@ class EventsControllerTest {
     // given
     when(findUserUseCase.findUser(any())).thenReturn(Try.success(Anys.ANY_USER));
 
-    ListEventsUseCase.Event event1 = new ListEventsUseCase.Event(UUID.randomUUID(), "event-1");
-    ListEventsUseCase.Event event2 = new ListEventsUseCase.Event(UUID.randomUUID(), "event-2");
+    ListEventsUseCase.Event event1 = new ListEventsUseCase.Event(UUID.randomUUID(), "event-1", LocalDateTime.now());
+    ListEventsUseCase.Event event2 = new ListEventsUseCase.Event(UUID.randomUUID(), "event-2", LocalDateTime.now());
     when(listEventsUseCase.listEvents(new ListEventsUseCase.ListEventsCommand(any())))
         .thenReturn(Try.success(List.of(event1, event2)));
 
@@ -81,9 +83,11 @@ class EventsControllerTest {
         .andDo(print())
         .andExpect(status().is2xxSuccessful())
         .andExpect(jsonPath("$[0].id").value(event1.id().toString()))
-        .andExpect(jsonPath("$[0].name").value(event1.name()))
+        .andExpect(jsonPath("$[0].note").value(event1.note()))
+        .andExpect(jsonPath("$[0].date").value(event1.date().toString()))
         .andExpect(jsonPath("$[1].id").value(event2.id().toString()))
-        .andExpect(jsonPath("$[1].name").value(event2.name()));
+        .andExpect(jsonPath("$[1].note").value(event2.note()))
+        .andExpect(jsonPath("$[1].date").value(event2.date().toString()));
   }
 
   @Test

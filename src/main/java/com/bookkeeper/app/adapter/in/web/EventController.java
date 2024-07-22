@@ -16,6 +16,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.time.LocalDateTime;
+
 @RestController
 @RequestMapping("/event")
 public class EventController {
@@ -36,7 +38,10 @@ public class EventController {
 
     return findUserUseCase
         .findUser(new FindUserUseCase.FindUserCommand(authentication.getName()))
-        .mapTry(user -> new AddEventUseCase.AddEventCommand(event.name(), user))
+        .mapTry(
+            user ->
+                new AddEventUseCase.AddEventCommand(
+                    event.note(), LocalDateTime.parse(event.date()), user))
         .flatMap(this.addEventUseCase::addEvent)
         .fold(
             failure -> {
@@ -53,5 +58,5 @@ public class EventController {
             result -> new ResponseEntity<>(result, HttpStatus.CREATED));
   }
 
-  record Event(String name) {}
+  record Event(String note, String date) {}
 }

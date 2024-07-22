@@ -15,6 +15,8 @@ import com.bookkeeper.app.common.Anys;
 import com.bookkeeper.app.common.TestSecurityConfiguration;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.vavr.control.Try;
+
+import java.time.LocalDateTime;
 import java.util.UUID;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -47,7 +49,7 @@ class EventControllerTest {
         .perform(
             post("/event")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(asJsonString(new EventController.Event("any-name"))))
+                .content(asJsonString(new EventController.Event("any-name", LocalDateTime.now().toString()))))
         .andDo(print())
         .andExpect(status().isInternalServerError())
         .andExpect(content().string(containsString("Cannot find the owner")));
@@ -57,19 +59,20 @@ class EventControllerTest {
   public void shouldReturnRequestErrorWhenEventAdditionFailedDueToAnyError() throws Exception {
 
     // given
+    LocalDateTime date = LocalDateTime.now();
     when(findUserUseCase.findUser(any())).thenReturn(Try.success(Anys.ANY_USER));
-    when(addEventUseCase.addEvent(new AddEventUseCase.AddEventCommand("any-name", Anys.ANY_USER)))
-        .thenReturn(Try.failure(new Exception("Cannot add a event")));
+    when(addEventUseCase.addEvent(new AddEventUseCase.AddEventCommand("any-name", date, Anys.ANY_USER)))
+        .thenReturn(Try.failure(new Exception("Cannot add an event")));
 
     // when & then
     this.mockMvc
         .perform(
             post("/event")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(asJsonString(new EventController.Event("any-name"))))
+                .content(asJsonString(new EventController.Event("any-name", date.toString()))))
         .andDo(print())
         .andExpect(status().isInternalServerError())
-        .andExpect(content().string(containsString("Cannot add a event")));
+        .andExpect(content().string(containsString("Cannot add an event")));
   }
 
   @Test
@@ -77,19 +80,20 @@ class EventControllerTest {
       throws Exception {
 
     // given
+    LocalDateTime date = LocalDateTime.now();
     when(findUserUseCase.findUser(any())).thenReturn(Try.success(Anys.ANY_USER));
-    when(addEventUseCase.addEvent(new AddEventUseCase.AddEventCommand("any-name", Anys.ANY_USER)))
-        .thenReturn(Try.failure(new EventWithNameExistsException("Cannot add a event")));
+    when(addEventUseCase.addEvent(new AddEventUseCase.AddEventCommand("any-name", date, Anys.ANY_USER)))
+        .thenReturn(Try.failure(new EventWithNameExistsException("Cannot add an event")));
 
     // when & then
     this.mockMvc
         .perform(
             post("/event")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(asJsonString(new EventController.Event("any-name"))))
+                .content(asJsonString(new EventController.Event("any-name", date.toString()))))
         .andDo(print())
         .andExpect(status().isConflict())
-        .andExpect(content().string(containsString("Cannot add a event")));
+        .andExpect(content().string(containsString("Cannot add an event")));
   }
 
   @Test
@@ -97,9 +101,10 @@ class EventControllerTest {
 
     // given
     when(findUserUseCase.findUser(any())).thenReturn(Try.success(Anys.ANY_USER));
+    LocalDateTime date = LocalDateTime.now();
     UUID id = UUID.randomUUID();
-    AddEventUseCase.Event event = new AddEventUseCase.Event(id, "event-name");
-    when(addEventUseCase.addEvent(new AddEventUseCase.AddEventCommand(event.name(), Anys.ANY_USER)))
+    AddEventUseCase.Event event = new AddEventUseCase.Event(id, "event-name", date);
+    when(addEventUseCase.addEvent(new AddEventUseCase.AddEventCommand(event.note(), date, Anys.ANY_USER)))
         .thenReturn(Try.success(event));
 
     // when & then
@@ -107,11 +112,11 @@ class EventControllerTest {
         .perform(
             post("/event")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(asJsonString(new EventController.Event(event.name()))))
+                .content(asJsonString(new EventController.Event(event.note(), date.toString()))))
         .andDo(print())
         .andExpect(status().isCreated())
         .andExpect(content().string(containsString(id.toString())))
-        .andExpect(content().string(containsString(event.name())));
+        .andExpect(content().string(containsString(event.note())));
   }
 
   private final String asJsonString(Object obj) {

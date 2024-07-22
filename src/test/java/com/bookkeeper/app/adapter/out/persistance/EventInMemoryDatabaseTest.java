@@ -9,6 +9,8 @@ import io.vavr.control.Option;
 import io.vavr.control.Try;
 import org.junit.jupiter.api.Test;
 
+import java.time.LocalDateTime;
+
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
@@ -35,7 +37,7 @@ class EventInMemoryDatabaseTest {
 
     // given
     EventInMemoryDatabase underTest = new EventInMemoryDatabase(HashMap.empty());
-    Event testEvent = new Event("test-event", Anys.ANY_USER);
+    Event testEvent = new Event("test-event",  LocalDateTime.now(), Anys.ANY_USER);
 
     // when
     Try<Event> result = underTest.addEvent(testEvent);
@@ -57,7 +59,7 @@ class EventInMemoryDatabaseTest {
     when(events.get(any())).thenReturn(Option.none());
 
     EventInMemoryDatabase underTest = new EventInMemoryDatabase(events);
-    Event testEvent = new Event("test-event", Anys.ANY_USER);
+    Event testEvent = new Event("test-event", LocalDateTime.now(), Anys.ANY_USER);
 
     Exception addingEventException = new RuntimeException("Error adding a event");
     when(events.put(eq(Anys.ANY_USER), eq(List.of(testEvent)))).thenThrow(addingEventException);

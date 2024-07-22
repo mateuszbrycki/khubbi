@@ -1,31 +1,36 @@
 package com.bookkeeper.app.application.domain.model;
 
+import java.time.LocalDateTime;
 import java.util.Objects;
 import java.util.UUID;
 
 public class Event {
 
   private final UUID id;
-  private final String name;
+  private final String note;
+  private final LocalDateTime date;
   private final User owner;
 
-  public Event(String name, User owner) {
+  public Event(String note, LocalDateTime date, User owner) {
     this.owner = owner;
     this.id = UUID.randomUUID();
-    this.name = name;
+    this.note = note;
+    this.date = date;
   }
 
   public UUID getId() {
     return id;
   }
 
-  public String getName() {
-    return name;
+  public String getNote() {
+    return note;
   }
 
   public User getOwner() {
     return owner;
   }
+
+  public LocalDateTime getDate() { return date;}
 
   @Override
   public boolean equals(Object o) {
@@ -33,12 +38,13 @@ public class Event {
     if (o == null || getClass() != o.getClass()) return false;
     Event event = (Event) o;
     return Objects.equals(id, event.id)
-        && Objects.equals(name, event.name)
-        && Objects.equals(owner, event.owner);
+        && Objects.equals(note, event.note)
+        && Objects.equals(owner, event.owner)
+        && Objects.equals(date, event.date);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(id, name, owner);
+    return Objects.hash(id, note, date, owner);
   }
 }
