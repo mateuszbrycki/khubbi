@@ -1,26 +1,37 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`renders empty list 1`] = `
-<React.Fragment>
-  <h1>
-    Events
-  </h1>
-  Immutable.List []
-</React.Fragment>
-`;
-
 exports[`renders list of events 1`] = `
 <React.Fragment>
-  <h1>
-    Events
-  </h1>
-  Immutable.List [
-    <li>
-      event-1
-    </li>,
-    <li>
-      event-2
-    </li>,
-  ]
+  <div
+    className="d-flex justify-content-center"
+  >
+    <EventsManagement
+      addNote={[Function]}
+      closeAddEventForm={[Function]}
+      openAddEventForm={[Function]}
+      showEventForm={null}
+    />
+  </div>
+  <div
+    className="d-flex justify-content-center"
+  >
+    <EventsTimeline
+      events={
+        Immutable.List [
+          {
+            "date": "23/07/2024",
+            "id": "event-1",
+            "note": "event-1",
+          },
+          {
+            "date": "23/07/2024",
+            "id": "event-2",
+            "note": "event-2",
+          },
+        ]
+      }
+      loadEvents={[Function]}
+    />
+  </div>
 </React.Fragment>
 `;

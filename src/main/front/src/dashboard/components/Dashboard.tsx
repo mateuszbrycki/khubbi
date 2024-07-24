@@ -1,26 +1,36 @@
 import React from "react";
-import {Event} from "../../types";
+import {Event, EventForms} from "../../types";
 import {List} from "immutable";
+import EventsTimeline from "../../events/components/EventsTimeline";
+import EventsManagement from "../../events/components/EventsManagement";
 
 export interface DashboardProps {
-    readonly events: List<Event>
+    readonly events: List<Event>,
+    readonly showEventForm: EventForms | null
 }
 
 export interface DashboardActionProps {
-    readonly loadEvents: () => void
+    readonly loadEvents: () => void,
+    readonly openAddEventForm: (type: EventForms) => void,
+    readonly closeAddEventForm: () => void
+    readonly addNote: (note: string, date: string) => void
 }
 
 const Dashboard: React.FC<DashboardProps & DashboardActionProps> = (props) => {
-    const {events, loadEvents} = props
-
-    React.useEffect((): void => {
-        loadEvents()
-    }, [loadEvents])
-
+    const {events, showEventForm, loadEvents, openAddEventForm, closeAddEventForm, addNote} = props
 
     return <>
-        <h1>Events</h1>
-        {events.map(event => <li key={event.name}>{event.name}</li>)}
+        <div className="d-flex justify-content-center">
+            <EventsManagement showEventForm={showEventForm}
+                              openAddEventForm={openAddEventForm}
+                              closeAddEventForm={closeAddEventForm}
+                              addNote={addNote}
+            />
+        </div>
+
+        <div className="d-flex justify-content-center">
+            <EventsTimeline events={events} loadEvents={loadEvents}/>
+        </div>
     </>
 }
 

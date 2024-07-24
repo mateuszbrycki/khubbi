@@ -1,4 +1,4 @@
-import {loadEventsSaga} from "../sagas";
+import {addNoteSaga, loadEventsSaga} from "../sagas";
 import {expectSaga} from "redux-saga-test-plan";
 import {Types} from "../actions";
 import {EventsApi, EventsHttpApi} from "../../api/api";
@@ -10,14 +10,17 @@ describe('Load events Saga', () => {
 
         const fetchEventsMock = jest.fn(() => Promise.resolve(
             List.of({
-                name: "event-1",
-                id: "1"
+                note: "event-1",
+                date: "22/07/2025",
+                id: "event-1"
             }, {
-                name: "event-2",
-                id: "2"
+                note: "event-2",
+                date: "23/07/2025",
+                id: "event-2"
             }, {
-                name: "event-3",
-                id: "3"
+                note: "event-3",
+                date: "24/07/2025",
+                id: "event-3"
             })
         ));
 
@@ -31,14 +34,17 @@ describe('Load events Saga', () => {
                 type: Types.EventsLoaded,
                 payload: {
                     events: List.of({
-                        name: "event-1",
-                        id: "1"
+                        note: "event-1",
+                        date: "22/07/2025",
+                        id: "event-1"
                     }, {
-                        name: "event-2",
-                        id: "2"
+                        note: "event-2",
+                        date: "23/07/2025",
+                        id: "event-2"
                     }, {
-                        name: "event-3",
-                        id: "3"
+                        note: "event-3",
+                        date: "24/07/2025",
+                        id: "event-3"
                     })
                 }
             })
@@ -49,6 +55,32 @@ describe('Load events Saga', () => {
             .run()
             .then(() => {
                 expect(fetchEventsMock).toHaveBeenCalled()
+            })
+    })
+})
+
+describe('Add event saga', () => {
+    it('pushes success action with details on success', async () => {
+        const addEventMock = jest.fn(() => Promise.resolve());
+
+        const api: EventsHttpApi = {
+            ...EventsApi,
+            addEvent: addEventMock
+        }
+        await expectSaga(addNoteSaga, api)
+            .put({
+                type: Types.LoadEvents,
+            })
+            .dispatch({
+                type: Types.AddNote,
+                payload: {
+                    note: "event-1",
+                    date: "22/07/2025",
+                }
+            })
+            .run()
+            .then(() => {
+                expect(addEventMock).toHaveBeenCalled()
             })
     })
 })

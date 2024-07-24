@@ -15,4 +15,11 @@ const getEvents = createSelector(
     }
 )
 
-export {getEvents}
+const getOpenAddEventForm = createSelector(
+    getEventsState,
+    (state: EventsState) => {
+        return state.addEventForm;
+    }
+)
+
+export {getEvents, getOpenAddEventForm}

@@ -1,0 +1,29 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`renders timeline with events 1`] = `
+<Container
+  className="justify-content-left"
+>
+  <Row>
+    <h1>
+      Events
+    </h1>
+  </Row>
+  <Row>
+    Immutable.List [
+      <li>
+        event-1
+         (
+        23/07/2024
+        )
+      </li>,
+      <li>
+        event-2
+         (
+        23/07/2024
+        )
+      </li>,
+    ]
+  </Row>
+</Container>
+`;

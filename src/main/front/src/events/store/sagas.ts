@@ -1,7 +1,7 @@
 import {Action} from "redux";
 import {EventsHttpApi} from "../api/api";
 import {call, put, takeEvery} from '@redux-saga/core/effects'
-import {LoadEvents, EventsLoadedAction, Types} from "./actions";
+import {AddNote, EventsLoadedAction, LoadEvents, LoadEventsAction, Types} from "./actions";
 import {List} from "immutable";
 import {Event} from "../../types";
 
@@ -14,6 +14,15 @@ function* fetchEvents(api: EventsHttpApi): Generator<any, any, List<Event>> {
         })
 }
 
+function* addNote(api: EventsHttpApi, note: string, date: string): Generator<any, any, List<Event>> {
+    return yield api.addEvent(note, date)
+        .then(response => response)
+        .catch(err => {
+            // TODO mateusz.brycki - dispatch error and show notification
+            return null
+        })
+}
+
 function* loadEventsSaga(api: EventsHttpApi): IterableIterator<unknown> {
     yield takeEvery((a: Action): a is LoadEvents => a.type === Types.LoadEvents, function* (a: LoadEvents) {
         const response: List<Event> = yield call(fetchEvents, api);
@@ -21,6 +30,14 @@ function* loadEventsSaga(api: EventsHttpApi): IterableIterator<unknown> {
     })
 }
 
+function* addNoteSaga(api: EventsHttpApi): IterableIterator<unknown> {
+    yield takeEvery((a: Action): a is AddNote => a.type === Types.AddNote, function* (a: AddNote) {
+        const response: List<Event> = yield call(addNote, api, a.payload.note, a.payload.date);
+        yield put(LoadEventsAction());
+    })
+}
+
 export {
-    loadEventsSaga
+    loadEventsSaga,
+    addNoteSaga
 }

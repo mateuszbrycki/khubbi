@@ -1,11 +1,12 @@
 import {all} from '@redux-saga/core/effects'
-import {loadEventsSaga} from "../events/store/sagas";
+import {addNoteSaga, loadEventsSaga} from "../events/store/sagas";
 import {
+    checkJWTExpiredSaga,
     loginUserSaga,
     logoutUserSaga,
-    checkJWTExpiredSaga,
     refreshJWTTokenSaga,
-    registerUserSaga, userJWTTokenRefreshFailedSaga
+    registerUserSaga,
+    userJWTTokenRefreshFailedSaga
 } from "../authorization/store/sagas";
 import {EventsApi} from "../events/api/api";
 import {AuthorizationApi} from "../authorization/api/api";
@@ -18,7 +19,8 @@ function* rootSaga(): IterableIterator<unknown> {
         logoutUserSaga(AuthorizationApi),
         refreshJWTTokenSaga(AuthorizationApi),
         userJWTTokenRefreshFailedSaga(AuthorizationApi),
-        checkJWTExpiredSaga(AuthorizationApi)
+        checkJWTExpiredSaga(AuthorizationApi),
+        addNoteSaga(EventsApi)
     ])
 }
 

@@ -1,0 +1,75 @@
+import {List} from "immutable"
+import React from "react";
+import Button from "react-bootstrap/Button";
+
+import * as Icon from "react-bootstrap-icons";
+import {Col, Row} from "react-bootstrap";
+import Container from "react-bootstrap/Container";
+import {EventForms} from "../../types";
+import AddNoteForm from "./AddNoteForm";
+
+export interface EventsManagementProps {
+    readonly showEventForm: EventForms | null
+}
+
+export interface EventsManagementActionProps {
+    readonly openAddEventForm: (type: EventForms) => void,
+    readonly closeAddEventForm: () => void,
+    readonly addNote: (note: string, date: string) => void
+}
+
+const EventsManagement: React.FC<EventsManagementProps & EventsManagementActionProps> = (props) => {
+
+    const {showEventForm, openAddEventForm, closeAddEventForm, addNote} = props
+
+    const buttons: List<JSX.Element> = List.of({
+        eventForm: EventForms.NOTE,
+        icon: <Icon.FileEarmarkPostFill className="me-2"/>
+    }, {
+        eventForm: EventForms.PICTURE,
+        icon: <Icon.ImageFill className="me-2"/>
+    }, {
+        eventForm: EventForms.EVENT,
+        icon: <Icon.CalendarEventFill className="me-2"/>
+    }, {
+        eventForm: EventForms.EXPENSE,
+        icon: <Icon.WalletFill className="me-2"/>
+    }, {
+        eventForm: EventForms.REMINDER,
+        icon: <Icon.StopwatchFill className="me-2"/>
+    }).map(form => <Col><Button
+        className={`btn-light d-inline m-3 ${showEventForm === form.eventForm ? " active" : ""}`}
+        onClick={() => showEventForm === form.eventForm ? closeAddEventForm() : openAddEventForm(form.eventForm)}
+        data-testid={`show-add-${form.eventForm.name}-button`}
+    >{form.eventForm.name} {form.icon}</Button></Col>)
+
+    return <>
+        <Container className="justify-content-center">
+            <Row>
+                {buttons}
+            </Row>
+
+            <Row className="justify-content-center">
+                <div className="col-6">
+                    <Row className="justify-content-end mb-3">
+                        {showEventForm !== null ?
+                            <Icon.XCircle
+                                data-testid="close-add-event-form-button"
+                                className="col-1"
+                                type="submit"
+                                onClick={() => closeAddEventForm()}/>
+                            : <></>}
+                    </Row>
+                    <Row>
+                        {showEventForm === EventForms.NOTE ? <AddNoteForm
+                            addNote={addNote}
+                            currentDateProvider={() => new Date().toISOString().substr(0, 10)}/> : <></>}
+                    </Row>
+                </div>
+            </Row>
+
+        </Container>
+    </>
+}
+
+export default EventsManagement

@@ -1,10 +1,12 @@
 import {initialEventsState, EventsState} from "./state";
 import {Action} from "redux";
-import {EventsLoaded, Types} from "./actions";
+import {CloseAddEventForm, EventsLoaded, OpenAddEventForm, Types} from "./actions";
 
 
 type EventsActions =
     | EventsLoaded
+    | OpenAddEventForm
+    | CloseAddEventForm
 
 const eventsReducer = (
     state: EventsState | undefined = initialEventsState,
@@ -16,6 +18,16 @@ const eventsReducer = (
             return {
                 ...state,
                 events: action.payload.events
+            }
+        case Types.OpenAddEventForm:
+            return {
+                ...state,
+                addEventForm: action.payload.formType
+            }
+        case Types.CloseAddEventForm:
+            return {
+                ...state,
+                addEventForm: null
             }
         default:
             return state
