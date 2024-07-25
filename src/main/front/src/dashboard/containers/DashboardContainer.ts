@@ -8,7 +8,7 @@ import {
     OpenAddEventFormAction
 } from "../../events/store/actions";
 import {getEvents, getOpenAddEventForm} from "../../events/store/selectors";
-import {EventForms} from "../../types";
+import {EventDate, EventForms} from "../../types";
 
 const mapStateToProps: MapStateToProps<DashboardProps, {}, ApplicationState> = (state: ApplicationState) => ({
     events: getEvents(state),
@@ -20,7 +20,7 @@ const mapDispatchToProps: MapDispatchToProps<DashboardActionProps, {}> = (dispat
     loadEvents: () => dispatch(LoadEventsAction()),
     openAddEventForm: (type: EventForms) => dispatch(OpenAddEventFormAction(type)),
     closeAddEventForm: () => dispatch(CloseAddEventFormAction()),
-    addNote: (note: string, date: string) => dispatch(AddNoteAction(note, date))
+    addNote: (note: string, date: EventDate) => dispatch(AddNoteAction(note, date))
 })
 
 const DashboardContainer = connect(

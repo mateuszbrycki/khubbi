@@ -19,12 +19,16 @@ exports[`renders list of events 1`] = `
       events={
         Immutable.List [
           {
-            "date": "23/07/2024",
+            "date": EventDate {
+              "value": "2024-07-12T20:00+02:00[SYSTEM]",
+            },
             "id": "event-1",
             "note": "event-1",
           },
           {
-            "date": "23/07/2024",
+            "date": EventDate {
+              "value": "2024-07-12T21:00+02:00[SYSTEM]",
+            },
             "id": "event-2",
             "note": "event-2",
           },

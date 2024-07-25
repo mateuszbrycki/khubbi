@@ -1,4 +1,4 @@
-import {Event, EventForms} from "../../types";
+import {Event, EventDate, EventForms} from "../../types";
 import {List} from "immutable";
 
 enum Types {
@@ -35,7 +35,7 @@ export interface AddNote {
     readonly type: Types.AddNote
     readonly payload: {
         note: string,
-        date: string
+        date: EventDate
     }
 }
 
@@ -61,7 +61,7 @@ const CloseAddEventFormAction = (): CloseAddEventForm => ({
     type: Types.CloseAddEventForm,
 })
 
-const AddNoteAction = (note: string, date: string) => ({
+const AddNoteAction = (note: string, date: EventDate) => ({
     type: Types.AddNote,
     payload: {
         note: note,

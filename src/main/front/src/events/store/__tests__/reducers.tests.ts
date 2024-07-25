@@ -2,7 +2,7 @@ import {initialEventsState} from "../state";
 import {eventsReducer} from "../reducers";
 import {CloseAddEventFormAction, EventsLoadedAction, OpenAddEventFormAction} from "../actions";
 import {List} from "immutable";
-import {EventForms} from "../../../types";
+import {EventDate, EventForms} from "../../../types";
 
 // TODO mateusz.brycki shouldn't we tet the root reducer?
 test('should return initial state', () => {
@@ -12,22 +12,22 @@ test('should return initial state', () => {
 test('should store events list', () => {
     expect(eventsReducer(initialEventsState, EventsLoadedAction(List.of({
             note: "event-1",
-            date: "23/07/2024",
+            date: EventDate.ofDateAndTime("2024-07-12T20:00"),
             id: "event-1"
         }, {
             note: "event-2",
-            date: "23/07/2024",
+            date: EventDate.ofDateAndTime("2024-07-12T21:00"),
             id: "event-2"
         }))
     )).toEqual({
         ...initialEventsState,
         events: List.of({
             note: "event-1",
-            date: "23/07/2024",
+            date: EventDate.ofDateAndTime("2024-07-12T20:00"),
             id: "event-1"
         }, {
             note: "event-2",
-            date: "23/07/2024",
+            date: EventDate.ofDateAndTime("2024-07-12T21:00"),
             id: "event-2"
         })
     })

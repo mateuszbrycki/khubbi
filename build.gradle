@@ -10,6 +10,7 @@ version = "0.0.1-SNAPSHOT"
 
 def jsonwebtokenVersion = "0.11.5"
 def vavrVersion = "0.10.4"
+def jacksonDatatypeVersion = "2.17.2"
 
 
 java {
@@ -35,6 +36,8 @@ dependencies {
 	implementation "io.jsonwebtoken:jjwt-api:$jsonwebtokenVersion"
 	implementation "io.jsonwebtoken:jjwt-impl:$jsonwebtokenVersion"
 	implementation "io.jsonwebtoken:jjwt-jackson:$jsonwebtokenVersion"
+
+	implementation "com.fasterxml.jackson.datatype:jackson-datatype-jsr310:$jacksonDatatypeVersion"
 
 }
 tasks.named("test") {

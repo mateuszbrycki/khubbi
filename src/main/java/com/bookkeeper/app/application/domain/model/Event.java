@@ -1,6 +1,6 @@
 package com.bookkeeper.app.application.domain.model;
 
-import java.time.LocalDateTime;
+import java.time.ZonedDateTime;
 import java.util.Objects;
 import java.util.UUID;
 
@@ -8,10 +8,10 @@ public class Event {
 
   private final UUID id;
   private final String note;
-  private final LocalDateTime date;
+  private final ZonedDateTime date;
   private final User owner;
 
-  public Event(String note, LocalDateTime date, User owner) {
+  public Event(String note, ZonedDateTime date, User owner) {
     this.owner = owner;
     this.id = UUID.randomUUID();
     this.note = note;
@@ -30,7 +30,9 @@ public class Event {
     return owner;
   }
 
-  public LocalDateTime getDate() { return date;}
+  public ZonedDateTime getDate() {
+    return date;
+  }
 
   @Override
   public boolean equals(Object o) {

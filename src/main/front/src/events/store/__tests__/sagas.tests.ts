@@ -3,6 +3,7 @@ import {expectSaga} from "redux-saga-test-plan";
 import {Types} from "../actions";
 import {EventsApi, EventsHttpApi} from "../../api/api";
 import {List} from "immutable";
+import {EventDate} from "../../../types";
 
 
 describe('Load events Saga', () => {
@@ -11,15 +12,15 @@ describe('Load events Saga', () => {
         const fetchEventsMock = jest.fn(() => Promise.resolve(
             List.of({
                 note: "event-1",
-                date: "22/07/2025",
+                date: EventDate.ofDateAndTime("2024-07-12T20:00"),
                 id: "event-1"
             }, {
                 note: "event-2",
-                date: "23/07/2025",
+                date: EventDate.ofDateAndTime("2024-07-12T21:00"),
                 id: "event-2"
             }, {
                 note: "event-3",
-                date: "24/07/2025",
+                date: EventDate.ofDateAndTime("2024-07-12T22:00"),
                 id: "event-3"
             })
         ));
@@ -35,15 +36,15 @@ describe('Load events Saga', () => {
                 payload: {
                     events: List.of({
                         note: "event-1",
-                        date: "22/07/2025",
+                        date: EventDate.ofDateAndTime("2024-07-12T20:00"),
                         id: "event-1"
                     }, {
                         note: "event-2",
-                        date: "23/07/2025",
+                        date: EventDate.ofDateAndTime("2024-07-12T21:00"),
                         id: "event-2"
                     }, {
                         note: "event-3",
-                        date: "24/07/2025",
+                        date: EventDate.ofDateAndTime("2024-07-12T22:00"),
                         id: "event-3"
                     })
                 }
@@ -75,7 +76,7 @@ describe('Add event saga', () => {
                 type: Types.AddNote,
                 payload: {
                     note: "event-1",
-                    date: "22/07/2025",
+                    date: EventDate.ofDateAndTime("2024-07-12T20:00"),
                 }
             })
             .run()

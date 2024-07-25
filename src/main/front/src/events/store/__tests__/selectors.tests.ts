@@ -2,7 +2,7 @@ import {List} from "immutable";
 import {getEvents, getOpenAddEventForm} from "../selectors";
 import {initialEventsState} from "../state";
 import {initialAuthorizationState} from "../../../authorization/store/state";
-import {EventForms} from "../../../types";
+import {EventDate, EventForms} from "../../../types";
 
 test('should return events from state', () => {
     const state = {
@@ -12,11 +12,11 @@ test('should return events from state', () => {
                 ...initialEventsState,
                 events: List.of({
                     note: "event-1",
-                    date: "22/07/2025",
+                    date: EventDate.ofDateAndTime("2024-07-12T20:00"),
                     id: "event-1"
                 }, {
                     note: "event-2",
-                    date: "22/07/2024",
+                    date: EventDate.ofDateAndTime("2024-07-12T21:00"),
                     id: "event-2"
                 })
             }
@@ -27,11 +27,11 @@ test('should return events from state', () => {
     const result = getEvents(state)
     expect(result).toEqual(List.of({
         note: "event-1",
-        date: "22/07/2025",
+        date: EventDate.ofDateAndTime("2024-07-12T20:00"),
         id: "event-1"
     }, {
         note: "event-2",
-        date: "22/07/2024",
+        date: EventDate.ofDateAndTime("2024-07-12T21:00"),
         id: "event-2"
     }))
 })

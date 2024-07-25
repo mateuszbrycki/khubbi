@@ -14,13 +14,13 @@ exports[`renders timeline with events 1`] = `
       <li>
         event-1
          (
-        23/07/2024
+        2024-07-12T20:00+02:00[SYSTEM]
         )
       </li>,
       <li>
         event-2
          (
-        23/07/2024
+        2024-07-12T21:00+02:00[SYSTEM]
         )
       </li>,
     ]

@@ -3,7 +3,7 @@ import {EventsHttpApi} from "../api/api";
 import {call, put, takeEvery} from '@redux-saga/core/effects'
 import {AddNote, EventsLoadedAction, LoadEvents, LoadEventsAction, Types} from "./actions";
 import {List} from "immutable";
-import {Event} from "../../types";
+import {Event, EventDate} from "../../types";
 
 function* fetchEvents(api: EventsHttpApi): Generator<any, any, List<Event>> {
     return yield api.fetchEvents()
@@ -14,7 +14,7 @@ function* fetchEvents(api: EventsHttpApi): Generator<any, any, List<Event>> {
         })
 }
 
-function* addNote(api: EventsHttpApi, note: string, date: string): Generator<any, any, List<Event>> {
+function* addNote(api: EventsHttpApi, note: string, date: EventDate): Generator<any, any, List<Event>> {
     return yield api.addEvent(note, date)
         .then(response => response)
         .catch(err => {

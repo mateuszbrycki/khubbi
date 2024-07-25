@@ -1,6 +1,38 @@
+import {DateTimeFormatter, LocalDateTime, ZonedDateTime, ZoneId} from "js-joda";
+
+export class EventDate {
+    value: ZonedDateTime
+
+    public constructor(value: ZonedDateTime) {
+        this.value = value
+    }
+
+    public toString(): string {
+        return this.value.toString();
+    }
+
+    public format(format: string): string {
+        return this.value.format(DateTimeFormatter.ofPattern(format))
+    }
+
+    public toISODateTime(): string {
+        return this.value.format(DateTimeFormatter.ISO_OFFSET_DATE_TIME);
+    }
+
+    public static now(): EventDate {
+        return new EventDate(ZonedDateTime.now());
+    }
+
+    public static ofDateAndTime(date: string): EventDate {
+        return new EventDate(LocalDateTime.parse(date)
+            .atZone(ZoneId.SYSTEM));
+    }
+
+}
+
 export interface Event {
     readonly note: string;
-    readonly date: string;
+    readonly date: EventDate;
     readonly id: string;
 }
 

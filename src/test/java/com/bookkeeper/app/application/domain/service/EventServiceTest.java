@@ -12,13 +12,14 @@ import com.bookkeeper.app.application.port.out.ListEventsPort;
 import com.bookkeeper.app.common.Anys;
 import io.vavr.collection.List;
 import io.vavr.control.Try;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-
-import java.time.LocalDateTime;
 
 @ExtendWith(MockitoExtension.class)
 class EventServiceTest {
@@ -33,11 +34,11 @@ class EventServiceTest {
 
     when(listEventsPort.listEvents(Anys.ANY_USER)).thenReturn(Try.success(List.empty()));
     when(addEventPort.addEvent(any()))
-        .thenReturn(Try.success(new Event("new-event", LocalDateTime.now(), Anys.ANY_USER)));
+        .thenReturn(Try.success(new Event("new-event", ZonedDateTime.now(), Anys.ANY_USER)));
 
     Try<AddEventUseCase.Event> result =
         this.underTest.addEvent(
-            new AddEventUseCase.AddEventCommand("new-event", LocalDateTime.now(), Anys.ANY_USER));
+            new AddEventUseCase.AddEventCommand("new-event", ZonedDateTime.now(), Anys.ANY_USER));
 
     assertTrue(result.isSuccess());
     assertEquals("new-event", result.get().note());
@@ -51,7 +52,7 @@ class EventServiceTest {
 
     Try<AddEventUseCase.Event> result =
         this.underTest.addEvent(
-            new AddEventUseCase.AddEventCommand("new-event", LocalDateTime.now(), Anys.ANY_USER));
+            new AddEventUseCase.AddEventCommand("new-event", ZonedDateTime.now(), Anys.ANY_USER));
 
     assertTrue(result.isFailure());
     assertInstanceOf(RuntimeException.class, result.getCause());
@@ -61,8 +62,11 @@ class EventServiceTest {
   public void testListEventsSortedByDate() {
 
     // given
-    LocalDateTime firstDate = LocalDateTime.parse("2009-12-03T10:15:30");
-    LocalDateTime secondDate = LocalDateTime.parse("2024-12-03T10:15:30");
+    ZonedDateTime firstDate =
+        LocalDateTime.parse("2009-12-03T10:15:30").atZone(ZoneId.systemDefault());
+    ZonedDateTime secondDate =
+        LocalDateTime.parse("2024-12-04T10:16:30").atZone(ZoneId.systemDefault());
+    ;
 
     when(listEventsPort.listEvents(Anys.ANY_USER))
         .thenReturn(

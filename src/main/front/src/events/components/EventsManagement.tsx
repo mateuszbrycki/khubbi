@@ -5,7 +5,7 @@ import Button from "react-bootstrap/Button";
 import * as Icon from "react-bootstrap-icons";
 import {Col, Row} from "react-bootstrap";
 import Container from "react-bootstrap/Container";
-import {EventForms} from "../../types";
+import {EventDate, EventForms} from "../../types";
 import AddNoteForm from "./AddNoteForm";
 
 export interface EventsManagementProps {
@@ -15,7 +15,7 @@ export interface EventsManagementProps {
 export interface EventsManagementActionProps {
     readonly openAddEventForm: (type: EventForms) => void,
     readonly closeAddEventForm: () => void,
-    readonly addNote: (note: string, date: string) => void
+    readonly addNote: (note: string, date: EventDate) => void
 }
 
 const EventsManagement: React.FC<EventsManagementProps & EventsManagementActionProps> = (props) => {
@@ -63,7 +63,7 @@ const EventsManagement: React.FC<EventsManagementProps & EventsManagementActionP
                     <Row>
                         {showEventForm === EventForms.NOTE ? <AddNoteForm
                             addNote={addNote}
-                            currentDateProvider={() => new Date().toISOString().substr(0, 10)}/> : <></>}
+                            currentDateProvider={() => EventDate.now()}/> : <></>}
                     </Row>
                 </div>
             </Row>

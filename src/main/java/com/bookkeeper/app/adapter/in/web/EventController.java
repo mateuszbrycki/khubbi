@@ -6,6 +6,7 @@ import static io.vavr.Predicates.instanceOf;
 import com.bookkeeper.app.application.domain.service.EventWithNameExistsException;
 import com.bookkeeper.app.application.port.in.AddEventUseCase;
 import com.bookkeeper.app.application.port.in.FindUserUseCase;
+import java.time.ZonedDateTime;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.http.HttpStatus;
@@ -15,8 +16,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-
-import java.time.LocalDateTime;
 
 @RestController
 @RequestMapping("/event")
@@ -38,10 +37,7 @@ public class EventController {
 
     return findUserUseCase
         .findUser(new FindUserUseCase.FindUserCommand(authentication.getName()))
-        .mapTry(
-            user ->
-                new AddEventUseCase.AddEventCommand(
-                    event.note(), LocalDateTime.parse(event.date()), user))
+        .mapTry(user -> new AddEventUseCase.AddEventCommand(event.note(), event.date(), user))
         .flatMap(this.addEventUseCase::addEvent)
         .fold(
             failure -> {
@@ -58,5 +54,5 @@ public class EventController {
             result -> new ResponseEntity<>(result, HttpStatus.CREATED));
   }
 
-  record Event(String note, String date) {}
+  record Event(String note, ZonedDateTime date) {}
 }

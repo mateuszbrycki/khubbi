@@ -1,5 +1,5 @@
 import React from "react";
-import {Event, EventForms} from "../../types";
+import {Event, EventDate, EventForms} from "../../types";
 import {List} from "immutable";
 import EventsTimeline from "../../events/components/EventsTimeline";
 import EventsManagement from "../../events/components/EventsManagement";
@@ -13,7 +13,7 @@ export interface DashboardActionProps {
     readonly loadEvents: () => void,
     readonly openAddEventForm: (type: EventForms) => void,
     readonly closeAddEventForm: () => void
-    readonly addNote: (note: string, date: string) => void
+    readonly addNote: (note: string, date: EventDate) => void
 }
 
 const Dashboard: React.FC<DashboardProps & DashboardActionProps> = (props) => {

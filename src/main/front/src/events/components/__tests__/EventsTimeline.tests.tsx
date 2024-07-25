@@ -1,6 +1,7 @@
 import ShallowRenderer from "react-test-renderer/shallow";
 import EventsTimeline from "../EventsTimeline";
 import {List} from "immutable";
+import {EventDate} from "../../../types";
 
 
 it('renders timeline with events', () => {
@@ -8,11 +9,11 @@ it('renders timeline with events', () => {
     renderer.render(<EventsTimeline events={List.of({
         note: "event-1",
         id: "event-1",
-        date: "23/07/2024"
+        date: EventDate.ofDateAndTime("2024-07-12T20:00")
     }, {
         note: "event-2",
         id: "event-2",
-        date: "23/07/2024"
+        date: EventDate.ofDateAndTime("2024-07-12T21:00")
     })}
                                     loadEvents={() => null}
     />)
