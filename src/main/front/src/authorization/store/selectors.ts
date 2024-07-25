@@ -3,7 +3,7 @@ import {ApplicationState} from "../../store/state";
 import {AuthorizationState} from "./state";
 
 const getAuthorizationState = (state: ApplicationState): AuthorizationState => {
-    return state.application.authorizationState
+    return state.authorizationState
 }
 
 // this selector cannot be memoized since it operates both on state and the current time

@@ -1,12 +1,13 @@
 import {applyMiddleware, combineReducers, createStore} from 'redux'
 import createSageMiddleWare from 'redux-saga'
 import rootSaga from './sagas'
-import {rootReducer} from './reducers'
 import {composeWithDevTools} from "@redux-devtools/extension"
 import {createReduxHistoryContext} from "redux-first-history"
 import {createBrowserHistory} from 'history'
 import {persistReducer, persistStore} from 'redux-persist'
 import storage from 'redux-persist/lib/storage'
+import {eventsReducer} from "../events/store/reducers";
+import {authorizationReducer} from "../authorization/store/reducers";
 
 const {createReduxHistory, routerMiddleware, routerReducer} = createReduxHistoryContext({
     history: createBrowserHistory(),
@@ -17,12 +18,14 @@ const saga = createSageMiddleWare()
 
 const persistConfig = {
     key: 'root',
-    whitelist: ['application'],
+    whitelist: ['authorizationState'],
     storage: storage,
 }
 
 const presistedReducer = persistReducer(persistConfig, combineReducers({
-    application: rootReducer, router: routerReducer
+    eventsState: eventsReducer,
+    authorizationState: authorizationReducer,
+    router: routerReducer
 }));
 
 const store = createStore(presistedReducer,

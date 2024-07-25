@@ -6,20 +6,18 @@ import {EventDate, EventForms} from "../../../types";
 
 test('should return events from state', () => {
     const state = {
-        application: {
-            authorizationState: initialAuthorizationState,
-            eventsState: {
-                ...initialEventsState,
-                events: List.of({
-                    note: "event-1",
-                    date: EventDate.ofDateAndTime("2024-07-12T20:00"),
-                    id: "event-1"
-                }, {
-                    note: "event-2",
-                    date: EventDate.ofDateAndTime("2024-07-12T21:00"),
-                    id: "event-2"
-                })
-            }
+        authorizationState: initialAuthorizationState,
+        eventsState: {
+            ...initialEventsState,
+            events: List.of({
+                note: "event-1",
+                date: EventDate.ofDateAndTime("2024-07-12T20:00"),
+                id: "event-1"
+            }, {
+                note: "event-2",
+                date: EventDate.ofDateAndTime("2024-07-12T21:00"),
+                id: "event-2"
+            })
         }
 
     }
@@ -38,12 +36,10 @@ test('should return events from state', () => {
 
 test('should return open add event form', () => {
     const state = {
-        application: {
-            authorizationState: initialAuthorizationState,
-            eventsState: {
-                ...initialEventsState,
-                addEventForm: EventForms.NOTE
-            }
+        authorizationState: initialAuthorizationState,
+        eventsState: {
+            ...initialEventsState,
+            addEventForm: EventForms.NOTE
         }
 
     }

@@ -4,7 +4,7 @@ import {EventsState} from "./state";
 
 
 const getEventsState = (state: ApplicationState): EventsState => {
-    return state.application.eventsState
+    return state.eventsState
 }
 
 

@@ -141,14 +141,12 @@ describe('Refresh JWT Token Saga', () => {
         await expectSaga(refreshJWTTokenSaga, api)
             .withState({
                 ...initialState,
-                application: {
-                    eventsState: {...initialEventsState},
-                    authorizationState: {
-                        ...initialAuthorizationState,
-                        refreshToken: {
-                            token: REFRESH_TOKEN,
-                            expiresIn: 654
-                        }
+                eventsState: {...initialEventsState},
+                authorizationState: {
+                    ...initialAuthorizationState,
+                    refreshToken: {
+                        token: REFRESH_TOKEN,
+                        expiresIn: 654
                     }
 
                 }
@@ -181,17 +179,15 @@ describe('Refresh JWT Token Saga', () => {
         await expectSaga(refreshJWTTokenSaga, api)
             .withState({
                 ...initialState,
-                application: {
-                    eventsState: {...initialEventsState},
-                    authorizationState: {
-                        ...initialAuthorizationState,
-                        refreshToken: {
-                            token: REFRESH_TOKEN,
-                            expiresIn: 654
-                        }
+                eventsState: {...initialEventsState},
+                authorizationState: {
+                    ...initialAuthorizationState,
+                    refreshToken: {
+                        token: REFRESH_TOKEN,
+                        expiresIn: 654
                     }
-
                 }
+
             })
             .put({
                 type: Types.UserJWTTokenRefreshFailed
@@ -230,21 +226,19 @@ describe('Check JWT Token Expired Saga', () => {
         await expectSaga(checkJWTExpiredSaga, AuthorizationApi)
             .withState({
                 ...initialState,
-                application: {
-                    eventsState: {...initialEventsState},
-                    authorizationState: {
-                        ...initialAuthorizationState,
-                        jwtToken: {
-                            token: JWT_TOKEN,
-                            expiresIn: generateInvalidTokenExpiration()
-                        },
-                        refreshToken: {
-                            token: REFRESH_TOKEN,
-                            expiresIn: generateValidTokenExpiration()
-                        }
+                eventsState: {...initialEventsState},
+                authorizationState: {
+                    ...initialAuthorizationState,
+                    jwtToken: {
+                        token: JWT_TOKEN,
+                        expiresIn: generateInvalidTokenExpiration()
+                    },
+                    refreshToken: {
+                        token: REFRESH_TOKEN,
+                        expiresIn: generateValidTokenExpiration()
                     }
-
                 }
+
             })
             .put({
                 type: Types.RefreshUserJWT
@@ -260,18 +254,16 @@ describe('Check JWT Token Expired Saga', () => {
         await expectSaga(checkJWTExpiredSaga, AuthorizationApi)
             .withState({
                 ...initialState,
-                application: {
-                    eventsState: {...initialEventsState},
-                    authorizationState: {
-                        ...initialAuthorizationState,
-                        jwtToken: {
-                            token: JWT_TOKEN,
-                            expiresIn: generateInvalidTokenExpiration()
-                        },
-                        refreshToken: {
-                            token: REFRESH_TOKEN,
-                            expiresIn: generateInvalidTokenExpiration()
-                        }
+                eventsState: {...initialEventsState},
+                authorizationState: {
+                    ...initialAuthorizationState,
+                    jwtToken: {
+                        token: JWT_TOKEN,
+                        expiresIn: generateInvalidTokenExpiration()
+                    },
+                    refreshToken: {
+                        token: REFRESH_TOKEN,
+                        expiresIn: generateInvalidTokenExpiration()
                     }
 
                 }
