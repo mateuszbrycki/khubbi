@@ -25,7 +25,8 @@ export class EventDate {
 
     public static ofDateAndTime(date: string): EventDate {
         return new EventDate(LocalDateTime.parse(date)
-            .atZone(ZoneId.SYSTEM));
+            .atZone(ZoneId.SYSTEM)
+            .withFixedOffsetZone());
     }
 
 }
