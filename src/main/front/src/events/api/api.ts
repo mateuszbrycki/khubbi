@@ -10,8 +10,24 @@ export interface EventsHttpApi {
 
 const Api: EventsHttpApi = {
     fetchEvents: () => {
-        return axios.get(`http://localhost:8080/events`)
-            .then(res => res.data)
+        return axios.get<[{
+            note: string,
+            date: string,
+            id: string
+        }]>(`http://localhost:8080/events`)
+            .then(res => List(res.data)
+                .map((responseEvent: {
+                    note: string,
+                    date: string,
+                    id: string
+                }) => {
+                    return {
+                        note: responseEvent.note,
+                        date: EventDate.ofZoneDateAndTime(responseEvent.date),
+                        id: responseEvent.id
+                    }
+                })
+            )
     },
     addEvent: (note: string, date: EventDate) => {
         return axios.post(`http://localhost:8080/event`, {

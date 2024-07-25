@@ -24,7 +24,8 @@ const EventsTimeline: React.FC<EventsTimelineProps & EventsTimelineActionProps> 
             <h1>Events</h1>
         </Row>
         <Row>
-            {events ? events.map(event => <li key={event.id}>{event.note} ({event.date.toString()})</li>) : <></>}
+            {events ? events.map(event => <li
+                key={event.id}>{event.note} ({event.date.format("dd-MM-yyyy HH:mm")})</li>) : <></>}
         </Row>
     </Container>)
 

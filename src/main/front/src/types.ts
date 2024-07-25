@@ -32,6 +32,10 @@ export class EventDate {
             .atZone(ZoneId.SYSTEM));
     }
 
+    public static ofZoneDateAndTime(date: string): EventDate {
+        return new EventDate(ZonedDateTime.parse(date));
+    }
+
 }
 
 export interface Event {
