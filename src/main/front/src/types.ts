@@ -19,13 +19,17 @@ export class EventDate {
         return this.value.format(DateTimeFormatter.ISO_OFFSET_DATE_TIME);
     }
 
+    public atUTC(): EventDate {
+        return new EventDate(this.value.withZoneSameLocal(ZoneId.UTC))
+    }
+
     public static now(): EventDate {
         return new EventDate(ZonedDateTime.now());
     }
 
     public static ofDateAndTime(date: string): EventDate {
         return new EventDate(LocalDateTime.parse(date)
-            .atZone(ZoneId.UTC));
+            .atZone(ZoneId.SYSTEM));
     }
 
 }
