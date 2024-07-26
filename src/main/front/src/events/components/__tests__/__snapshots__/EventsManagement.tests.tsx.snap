@@ -120,6 +120,127 @@ exports[`renders management bar with AddNote form open 1`] = `
 </React.Fragment>
 `;
 
+exports[`renders management bar with AddPhoto form open 1`] = `
+<React.Fragment>
+  <Container
+    className="justify-content-center"
+  >
+    <Row>
+      Immutable.List [
+        <Col>
+          <Button
+            className="btn-light d-inline m-3 "
+            data-testid="show-add-Note-button"
+            onClick={[Function]}
+          >
+            Note
+             
+            <ForwardRef
+              className="me-2"
+              color="currentColor"
+              size="1em"
+              title={null}
+            />
+          </Button>
+        </Col>,
+        <Col>
+          <Button
+            className="btn-light d-inline m-3  active"
+            data-testid="show-add-Picture-button"
+            onClick={[Function]}
+          >
+            Picture
+             
+            <ForwardRef
+              className="me-2"
+              color="currentColor"
+              size="1em"
+              title={null}
+            />
+          </Button>
+        </Col>,
+        <Col>
+          <Button
+            className="btn-light d-inline m-3 "
+            data-testid="show-add-Event-button"
+            onClick={[Function]}
+          >
+            Event
+             
+            <ForwardRef
+              className="me-2"
+              color="currentColor"
+              size="1em"
+              title={null}
+            />
+          </Button>
+        </Col>,
+        <Col>
+          <Button
+            className="btn-light d-inline m-3 "
+            data-testid="show-add-Expense-button"
+            onClick={[Function]}
+          >
+            Expense
+             
+            <ForwardRef
+              className="me-2"
+              color="currentColor"
+              size="1em"
+              title={null}
+            />
+          </Button>
+        </Col>,
+        <Col>
+          <Button
+            className="btn-light d-inline m-3 "
+            data-testid="show-add-Reminder-button"
+            onClick={[Function]}
+          >
+            Reminder
+             
+            <ForwardRef
+              className="me-2"
+              color="currentColor"
+              size="1em"
+              title={null}
+            />
+          </Button>
+        </Col>,
+      ]
+    </Row>
+    <Row
+      className="justify-content-center"
+    >
+      <div
+        className="col-6"
+      >
+        <Row
+          className="justify-content-end mb-3"
+        >
+          <ForwardRef
+            className="col-1"
+            color="currentColor"
+            data-testid="close-add-event-form-button"
+            onClick={[Function]}
+            size="1em"
+            title={null}
+            type="submit"
+          />
+        </Row>
+        <Row>
+          <AddPhotoForm
+            addPhoto={[Function]}
+            currentDateProvider={[Function]}
+            data-testid="addphoto-form"
+          />
+        </Row>
+      </div>
+    </Row>
+  </Container>
+</React.Fragment>
+`;
+
 exports[`renders management bar without any form open 1`] = `
 <React.Fragment>
   <Container

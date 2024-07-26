@@ -7,6 +7,7 @@ enum Types {
     OpenAddEventForm = "OPEN_ADD_EVENT_FORM",
     CloseAddEventForm = "CLOSE_ADD_EVENT_FORM",
     AddNote = "ADD_NOTE",
+    AddPhoto = "ADD_PHOTO",
 }
 
 export interface LoadEvents {
@@ -36,6 +37,15 @@ export interface AddNote {
     readonly payload: {
         note: string,
         date: EventDate
+    }
+}
+
+export interface AddPhoto {
+    readonly type: Types.AddPhoto
+    readonly payload: {
+        description: string,
+        date: EventDate,
+        photo: File
     }
 }
 
@@ -69,11 +79,21 @@ const AddNoteAction = (note: string, date: EventDate) => ({
     }
 })
 
+const AddPhotoAction = (description: string, photo: File, date: EventDate) => ({
+    type: Types.AddPhoto,
+    payload: {
+        description: description,
+        date: date,
+        photo: photo
+    }
+})
+
 export {
     Types,
     LoadEventsAction,
     EventsLoadedAction,
     OpenAddEventFormAction,
     CloseAddEventFormAction,
-    AddNoteAction
+    AddNoteAction,
+    AddPhotoAction
 }

@@ -38,6 +38,7 @@ const AddNoteForm: React.FC<AddNoteFormProps & AddNoteFormActionProps> = (props)
             <Form.Group as={Col} controlId="note">
                 <Form.Control as="textarea"
                               data-testid="note-textarea"
+                              placeholder="Your note"
                               rows={5}
                               value={note}
                               onChange={(event) => setNote(event.target.value)}

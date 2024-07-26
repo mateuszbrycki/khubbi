@@ -1,9 +1,24 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`renders form 1`] = `
+exports[`should render form 1`] = `
 <Form
   onSubmit={[Function]}
 >
+  <Row
+    className="mb-3"
+  >
+    <FormGroup
+      className="mb-3"
+      controlId="formFile"
+    >
+      <FormControl
+        accept=".png,.jpg,.jpeg,.webp"
+        data-testid="photo-file"
+        onChange={[Function]}
+        type="file"
+      />
+    </FormGroup>
+  </Row>
   <Row
     className="mb-3"
   >
@@ -14,13 +29,13 @@ exports[`renders form 1`] = `
           "render": [Function],
         }
       }
-      controlId="note"
+      controlId="description"
     >
       <FormControl
         as="textarea"
-        data-testid="note-textarea"
+        data-testid="photo-description"
         onChange={[Function]}
-        placeholder="Your note"
+        placeholder="Photo description"
         rows={5}
         value=""
       />
@@ -36,10 +51,33 @@ exports[`renders form 1`] = `
           "render": [Function],
         }
       }
-      controlId="noteAddDate"
+      controlId="overridePhotoDate"
+    >
+      <FormCheck
+        checked={false}
+        data-testid="photo-overridePhotoDate"
+        id="overridePhotoDate-checkbox"
+        label="Override photo date"
+        onChange={[Function]}
+        type="checkbox"
+      />
+    </FormGroup>
+  </Row>
+  <Row
+    className="mb-3"
+  >
+    <FormGroup
+      as={
+        {
+          "$$typeof": Symbol(react.forward_ref),
+          "render": [Function],
+        }
+      }
+      controlId="photoAddDate"
     >
       <FormControl
-        data-testid="note-add-date"
+        data-testid="photo-add-date"
+        disabled={true}
         onChange={[Function]}
         type="date"
         value="2024-07-12"
@@ -52,10 +90,11 @@ exports[`renders form 1`] = `
           "render": [Function],
         }
       }
-      controlId="noteAddTime"
+      controlId="photoAddTime"
     >
       <FormControl
-        data-testid="note-add-time"
+        data-testid="photo-add-time"
+        disabled={true}
         onChange={[Function]}
         type="time"
         value="20:00"
@@ -71,10 +110,10 @@ exports[`renders form 1`] = `
       controlId="submitForm"
     >
       <Button
-        data-testid="add-note-button"
+        data-testid="add-photo-button"
         type="submit"
       >
-        Add note
+        Add photo
       </Button>
     </FormGroup>
   </Row>

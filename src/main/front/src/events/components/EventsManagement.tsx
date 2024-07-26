@@ -7,6 +7,7 @@ import {Col, Row} from "react-bootstrap";
 import Container from "react-bootstrap/Container";
 import {EventDate, EventForms} from "../../types";
 import AddNoteForm from "./AddNoteForm";
+import AddPhotoForm from "./AddPhotoForm";
 
 export interface EventsManagementProps {
     readonly showEventForm: EventForms | null
@@ -16,11 +17,12 @@ export interface EventsManagementActionProps {
     readonly openAddEventForm: (type: EventForms) => void,
     readonly closeAddEventForm: () => void,
     readonly addNote: (note: string, date: EventDate) => void
+    readonly addPhoto: (description: string, photo: File, date: EventDate) => void
 }
 
 const EventsManagement: React.FC<EventsManagementProps & EventsManagementActionProps> = (props) => {
 
-    const {showEventForm, openAddEventForm, closeAddEventForm, addNote} = props
+    const {showEventForm, openAddEventForm, closeAddEventForm, addNote, addPhoto} = props
 
     const buttons: List<JSX.Element> = List.of({
         eventForm: EventForms.NOTE,
@@ -43,6 +45,22 @@ const EventsManagement: React.FC<EventsManagementProps & EventsManagementActionP
         data-testid={`show-add-${form.eventForm.name}-button`}
     >{form.eventForm.name} {form.icon}</Button></Col>)
 
+    const renderForm = (form: EventForms) => {
+        switch (form) {
+            case EventForms.NOTE:
+                return <AddNoteForm
+                    addNote={addNote}
+                    currentDateProvider={() => EventDate.now()}/>
+            case EventForms.PICTURE:
+                return <AddPhotoForm
+                    data-testid="addphoto-form"
+                    addPhoto={addPhoto}
+                    currentDateProvider={() => EventDate.now()}/>
+            default:
+                return <>No form yet</>
+        }
+    }
+
     return <>
         <Container className="justify-content-center">
             <Row>
@@ -61,9 +79,7 @@ const EventsManagement: React.FC<EventsManagementProps & EventsManagementActionP
                             : <></>}
                     </Row>
                     <Row>
-                        {showEventForm === EventForms.NOTE ? <AddNoteForm
-                            addNote={addNote}
-                            currentDateProvider={() => EventDate.now()}/> : <></>}
+                        {showEventForm !== null ? renderForm(showEventForm) : <></>}
                     </Row>
                 </div>
             </Row>

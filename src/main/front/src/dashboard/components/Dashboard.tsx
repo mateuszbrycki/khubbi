@@ -14,10 +14,11 @@ export interface DashboardActionProps {
     readonly openAddEventForm: (type: EventForms) => void,
     readonly closeAddEventForm: () => void
     readonly addNote: (note: string, date: EventDate) => void
+    readonly addPhoto: (description: string, photo: File, date: EventDate) => void
 }
 
 const Dashboard: React.FC<DashboardProps & DashboardActionProps> = (props) => {
-    const {events, showEventForm, loadEvents, openAddEventForm, closeAddEventForm, addNote} = props
+    const {events, showEventForm, loadEvents, openAddEventForm, closeAddEventForm, addNote, addPhoto} = props
 
     return <>
         <div className="d-flex justify-content-center">
@@ -25,6 +26,7 @@ const Dashboard: React.FC<DashboardProps & DashboardActionProps> = (props) => {
                               openAddEventForm={openAddEventForm}
                               closeAddEventForm={closeAddEventForm}
                               addNote={addNote}
+                              addPhoto={addPhoto}
             />
         </div>
 

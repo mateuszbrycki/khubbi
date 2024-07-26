@@ -2,7 +2,7 @@ import {connect, MapDispatchToProps, MapStateToProps} from 'react-redux'
 import {ApplicationState} from "../../store/state";
 import Dashboard, {DashboardActionProps, DashboardProps} from "../components/Dashboard";
 import {
-    AddNoteAction,
+    AddNoteAction, AddPhotoAction,
     CloseAddEventFormAction,
     LoadEventsAction,
     OpenAddEventFormAction
@@ -20,7 +20,8 @@ const mapDispatchToProps: MapDispatchToProps<DashboardActionProps, {}> = (dispat
     loadEvents: () => dispatch(LoadEventsAction()),
     openAddEventForm: (type: EventForms) => dispatch(OpenAddEventFormAction(type)),
     closeAddEventForm: () => dispatch(CloseAddEventFormAction()),
-    addNote: (note: string, date: EventDate) => dispatch(AddNoteAction(note, date))
+    addNote: (note: string, date: EventDate) => dispatch(AddNoteAction(note, date)),
+    addPhoto: (description: string, photo: File, date: EventDate) => dispatch(AddPhotoAction(description, photo, date))
 })
 
 const DashboardContainer = connect(

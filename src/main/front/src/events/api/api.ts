@@ -6,6 +6,7 @@ import axios from "axios";
 export interface EventsHttpApi {
     readonly fetchEvents: () => Promise<List<Event>>
     readonly addEvent: (note: string, date: EventDate) => Promise<any>
+    readonly addPhoto: (description: string, photo: File, date: EventDate) => Promise<any>
 }
 
 const Api: EventsHttpApi = {
@@ -34,6 +35,15 @@ const Api: EventsHttpApi = {
             "note": note,
             "date": date.toISODateTime()
         })
+            .then(res => res.data)
+    },
+    addPhoto: (description: string, photo: File, date: EventDate) => {
+        const formData: FormData = new FormData()
+        formData.append("description", description)
+        formData.append("date", date.toISODateTime())
+        formData.append("photo", photo)
+
+        return axios.post(`http://localhost:8080/event`, formData)
             .then(res => res.data)
     }
 }

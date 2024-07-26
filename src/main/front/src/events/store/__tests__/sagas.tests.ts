@@ -1,4 +1,4 @@
-import {addNoteSaga, loadEventsSaga} from "../sagas";
+import {addNoteSaga, addPhotoSaga, loadEventsSaga} from "../sagas";
 import {expectSaga} from "redux-saga-test-plan";
 import {Types} from "../actions";
 import {EventsApi, EventsHttpApi} from "../../api/api";
@@ -60,7 +60,7 @@ describe('Load events Saga', () => {
     })
 })
 
-describe('Add event saga', () => {
+describe('Add note saga', () => {
     it('pushes success action with details on success', async () => {
         const addEventMock = jest.fn(() => Promise.resolve());
 
@@ -82,6 +82,33 @@ describe('Add event saga', () => {
             .run()
             .then(() => {
                 expect(addEventMock).toHaveBeenCalled()
+            })
+    })
+})
+
+describe('Add photo saga', () => {
+    it('pushes success action with details on success', async () => {
+        const addPhotoMock = jest.fn(() => Promise.resolve());
+
+        const api: EventsHttpApi = {
+            ...EventsApi,
+            addPhoto: addPhotoMock
+        }
+        await expectSaga(addPhotoSaga, api)
+            .put({
+                type: Types.LoadEvents,
+            })
+            .dispatch({
+                type: Types.AddPhoto,
+                payload: {
+                    description: "description-1",
+                    file: new File(["(⌐□_□)"], "image.png", {type: "image/png", lastModified: 1722023600022}),
+                    date: EventDate.ofDateAndTime("2024-07-12T20:00"),
+                }
+            })
+            .run()
+            .then(() => {
+                expect(addPhotoMock).toHaveBeenCalled()
             })
     })
 })

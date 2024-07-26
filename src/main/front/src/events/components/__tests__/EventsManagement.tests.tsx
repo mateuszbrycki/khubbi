@@ -11,6 +11,7 @@ describe('renders management bar', () => {
             openAddEventForm={() => null}
             closeAddEventForm={() => null}
             addNote={() => null}
+            addPhoto={() => null}
         />)
         expect(renderer.getRenderOutput()).toMatchSnapshot()
     });
@@ -22,6 +23,19 @@ describe('renders management bar', () => {
             openAddEventForm={() => null}
             closeAddEventForm={() => null}
             addNote={() => null}
+            addPhoto={() => null}
+        />)
+        expect(renderer.getRenderOutput()).toMatchSnapshot()
+    });
+
+    it('with AddPhoto form open', () => {
+        const renderer = ShallowRenderer.createRenderer()
+        renderer.render(<EventsManagement
+            showEventForm={EventForms.PICTURE}
+            openAddEventForm={() => null}
+            closeAddEventForm={() => null}
+            addNote={() => null}
+            addPhoto={() => null}
         />)
         expect(renderer.getRenderOutput()).toMatchSnapshot()
     });
@@ -35,6 +49,7 @@ test("should open the form after clicking at the button and mark it active", asy
         openAddEventForm={showEventFormMock}
         closeAddEventForm={() => null}
         addNote={() => null}
+        addPhoto={() => null}
     />);
 
     await act(async () => {
@@ -51,6 +66,7 @@ test("button for open form for should have `active` class", async () => {
         openAddEventForm={() => null}
         closeAddEventForm={() => null}
         addNote={() => null}
+        addPhoto={() => null}
     />);
 
     expect(getByTestId("show-add-Note-button").getAttribute("class")).toContain("active")
@@ -65,6 +81,7 @@ test("should close the form after clicking at the button", async () => {
         openAddEventForm={() => null}
         closeAddEventForm={closeAddEventFormMock}
         addNote={() => null}
+        addPhoto={() => null}
     />);
 
     await act(async () => {
@@ -81,6 +98,7 @@ test("should close the form after clicking at the close button", async () => {
         openAddEventForm={() => null}
         closeAddEventForm={closeAddEventFormMock}
         addNote={() => null}
+        addPhoto={() => null}
     />);
 
     await act(async () => {

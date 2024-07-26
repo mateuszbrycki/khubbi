@@ -16,6 +16,7 @@ it('renders list of events', () => {
         openAddEventForm={() => null}
         closeAddEventForm={() => null}
         addNote={() => null}
+        addPhoto={() => null}
     />)
     expect(renderer.getRenderOutput()).toMatchSnapshot()
 });
