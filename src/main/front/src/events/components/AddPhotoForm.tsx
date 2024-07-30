@@ -53,8 +53,10 @@ const AddPhotoForm: React.FC<AddPhotoFormProps & AddPhotoFormActionProps> = (pro
                                                   Instant.ofEpochMilli(file.lastModified)), ZoneId.UTC, null)
 
                                       setFile(file);
-                                      setDate(fileModifiedDate.format(DateTimeFormatter.ofPattern(DATE_FORMAT)))
-                                      setTime(fileModifiedDate.format(DateTimeFormatter.ofPattern(TIME_FORMAT)))
+                                      setDate(fileModifiedDate.withZoneSameLocal(ZoneId.UTC)
+                                          .format(DateTimeFormatter.ofPattern(DATE_FORMAT)))
+                                      setTime(fileModifiedDate.withZoneSameLocal(ZoneId.UTC)
+                                          .format(DateTimeFormatter.ofPattern(TIME_FORMAT)))
                                   }
                               }}
                               accept=".png,.jpg,.jpeg,.webp"
