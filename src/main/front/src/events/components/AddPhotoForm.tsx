@@ -50,7 +50,8 @@ const AddPhotoForm: React.FC<AddPhotoFormProps & AddPhotoFormActionProps> = (pro
                                       const fileModifiedDate: ZonedDateTime =
                                           ZonedDateTime.ofLocal(
                                               LocalDateTime.ofInstant(
-                                                  Instant.ofEpochMilli(file.lastModified)), ZoneId.SYSTEM, null)
+                                                  Instant.ofEpochMilli(file.lastModified)), ZoneId.UTC, null)
+                                              .withZoneSameLocal(ZoneId.UTC)
 
                                       setFile(file);
                                       setDate(fileModifiedDate.format(DateTimeFormatter.ofPattern(DATE_FORMAT)))
