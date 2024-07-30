@@ -32,14 +32,17 @@ class EventServiceTest {
   @Test
   public void testEventSuccessfullyAdded() {
 
+    // given
     when(listEventsPort.listEvents(Anys.ANY_USER)).thenReturn(Try.success(List.empty()));
     when(addEventPort.addEvent(any()))
         .thenReturn(Try.success(new Event("new-event", ZonedDateTime.now(), Anys.ANY_USER)));
 
+    // when
     Try<AddEventUseCase.Event> result =
         this.underTest.addEvent(
             new AddEventUseCase.AddEventCommand("new-event", ZonedDateTime.now(), Anys.ANY_USER));
 
+    // then
     assertTrue(result.isSuccess());
     assertEquals("new-event", result.get().note());
   }
@@ -47,13 +50,16 @@ class EventServiceTest {
   @Test
   public void testAddingEventFailedDueToExceptionWhenAddingTheEvent() {
 
+    // given
     when(listEventsPort.listEvents(Anys.ANY_USER)).thenReturn(Try.success(List.empty()));
     when(addEventPort.addEvent(any())).thenThrow(new RuntimeException("Any random failure"));
 
+    // when
     Try<AddEventUseCase.Event> result =
         this.underTest.addEvent(
             new AddEventUseCase.AddEventCommand("new-event", ZonedDateTime.now(), Anys.ANY_USER));
 
+    // then
     assertTrue(result.isFailure());
     assertInstanceOf(RuntimeException.class, result.getCause());
   }
@@ -66,14 +72,13 @@ class EventServiceTest {
         LocalDateTime.parse("2009-12-03T10:15:30").atZone(ZoneId.systemDefault());
     ZonedDateTime secondDate =
         LocalDateTime.parse("2024-12-04T10:16:30").atZone(ZoneId.systemDefault());
-    ;
 
     when(listEventsPort.listEvents(Anys.ANY_USER))
         .thenReturn(
             Try.success(
                 List.of(
                     new Event("first-event", firstDate, Anys.ANY_USER),
-                    new Event("second-event", secondDate, Anys.ANY_USER))));
+                    new Event( d"second-event", secondDate, Anys.ANY_USER))));
 
     // when
     Try<List<ListEventsUseCase.Event>> result =

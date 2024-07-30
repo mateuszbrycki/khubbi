@@ -1,5 +1,6 @@
 package com.bookkeeper.app.adapter.in.web;
 
+import static com.bookkeeper.app.common.JsonUtils.asJsonString;
 import static org.hamcrest.Matchers.containsString;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
@@ -13,10 +14,6 @@ import com.bookkeeper.app.application.port.in.AddEventUseCase;
 import com.bookkeeper.app.application.port.in.FindUserUseCase;
 import com.bookkeeper.app.common.Anys;
 import com.bookkeeper.app.common.TestSecurityConfiguration;
-import com.fasterxml.jackson.databind.DeserializationFeature;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.SerializationFeature;
-import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import io.vavr.control.Try;
 import java.time.ZonedDateTime;
 import java.util.UUID;
@@ -124,16 +121,5 @@ class EventControllerTest {
         .andExpect(content().string(containsString(event.note())));
   }
 
-  private final String asJsonString(Object obj) {
-    try {
-      return new ObjectMapper()
-          .registerModule(new JavaTimeModule())
-          .disable(DeserializationFeature.ADJUST_DATES_TO_CONTEXT_TIME_ZONE)
-          .disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS)
-          .enable(SerializationFeature.WRITE_DATES_WITH_ZONE_ID)
-          .writeValueAsString(obj);
-    } catch (Exception e) {
-      throw new RuntimeException(e);
-    }
-  }
+
 }

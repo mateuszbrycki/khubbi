@@ -32,18 +32,20 @@ const Api: EventsHttpApi = {
     },
     addEvent: (note: string, date: EventDate) => {
         return axios.post(`http://localhost:8080/event`, {
-            "note": note,
+            "payload": {
+                "note": note
+            },
             "date": date.toISODateTime()
         })
             .then(res => res.data)
     },
     addPhoto: (description: string, photo: File, date: EventDate) => {
         const formData: FormData = new FormData()
-        formData.append("description", description)
         formData.append("date", date.toISODateTime())
-        formData.append("photo", photo)
-
-        return axios.post(`http://localhost:8080/event`, formData)
+        formData.append("payload.description", description)
+        formData.append("payload.photo", photo)
+        // TODO mateusz.brycki  czy to się uda
+        return axios.post(`http://localhost:8080/photo`, formData)
             .then(res => res.data)
     }
 }

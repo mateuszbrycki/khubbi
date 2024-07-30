@@ -1,5 +1,6 @@
 package com.bookkeeper.app.adapter.in.web;
 
+import static com.bookkeeper.app.common.JsonUtils.asJsonString;
 import static org.hamcrest.Matchers.containsString;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
@@ -18,7 +19,6 @@ import com.bookkeeper.app.application.domain.service.UserWithEmailExistsExceptio
 import com.bookkeeper.app.application.port.in.AddUserUseCase;
 import com.bookkeeper.app.common.Anys;
 import com.bookkeeper.app.common.TestSecurityConfiguration;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import io.vavr.control.Try;
 import java.time.Instant;
 import java.util.Collection;
@@ -235,14 +235,6 @@ class AuthenticationControllerTest {
 
     // when & then
     this.mockMvc.perform(get("/auth/logout")).andDo(print()).andExpect(status().isForbidden());
-  }
-
-  private final String asJsonString(Object obj) {
-    try {
-      return new ObjectMapper().writeValueAsString(obj);
-    } catch (Exception e) {
-      throw new RuntimeException(e);
-    }
   }
 
   static class TestAuthentication implements Authentication {

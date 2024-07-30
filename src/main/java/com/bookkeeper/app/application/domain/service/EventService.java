@@ -9,8 +9,6 @@ import io.vavr.control.Try;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import java.time.LocalDateTime;
-
 public class EventService implements AddEventUseCase, ListEventsUseCase {
 
   private static final Logger LOG = LogManager.getLogger(EventService.class);

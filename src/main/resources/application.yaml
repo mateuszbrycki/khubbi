@@ -7,7 +7,7 @@ security.jwt.expiration-time: 3600000
 # 30 days in milliseconds
 security.refresh-token.expiration-time: 2592000000
 
-logging.level.root: INFO
+logging.level.root: DEBUG
 
 spring:
   jackson:
