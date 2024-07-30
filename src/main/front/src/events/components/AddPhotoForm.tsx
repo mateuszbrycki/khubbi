@@ -4,7 +4,7 @@ import {Col, Row} from "react-bootstrap";
 import Form from "react-bootstrap/Form";
 import Button from "react-bootstrap/Button";
 import {DATE_FORMAT, TIME_FORMAT} from "./AddNoteForm";
-import {DateTimeFormatter, Instant, LocalDateTime} from "js-joda";
+import {DateTimeFormatter, Instant, LocalDateTime, ZonedDateTime, ZoneId, ZoneOffset} from "js-joda";
 
 export interface AddPhotoFormProps {
 }
@@ -47,7 +47,10 @@ const AddPhotoForm: React.FC<AddPhotoFormProps & AddPhotoFormActionProps> = (pro
                               onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
                                   if (event.target.files) {
                                       const file: File = event.target.files[0]
-                                      const fileModifiedDate: LocalDateTime = LocalDateTime.ofInstant(Instant.ofEpochMilli(file.lastModified))
+                                      const fileModifiedDate: ZonedDateTime =
+                                          ZonedDateTime.ofLocal(
+                                              LocalDateTime.ofInstant(
+                                                  Instant.ofEpochMilli(file.lastModified)), ZoneId.SYSTEM, null)
 
                                       setFile(file);
                                       setDate(fileModifiedDate.format(DateTimeFormatter.ofPattern(DATE_FORMAT)))
