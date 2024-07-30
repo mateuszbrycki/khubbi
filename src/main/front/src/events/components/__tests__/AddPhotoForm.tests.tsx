@@ -3,6 +3,7 @@ import AddPhotoForm from "../AddPhotoForm";
 import {EventDate} from "../../../types";
 import {act, fireEvent, render} from "@testing-library/react";
 import {DATE_FORMAT, TIME_FORMAT} from "../AddNoteForm";
+import {DateTimeFormatter, Instant, ZoneId} from "js-joda";
 
 const testCurrentDateProvider = () => EventDate.ofDateAndTime("2024-07-12T20:00")
 const addPhotoMock = jest.fn(() => Promise.resolve());
@@ -25,7 +26,13 @@ test('should call add photo', async () => {
         getByTestId("add-photo-button").click();
     })
 
-    expect(addPhotoMock).toHaveBeenCalledWith("test-description", file, EventDate.ofDateAndTime("2024-07-26T19:53"));
+    const fileLastModified = Instant.ofEpochMilli(file.lastModified).atZone(ZoneId.SYSTEM)
+    const fileDate = fileLastModified
+        .format(DateTimeFormatter.ofPattern(DATE_FORMAT))
+    const fileTime = fileLastModified
+        .format(DateTimeFormatter.ofPattern(TIME_FORMAT))
+
+    expect(addPhotoMock).toHaveBeenCalledWith("test-description", file, EventDate.ofDateAndTime(`${fileDate}T${fileTime}`));
 
 })
 
