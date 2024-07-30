@@ -53,9 +53,9 @@ const AddPhotoForm: React.FC<AddPhotoFormProps & AddPhotoFormActionProps> = (pro
                                                   Instant.ofEpochMilli(file.lastModified)), ZoneId.UTC, null)
 
                                       setFile(file);
-                                      setDate(fileModifiedDate.withZoneSameLocal(ZoneId.UTC)
+                                      setDate(fileModifiedDate
                                           .format(DateTimeFormatter.ofPattern(DATE_FORMAT)))
-                                      setTime(fileModifiedDate.withZoneSameLocal(ZoneId.UTC)
+                                      setTime(fileModifiedDate
                                           .format(DateTimeFormatter.ofPattern(TIME_FORMAT)))
                                   }
                               }}

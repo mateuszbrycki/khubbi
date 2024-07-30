@@ -25,7 +25,7 @@ test('should call add photo', async () => {
         getByTestId("add-photo-button").click();
     })
 
-    expect(addPhotoMock).toHaveBeenCalledWith("test-description", file, EventDate.ofDateAndTime("2024-07-26T21:53"));
+    expect(addPhotoMock).toHaveBeenCalledWith("test-description", file, EventDate.ofDateAndTime("2024-07-26T21:53").atUTC());
 
 })
 
@@ -42,7 +42,7 @@ test('should call add photo with override date', async () => {
         getByTestId("add-photo-button").click();
     })
 
-    expect(addPhotoMock).toHaveBeenCalledWith("test-description", file, EventDate.ofDateAndTime("2023-03-12T18:47"));
+    expect(addPhotoMock).toHaveBeenCalledWith("test-description", file, EventDate.ofDateAndTime("2023-03-12T18:47").atUTC());
 
 })
 
@@ -59,7 +59,7 @@ test('should reset form after submit', async () => {
         getByTestId("add-photo-button").click();
     })
 
-    expect(addPhotoMock).toHaveBeenCalledWith("test-description", file, EventDate.ofDateAndTime("2023-03-12T18:47"));
+    expect(addPhotoMock).toHaveBeenCalledWith("test-description", file, EventDate.ofDateAndTime("2023-03-12T18:47").atUTC());
 
     expect(getByTestId("photo-add-date").getAttribute("value")).toEqual(testCurrentDateProvider().format(DATE_FORMAT));
     expect(getByTestId("photo-add-time").getAttribute("value")).toEqual(testCurrentDateProvider().format(TIME_FORMAT));
