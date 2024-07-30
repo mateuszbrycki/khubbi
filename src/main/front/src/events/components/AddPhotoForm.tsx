@@ -48,9 +48,7 @@ const AddPhotoForm: React.FC<AddPhotoFormProps & AddPhotoFormActionProps> = (pro
                                   if (event.target.files) {
                                       const file: File = event.target.files[0]
                                       const fileModifiedDate: ZonedDateTime =
-                                          ZonedDateTime.ofLocal(
-                                              LocalDateTime.ofInstant(
-                                                  Instant.ofEpochMilli(file.lastModified)), ZoneId.UTC, null)
+                                          Instant.ofEpochMilli(file.lastModified).atZone(ZoneId.UTC)
 
                                       setFile(file);
                                       setDate(fileModifiedDate
