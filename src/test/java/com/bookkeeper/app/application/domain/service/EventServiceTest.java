@@ -78,7 +78,7 @@ class EventServiceTest {
             Try.success(
                 List.of(
                     new Event("first-event", firstDate, Anys.ANY_USER),
-                    new Event( d"second-event", secondDate, Anys.ANY_USER))));
+                    new Event( "second-event", secondDate, Anys.ANY_USER))));
 
     // when
     Try<List<ListEventsUseCase.Event>> result =

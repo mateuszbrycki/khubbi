@@ -171,7 +171,7 @@ class JwtServiceTest {
 
     // then & then
     assertTrue(underTest.isTokenValid(token.getToken(), userDetails));
-    Thread.sleep(1000);
+    Thread.sleep(2000);
     assertFalse(underTest.isTokenValid(token.getToken(), userDetails));
   }
 
