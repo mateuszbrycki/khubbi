@@ -5,7 +5,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
 import com.bookkeeper.app.application.domain.model.User;
-import com.bookkeeper.app.application.port.in.AddEventUseCase;
+import com.bookkeeper.app.application.port.in.AddNoteUseCase;
 import com.bookkeeper.app.application.port.in.AddUserUseCase;
 import com.bookkeeper.app.application.port.out.AddUserPort;
 import com.bookkeeper.app.application.port.out.ListUsersPort;
@@ -26,12 +26,12 @@ class UserServiceTest {
   @Mock private AddUserPort addUserPort;
 
   @Mock private ListUsersPort listUsersPort;
-  @Mock private AddEventUseCase addEventUseCase;
+  @Mock private AddNoteUseCase addNoteUseCase;
 
   @InjectMocks private UserService underTest;
 
   @Test
-  public void shouldReturnUserAndAddsDefaultEventsWhenAddingUserSucceeded() {
+  public void shouldReturnUserAndAddsDefaultNotesWhenAddingUserSucceeded() {
 
     // given
     when(listUsersPort.listUsers()).thenReturn(Try.success(List.empty()));

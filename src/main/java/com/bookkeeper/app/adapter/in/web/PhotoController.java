@@ -33,7 +33,7 @@ public class PhotoController {
   }
 
   @PostMapping(consumes = "application/x-www-form-urlencoded")
-  public ResponseEntity<?> addEvent(@ModelAttribute Photo photo, Authentication authentication) {
+  public ResponseEntity<?> addPhoto(@ModelAttribute Photo photo, Authentication authentication) {
     LOG.info("Received add photo request {}", photo);
 
     return findUserUseCase

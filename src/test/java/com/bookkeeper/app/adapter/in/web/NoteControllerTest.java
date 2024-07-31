@@ -9,8 +9,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-import com.bookkeeper.app.application.domain.service.EventWithNameExistsException;
-import com.bookkeeper.app.application.port.in.AddEventUseCase;
+import com.bookkeeper.app.application.domain.service.NoteWithNameExistsException;
+import com.bookkeeper.app.application.port.in.AddNoteUseCase;
 import com.bookkeeper.app.application.port.in.FindUserUseCase;
 import com.bookkeeper.app.common.Anys;
 import com.bookkeeper.app.common.TestSecurityConfiguration;
@@ -27,12 +27,12 @@ import org.springframework.security.test.context.support.WithUserDetails;
 import org.springframework.test.web.servlet.MockMvc;
 
 @Import({TestSecurityConfiguration.class})
-@WebMvcTest(EventController.class)
+@WebMvcTest(NoteController.class)
 @WithUserDetails(Anys.ANY_EMAIL)
-class EventControllerTest {
+class NoteControllerTest {
   @Autowired private MockMvc mockMvc;
 
-  @MockBean private AddEventUseCase addEventUseCase;
+  @MockBean private AddNoteUseCase addNoteUseCase;
 
   @MockBean private FindUserUseCase findUserUseCase;
 
@@ -46,79 +46,79 @@ class EventControllerTest {
     // when & then
     this.mockMvc
         .perform(
-            post("/event")
+            post("/note")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(asJsonString(new EventController.Event("any-name", ZonedDateTime.now()))))
+                .content(asJsonString(new NoteController.Note(new NoteController.Payload("any-name"), ZonedDateTime.now()))))
         .andDo(print())
         .andExpect(status().isInternalServerError())
         .andExpect(content().string(containsString("Cannot find the owner")));
   }
 
   @Test
-  public void shouldReturnRequestErrorWhenEventAdditionFailedDueToAnyError() throws Exception {
+  public void shouldReturnRequestErrorWhenNoteAdditionFailedDueToAnyError() throws Exception {
 
     // given
     ZonedDateTime date = ZonedDateTime.now();
     when(findUserUseCase.findUser(any())).thenReturn(Try.success(Anys.ANY_USER));
-    when(addEventUseCase.addEvent(
-            new AddEventUseCase.AddEventCommand("any-name", date, Anys.ANY_USER)))
-        .thenReturn(Try.failure(new Exception("Cannot add an event")));
+    when(addNoteUseCase.addNote(
+            new AddNoteUseCase.AddNoteCommand("any-name", date, Anys.ANY_USER)))
+        .thenReturn(Try.failure(new Exception("Cannot add a note")));
 
     // when & then
     this.mockMvc
         .perform(
-            post("/event")
+            post("/note")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(asJsonString(new EventController.Event("any-name", date))))
+                .content(asJsonString(new NoteController.Note(new NoteController.Payload("any-name"), date))))
         .andDo(print())
         .andExpect(status().isInternalServerError())
-        .andExpect(content().string(containsString("Cannot add an event")));
+        .andExpect(content().string(containsString("Cannot add a note")));
   }
 
   @Test
-  public void shouldReturnRequestConflictWhenEventAdditionFailedDueEventWithNameExistsException()
+  public void shouldReturnRequestConflictWhenNoteAdditionFailedDueNoteWithNameExistsException()
       throws Exception {
 
     // given
     ZonedDateTime date = ZonedDateTime.now();
     when(findUserUseCase.findUser(any())).thenReturn(Try.success(Anys.ANY_USER));
-    when(addEventUseCase.addEvent(
-            new AddEventUseCase.AddEventCommand("any-name", date, Anys.ANY_USER)))
-        .thenReturn(Try.failure(new EventWithNameExistsException("Cannot add an event")));
+    when(addNoteUseCase.addNote(
+            new AddNoteUseCase.AddNoteCommand("any-name", date, Anys.ANY_USER)))
+        .thenReturn(Try.failure(new NoteWithNameExistsException("Cannot add a note")));
 
     // when & then
     this.mockMvc
         .perform(
-            post("/event")
+            post("/note")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(asJsonString(new EventController.Event("any-name", date))))
+                .content(asJsonString(new NoteController.Note(new NoteController.Payload("any-name"), date))))
         .andDo(print())
         .andExpect(status().isConflict())
-        .andExpect(content().string(containsString("Cannot add an event")));
+        .andExpect(content().string(containsString("Cannot add a note")));
   }
 
   @Test
-  public void shouldReturnCreatedWhenEventAdditionSucceeded() throws Exception {
+  public void shouldReturnCreatedWhenNoteAdditionSucceeded() throws Exception {
 
     // given
     when(findUserUseCase.findUser(any())).thenReturn(Try.success(Anys.ANY_USER));
     ZonedDateTime date = ZonedDateTime.now();
     UUID id = UUID.randomUUID();
-    AddEventUseCase.Event event = new AddEventUseCase.Event(id, "event-name", date);
-    when(addEventUseCase.addEvent(
-            new AddEventUseCase.AddEventCommand(event.note(), date, Anys.ANY_USER)))
-        .thenReturn(Try.success(event));
+    AddNoteUseCase.Note note = new AddNoteUseCase.Note(id, "note-name", date);
+    when(addNoteUseCase.addNote(
+            new AddNoteUseCase.AddNoteCommand(note.note(), date, Anys.ANY_USER)))
+        .thenReturn(Try.success(note));
 
     // when & then
     this.mockMvc
         .perform(
-            post("/event")
+            post("/note")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(asJsonString(new EventController.Event(event.note(), date))))
+                .content(asJsonString(new NoteController.Note(new NoteController.Payload(note.note()), date))))
         .andDo(print())
         .andExpect(status().isCreated())
         .andExpect(content().string(containsString(id.toString())))
-        .andExpect(content().string(containsString(event.note())));
+        .andExpect(content().string(containsString(note.note())));
   }
 
 

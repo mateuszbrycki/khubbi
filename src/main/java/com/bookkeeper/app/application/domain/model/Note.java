@@ -4,14 +4,14 @@ import java.time.ZonedDateTime;
 import java.util.Objects;
 import java.util.UUID;
 
-public class Event {
+public class Note {
 
   private final UUID id;
   private final String note;
   private final ZonedDateTime date;
   private final User owner;
 
-  public Event(String note, ZonedDateTime date, User owner) {
+  public Note(String note, ZonedDateTime date, User owner) {
     this.owner = owner;
     this.id = UUID.randomUUID();
     this.note = note;
@@ -38,11 +38,11 @@ public class Event {
   public boolean equals(Object o) {
     if (this == o) return true;
     if (o == null || getClass() != o.getClass()) return false;
-    Event event = (Event) o;
-    return Objects.equals(id, event.id)
-        && Objects.equals(note, event.note)
-        && Objects.equals(owner, event.owner)
-        && Objects.equals(date, event.date);
+    Note note = (Note) o;
+    return Objects.equals(id, note.id)
+        && Objects.equals(this.note, note.note)
+        && Objects.equals(owner, note.owner)
+        && Objects.equals(date, note.date);
   }
 
   @Override

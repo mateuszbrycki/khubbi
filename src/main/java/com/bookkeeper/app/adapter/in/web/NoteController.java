@@ -3,8 +3,8 @@ package com.bookkeeper.app.adapter.in.web;
 import static io.vavr.API.*;
 import static io.vavr.Predicates.instanceOf;
 
-import com.bookkeeper.app.application.domain.service.EventWithNameExistsException;
-import com.bookkeeper.app.application.port.in.AddEventUseCase;
+import com.bookkeeper.app.application.domain.service.NoteWithNameExistsException;
+import com.bookkeeper.app.application.port.in.AddNoteUseCase;
 import com.bookkeeper.app.application.port.in.FindUserUseCase;
 import java.time.ZonedDateTime;
 import org.apache.logging.log4j.LogManager;
@@ -18,34 +18,35 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("/event")
-public class EventController {
+@RequestMapping("/note")
+public class NoteController {
 
-  private static final Logger LOG = LogManager.getLogger(EventController.class);
+  private static final Logger LOG = LogManager.getLogger(NoteController.class);
 
-  private final AddEventUseCase addEventUseCase;
+  private final AddNoteUseCase addNoteUseCase;
   private final FindUserUseCase findUserUseCase;
 
-  public EventController(AddEventUseCase addEventUseCase, FindUserUseCase findUserUseCase) {
-    this.addEventUseCase = addEventUseCase;
+  public NoteController(AddNoteUseCase addNoteUseCase, FindUserUseCase findUserUseCase) {
+    this.addNoteUseCase = addNoteUseCase;
     this.findUserUseCase = findUserUseCase;
   }
 
   @PostMapping(consumes = "application/json", produces = "application/json")
-  public ResponseEntity<?> addEvent(@RequestBody Event event, Authentication authentication) {
-    LOG.info("Received add event request {}", event);
+  public ResponseEntity<?> addNote(@RequestBody Note note, Authentication authentication) {
+    LOG.info("Received add note request {}", note);
 
     return findUserUseCase
         .findUser(new FindUserUseCase.FindUserCommand(authentication.getName()))
-        .mapTry(user -> new AddEventUseCase.AddEventCommand(event.note(), event.date(), user))
-        .flatMap(this.addEventUseCase::addEvent)
+        .mapTry(
+            user -> new AddNoteUseCase.AddNoteCommand(note.payload().note(), note.date(), user))
+        .flatMap(this.addNoteUseCase::addNote)
         .fold(
             failure -> {
               HttpStatus status =
                   Match(failure)
                       .of(
                           Case(
-                              $(instanceOf(EventWithNameExistsException.class)),
+                              $(instanceOf(NoteWithNameExistsException.class)),
                               HttpStatus.CONFLICT),
                           Case($(), HttpStatus.INTERNAL_SERVER_ERROR));
               return new ResponseEntity<>(
@@ -54,5 +55,7 @@ public class EventController {
             result -> new ResponseEntity<>(result, HttpStatus.CREATED));
   }
 
-  record Event(String note, ZonedDateTime date) {}
+  record Payload(String note) {}
+
+  record Note(Payload payload, ZonedDateTime date) {}
 }

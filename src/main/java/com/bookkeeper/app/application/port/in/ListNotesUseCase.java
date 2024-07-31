@@ -6,11 +6,11 @@ import io.vavr.control.Try;
 import java.time.ZonedDateTime;
 import java.util.UUID;
 
-public interface ListEventsUseCase {
+public interface ListNotesUseCase {
 
-  Try<List<Event>> listEvents(ListEventsCommand command);
+  Try<List<Note>> listNotes(ListNotesCommand command);
 
-  record ListEventsCommand(User owner) {}
+  record ListNotesCommand(User owner) {}
 
-  record Event(UUID id, String note, ZonedDateTime date) {}
+  record Note(UUID id, String note, ZonedDateTime date) {}
 }

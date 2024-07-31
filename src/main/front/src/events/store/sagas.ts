@@ -15,7 +15,7 @@ function* fetchEvents(api: EventsHttpApi): Generator<any, any, List<Event>> {
 }
 
 function* addNote(api: EventsHttpApi, note: string, date: EventDate): Generator<any, any, List<Event>> {
-    return yield api.addEvent(note, date)
+    return yield api.addNote(note, date)
         .then(response => response)
         .catch(err => {
             // TODO mateusz.brycki - dispatch error and show notification

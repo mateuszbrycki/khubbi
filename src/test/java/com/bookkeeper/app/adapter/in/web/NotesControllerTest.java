@@ -8,7 +8,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 import com.bookkeeper.app.application.port.in.FindUserUseCase;
-import com.bookkeeper.app.application.port.in.ListEventsUseCase;
+import com.bookkeeper.app.application.port.in.ListNotesUseCase;
 import com.bookkeeper.app.common.Anys;
 import com.bookkeeper.app.common.TestSecurityConfiguration;
 import io.vavr.collection.List;
@@ -25,13 +25,13 @@ import org.springframework.security.test.context.support.WithUserDetails;
 import org.springframework.test.web.servlet.MockMvc;
 
 @Import(TestSecurityConfiguration.class)
-@WebMvcTest(EventsController.class)
+@WebMvcTest(NotesController.class)
 @WithUserDetails(Anys.ANY_EMAIL)
-class EventsControllerTest {
+class NotesControllerTest {
 
   @Autowired private MockMvc mockMvc;
 
-  @MockBean private ListEventsUseCase listEventsUseCase;
+  @MockBean private ListNotesUseCase listNotesUseCase;
 
   @MockBean private FindUserUseCase findUserUseCase;
 
@@ -44,56 +44,56 @@ class EventsControllerTest {
 
     // when & then
     this.mockMvc
-        .perform(get("/events"))
+        .perform(get("/notes"))
         .andDo(print())
         .andExpect(status().isInternalServerError())
         .andExpect(content().string(containsString("Cannot find the owner")));
   }
 
   @Test
-  public void shouldReturnEmptyListWhenNoEventsArePresent() throws Exception {
+  public void shouldReturnEmptyListWhenNoNotesArePresent() throws Exception {
 
     // given
     when(findUserUseCase.findUser(any())).thenReturn(Try.success(Anys.ANY_USER));
-    when(listEventsUseCase.listEvents(new ListEventsUseCase.ListEventsCommand(any())))
+    when(listNotesUseCase.listNotes(new ListNotesUseCase.ListNotesCommand(any())))
         .thenReturn(Try.success(List.empty()));
 
     // when & then
     this.mockMvc
-        .perform(get("/events"))
+        .perform(get("/notes"))
         .andDo(print())
         .andExpect(status().is2xxSuccessful())
         .andExpect(jsonPath("$").isEmpty());
   }
 
   @Test
-  public void shouldReturnListWithTwoElementsWhenTwoEventsArePresent() throws Exception {
+  public void shouldReturnListWithTwoElementsWhenTwoNotesArePresent() throws Exception {
 
     // given
     when(findUserUseCase.findUser(any())).thenReturn(Try.success(Anys.ANY_USER));
 
-    ListEventsUseCase.Event event1 =
-        new ListEventsUseCase.Event(UUID.randomUUID(), "event-1", ZonedDateTime.now());
-    ListEventsUseCase.Event event2 =
-        new ListEventsUseCase.Event(UUID.randomUUID(), "event-2", ZonedDateTime.now());
-    when(listEventsUseCase.listEvents(new ListEventsUseCase.ListEventsCommand(any())))
-        .thenReturn(Try.success(List.of(event1, event2)));
+    ListNotesUseCase.Note note1 =
+        new ListNotesUseCase.Note(UUID.randomUUID(), "note-1", ZonedDateTime.now());
+    ListNotesUseCase.Note note2 =
+        new ListNotesUseCase.Note(UUID.randomUUID(), "note-2", ZonedDateTime.now());
+    when(listNotesUseCase.listNotes(new ListNotesUseCase.ListNotesCommand(any())))
+        .thenReturn(Try.success(List.of(note1, note2)));
 
     // when & then
     this.mockMvc
-        .perform(get("/events"))
+        .perform(get("/notes"))
         .andDo(print())
         .andExpect(status().is2xxSuccessful())
-        .andExpect(jsonPath("$[0].id").value(event1.id().toString()))
-        .andExpect(jsonPath("$[0].note").value(event1.note()))
+        .andExpect(jsonPath("$[0].id").value(note1.id().toString()))
+        .andExpect(jsonPath("$[0].note").value(note1.note()))
         .andExpect(
             jsonPath("$[0].date")
-                .value(event1.date().format(DateTimeFormatter.ISO_OFFSET_DATE_TIME)))
-        .andExpect(jsonPath("$[1].id").value(event2.id().toString()))
-        .andExpect(jsonPath("$[1].note").value(event2.note()))
+                .value(note1.date().format(DateTimeFormatter.ISO_OFFSET_DATE_TIME)))
+        .andExpect(jsonPath("$[1].id").value(note2.id().toString()))
+        .andExpect(jsonPath("$[1].note").value(note2.note()))
         .andExpect(
             jsonPath("$[1].date")
-                .value(event2.date().format(DateTimeFormatter.ISO_OFFSET_DATE_TIME)));
+                .value(note2.date().format(DateTimeFormatter.ISO_OFFSET_DATE_TIME)));
   }
 
   @Test
@@ -101,10 +101,10 @@ class EventsControllerTest {
 
     // given
     when(findUserUseCase.findUser(any())).thenReturn(Try.success(Anys.ANY_USER));
-    when(listEventsUseCase.listEvents(new ListEventsUseCase.ListEventsCommand(any())))
-        .thenReturn(Try.failure(new RuntimeException("Cannot retrieve events")));
+    when(listNotesUseCase.listNotes(new ListNotesUseCase.ListNotesCommand(any())))
+        .thenReturn(Try.failure(new RuntimeException("Cannot retrieve notes")));
 
     // when & then
-    this.mockMvc.perform(get("/events")).andDo(print()).andExpect(status().isInternalServerError());
+    this.mockMvc.perform(get("/notes")).andDo(print()).andExpect(status().isInternalServerError());
   }
 }

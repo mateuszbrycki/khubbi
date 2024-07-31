@@ -5,7 +5,7 @@ import axios from "axios";
 
 export interface EventsHttpApi {
     readonly fetchEvents: () => Promise<List<Event>>
-    readonly addEvent: (note: string, date: EventDate) => Promise<any>
+    readonly addNote: (note: string, date: EventDate) => Promise<any>
     readonly addPhoto: (description: string, photo: File, date: EventDate) => Promise<any>
 }
 
@@ -15,7 +15,7 @@ const Api: EventsHttpApi = {
             note: string,
             date: string,
             id: string
-        }]>(`http://localhost:8080/events`)
+        }]>(`http://localhost:8080/notes`)
             .then(res => List(res.data)
                 .map((responseEvent: {
                     note: string,
@@ -30,8 +30,8 @@ const Api: EventsHttpApi = {
                 })
             )
     },
-    addEvent: (note: string, date: EventDate) => {
-        return axios.post(`http://localhost:8080/event`, {
+    addNote: (note: string, date: EventDate) => {
+        return axios.post(`http://localhost:8080/note`, {
             "payload": {
                 "note": note
             },

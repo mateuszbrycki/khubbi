@@ -1,7 +1,7 @@
 package com.bookkeeper.app.adapter.in.web;
 
 import com.bookkeeper.app.application.port.in.FindUserUseCase;
-import com.bookkeeper.app.application.port.in.ListEventsUseCase;
+import com.bookkeeper.app.application.port.in.ListNotesUseCase;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.http.HttpStatus;
@@ -12,29 +12,29 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("/events")
-public class EventsController {
+@RequestMapping("/notes")
+public class NotesController {
 
-  private static final Logger LOG = LogManager.getLogger(EventsController.class);
+  private static final Logger LOG = LogManager.getLogger(NotesController.class);
 
-  private final ListEventsUseCase listEventsUseCase;
+  private final ListNotesUseCase listNotesUseCase;
   private final FindUserUseCase findUserUseCase;
 
-  public EventsController(ListEventsUseCase listEventsUseCase, FindUserUseCase findUserUseCase) {
-    this.listEventsUseCase = listEventsUseCase;
+  public NotesController(ListNotesUseCase listNotesUseCase, FindUserUseCase findUserUseCase) {
+    this.listNotesUseCase = listNotesUseCase;
     this.findUserUseCase = findUserUseCase;
   }
 
   @GetMapping
-  public ResponseEntity<?> listEvents(Authentication authentication) {
-    LOG.info("Received list events request from {}", authentication.getName());
+  public ResponseEntity<?> listNotes(Authentication authentication) {
+    LOG.info("Received list notes request from {}", authentication.getName());
 
     return findUserUseCase
         .findUser(new FindUserUseCase.FindUserCommand(authentication.getName()))
         .flatMapTry(
             user ->
-                this.listEventsUseCase.listEvents(
-                    new ListEventsUseCase.ListEventsCommand(user)))
+                this.listNotesUseCase.listNotes(
+                    new ListNotesUseCase.ListNotesCommand(user)))
         .fold(
             failure ->
                 new ResponseEntity<>(

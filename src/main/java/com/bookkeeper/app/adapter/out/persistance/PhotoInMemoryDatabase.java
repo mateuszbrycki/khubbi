@@ -1,6 +1,5 @@
 package com.bookkeeper.app.adapter.out.persistance;
 
-import com.bookkeeper.app.application.domain.model.Event;
 import com.bookkeeper.app.application.domain.model.Photo;
 import com.bookkeeper.app.application.domain.model.User;
 import com.bookkeeper.app.application.port.out.AddPhotoPort;
@@ -24,8 +23,8 @@ public class PhotoInMemoryDatabase implements AddPhotoPort {
         .orElse(Option.of(List.empty()))
         .toTry()
         .mapTry(
-            events -> {
-              this.photos = this.photos.put(photo.getOwner(), events.append(photo));
+            photos -> {
+              this.photos = this.photos.put(photo.getOwner(), photos.append(photo));
               return this.photos;
             })
         .mapTry(t -> photo);

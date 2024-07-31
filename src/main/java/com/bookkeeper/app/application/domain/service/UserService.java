@@ -1,7 +1,6 @@
 package com.bookkeeper.app.application.domain.service;
 
 import com.bookkeeper.app.application.domain.model.User;
-import com.bookkeeper.app.application.port.in.AddEventUseCase;
 import com.bookkeeper.app.application.port.in.AddUserUseCase;
 import com.bookkeeper.app.application.port.in.FindUserUseCase;
 import com.bookkeeper.app.application.port.out.AddUserPort;

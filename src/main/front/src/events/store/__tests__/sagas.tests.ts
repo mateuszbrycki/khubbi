@@ -66,7 +66,7 @@ describe('Add note saga', () => {
 
         const api: EventsHttpApi = {
             ...EventsApi,
-            addEvent: addEventMock
+            addNote: addEventMock
         }
         await expectSaga(addNoteSaga, api)
             .put({

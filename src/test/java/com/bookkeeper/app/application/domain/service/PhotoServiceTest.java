@@ -1,15 +1,9 @@
 package com.bookkeeper.app.application.domain.service;
 
-import com.bookkeeper.app.application.domain.model.Event;
 import com.bookkeeper.app.application.domain.model.Photo;
-import com.bookkeeper.app.application.port.in.AddEventUseCase;
 import com.bookkeeper.app.application.port.in.AddPhotoUseCase;
-import com.bookkeeper.app.application.port.in.ListEventsUseCase;
-import com.bookkeeper.app.application.port.out.AddEventPort;
 import com.bookkeeper.app.application.port.out.AddPhotoPort;
-import com.bookkeeper.app.application.port.out.ListEventsPort;
 import com.bookkeeper.app.common.Anys;
-import io.vavr.collection.List;
 import io.vavr.control.Try;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -18,8 +12,6 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.io.File;
-import java.time.LocalDateTime;
-import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.util.UUID;
 
