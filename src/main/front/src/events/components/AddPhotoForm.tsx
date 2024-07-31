@@ -4,7 +4,7 @@ import {Col, Row} from "react-bootstrap";
 import Form from "react-bootstrap/Form";
 import Button from "react-bootstrap/Button";
 import {DATE_FORMAT, TIME_FORMAT} from "./AddNoteForm";
-import {DateTimeFormatter, Instant, LocalDateTime, ZonedDateTime, ZoneId, ZoneOffset} from "js-joda";
+import {DateTimeFormatter, Instant, ZonedDateTime, ZoneId} from "js-joda";
 
 export interface AddPhotoFormProps {
 }
