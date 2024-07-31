@@ -82,7 +82,7 @@ class NoteServiceTest {
 
     // when
     Try<List<ListNotesUseCase.Note>> result =
-        this.underTest.listNotes(new ListNotesUseCase.ListNotesCommand(Anys.ANY_USER));
+        this.underTest.listNotes(new ListNotesUseCase.ListNotesQuery(Anys.ANY_USER));
 
     // then
     assertTrue(result.isSuccess());

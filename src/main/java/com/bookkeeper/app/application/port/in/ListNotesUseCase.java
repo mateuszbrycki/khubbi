@@ -8,9 +8,9 @@ import java.util.UUID;
 
 public interface ListNotesUseCase {
 
-  Try<List<Note>> listNotes(ListNotesCommand command);
+  Try<List<Note>> listNotes(ListNotesQuery command);
 
-  record ListNotesCommand(User owner) {}
+  record ListNotesQuery(User owner) {}
 
   record Note(UUID id, String note, ZonedDateTime date) {}
 }

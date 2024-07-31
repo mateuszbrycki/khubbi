@@ -30,10 +30,9 @@ public class PhotosController {
     LOG.info("Received list photos request from {}", authentication.getName());
 
     return findUserUseCase
-        .findUser(new FindUserUseCase.FindUserCommand(authentication.getName()))
+        .findUser(new FindUserUseCase.FindUserQuery(authentication.getName()))
         .flatMapTry(
-            user ->
-                this.listPhotosUseCase.listPhotos(new ListPhotosUseCase.ListPhotosCommand(user)))
+            user -> this.listPhotosUseCase.listPhotos(new ListPhotosUseCase.ListPhotosQuery(user)))
         .fold(
             failure ->
                 new ResponseEntity<>(

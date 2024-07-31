@@ -1,7 +1,6 @@
 package com.bookkeeper.app.adapter.in.web;
 
 import static io.vavr.API.*;
-import static io.vavr.Predicates.instanceOf;
 
 import com.bookkeeper.app.application.port.in.AddNoteUseCase;
 import com.bookkeeper.app.application.port.in.FindUserUseCase;
@@ -36,7 +35,7 @@ public class NoteController {
     LOG.info("Received add note request {}", addNoteRequest);
 
     return findUserUseCase
-        .findUser(new FindUserUseCase.FindUserCommand(authentication.getName()))
+        .findUser(new FindUserUseCase.FindUserQuery(authentication.getName()))
         .mapTry(
             user ->
                 new AddNoteUseCase.AddNoteCommand(

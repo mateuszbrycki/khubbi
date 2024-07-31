@@ -90,7 +90,7 @@ public class PhotoServiceTest {
 
     // when
     Try<List<ListPhotosUseCase.Photo>> result =
-        this.underTest.listPhotos(new ListPhotosUseCase.ListPhotosCommand(Anys.ANY_USER));
+        this.underTest.listPhotos(new ListPhotosUseCase.ListPhotosQuery(Anys.ANY_USER));
 
     // then
     assertTrue(result.isSuccess());

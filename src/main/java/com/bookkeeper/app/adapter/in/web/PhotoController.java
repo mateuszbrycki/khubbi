@@ -37,11 +37,14 @@ public class PhotoController {
     LOG.info("Received add photo request {}", addPhotoRequest);
 
     return findUserUseCase
-        .findUser(new FindUserUseCase.FindUserCommand(authentication.getName()))
+        .findUser(new FindUserUseCase.FindUserQuery(authentication.getName()))
         .mapTry(
             user ->
                 new AddPhotoUseCase.AddPhotoCommand(
-                    addPhotoRequest.payload().description(), toFile(addPhotoRequest), addPhotoRequest.date(), user))
+                    addPhotoRequest.payload().description(),
+                    toFile(addPhotoRequest),
+                    addPhotoRequest.date(),
+                    user))
         .flatMap(this.addPhotoUseCase::addPhoto)
         .fold(
             failure -> {

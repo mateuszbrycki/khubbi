@@ -4,7 +4,7 @@ import com.bookkeeper.app.application.domain.model.User;
 import io.vavr.control.Try;
 
 public interface FindUserUseCase {
-  Try<User> findUser(FindUserCommand command);
+  Try<User> findUser(FindUserQuery command);
 
-  record FindUserCommand(String email) {}
+  record FindUserQuery(String email) {}
 }

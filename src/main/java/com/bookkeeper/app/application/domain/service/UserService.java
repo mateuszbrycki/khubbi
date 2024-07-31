@@ -7,12 +7,11 @@ import com.bookkeeper.app.application.port.out.AddUserPort;
 import com.bookkeeper.app.application.port.out.ListUsersPort;
 import io.vavr.collection.List;
 import io.vavr.control.Try;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-
 import java.time.Instant;
 import java.util.Date;
 import java.util.UUID;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 public class UserService implements AddUserUseCase, FindUserUseCase {
 
@@ -53,7 +52,7 @@ public class UserService implements AddUserUseCase, FindUserUseCase {
   }
 
   @Override
-  public Try<User> findUser(FindUserCommand command) {
+  public Try<User> findUser(FindUserQuery command) {
     LOG.info("Looking for user {}", command.email());
 
     return this.listUsersPort.findByEmail(command.email()).toTry();

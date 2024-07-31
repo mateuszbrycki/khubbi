@@ -45,7 +45,7 @@ public class PhotoService implements AddPhotoUseCase, ListPhotosUseCase {
   }
 
   @Override
-  public Try<List<ListPhotosUseCase.Photo>> listPhotos(ListPhotosCommand command) {
+  public Try<List<ListPhotosUseCase.Photo>> listPhotos(ListPhotosQuery command) {
 
     LOG.info("Listing photos for {}", command.owner().getId());
     return listPhotosPort

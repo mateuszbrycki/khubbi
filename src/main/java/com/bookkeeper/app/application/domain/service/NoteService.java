@@ -37,7 +37,7 @@ public class NoteService implements AddNoteUseCase, ListNotesUseCase {
   }
 
   @Override
-  public Try<List<ListNotesUseCase.Note>> listNotes(ListNotesCommand command) {
+  public Try<List<ListNotesUseCase.Note>> listNotes(ListNotesQuery command) {
 
     LOG.info("Listing notes for {}", command.owner().getId());
     return listNotesPort

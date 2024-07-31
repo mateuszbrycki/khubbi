@@ -30,11 +30,9 @@ public class NotesController {
     LOG.info("Received list notes request from {}", authentication.getName());
 
     return findUserUseCase
-        .findUser(new FindUserUseCase.FindUserCommand(authentication.getName()))
+        .findUser(new FindUserUseCase.FindUserQuery(authentication.getName()))
         .flatMapTry(
-            user ->
-                this.listNotesUseCase.listNotes(
-                    new ListNotesUseCase.ListNotesCommand(user)))
+            user -> this.listNotesUseCase.listNotes(new ListNotesUseCase.ListNotesQuery(user)))
         .fold(
             failure ->
                 new ResponseEntity<>(
