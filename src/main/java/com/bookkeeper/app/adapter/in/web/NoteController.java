@@ -3,7 +3,6 @@ package com.bookkeeper.app.adapter.in.web;
 import static io.vavr.API.*;
 import static io.vavr.Predicates.instanceOf;
 
-import com.bookkeeper.app.application.domain.service.NoteWithNameExistsException;
 import com.bookkeeper.app.application.port.in.AddNoteUseCase;
 import com.bookkeeper.app.application.port.in.FindUserUseCase;
 import java.time.ZonedDateTime;
@@ -32,23 +31,20 @@ public class NoteController {
   }
 
   @PostMapping(consumes = "application/json", produces = "application/json")
-  public ResponseEntity<?> addNote(@RequestBody AddNoteRequest addNoteRequest, Authentication authentication) {
+  public ResponseEntity<?> addNote(
+      @RequestBody AddNoteRequest addNoteRequest, Authentication authentication) {
     LOG.info("Received add note request {}", addNoteRequest);
 
     return findUserUseCase
         .findUser(new FindUserUseCase.FindUserCommand(authentication.getName()))
         .mapTry(
-            user -> new AddNoteUseCase.AddNoteCommand(addNoteRequest.payload().note(), addNoteRequest.date(), user))
+            user ->
+                new AddNoteUseCase.AddNoteCommand(
+                    addNoteRequest.payload().note(), addNoteRequest.date(), user))
         .flatMap(this.addNoteUseCase::addNote)
         .fold(
             failure -> {
-              HttpStatus status =
-                  Match(failure)
-                      .of(
-                          Case(
-                              $(instanceOf(NoteWithNameExistsException.class)),
-                              HttpStatus.CONFLICT),
-                          Case($(), HttpStatus.INTERNAL_SERVER_ERROR));
+              HttpStatus status = Match(failure).of(Case($(), HttpStatus.INTERNAL_SERVER_ERROR));
               return new ResponseEntity<>(
                   new RequestResult.RequestError(failure.getMessage()), status);
             },

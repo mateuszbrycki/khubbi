@@ -9,7 +9,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-import com.bookkeeper.app.application.domain.service.NoteWithNameExistsException;
 import com.bookkeeper.app.application.port.in.AddNoteUseCase;
 import com.bookkeeper.app.application.port.in.FindUserUseCase;
 import com.bookkeeper.app.common.Anys;
@@ -48,7 +47,10 @@ class NoteControllerTest {
         .perform(
             post("/note")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(asJsonString(new NoteController.AddNoteRequest(new NoteController.Payload("any-name"), ZonedDateTime.now()))))
+                .content(
+                    asJsonString(
+                        new NoteController.AddNoteRequest(
+                            new NoteController.Payload("any-name"), ZonedDateTime.now()))))
         .andDo(print())
         .andExpect(status().isInternalServerError())
         .andExpect(content().string(containsString("Cannot find the owner")));
@@ -60,8 +62,7 @@ class NoteControllerTest {
     // given
     ZonedDateTime date = ZonedDateTime.now();
     when(findUserUseCase.findUser(any())).thenReturn(Try.success(Anys.ANY_USER));
-    when(addNoteUseCase.addNote(
-            new AddNoteUseCase.AddNoteCommand("any-name", date, Anys.ANY_USER)))
+    when(addNoteUseCase.addNote(new AddNoteUseCase.AddNoteCommand("any-name", date, Anys.ANY_USER)))
         .thenReturn(Try.failure(new Exception("Cannot add a note")));
 
     // when & then
@@ -69,31 +70,12 @@ class NoteControllerTest {
         .perform(
             post("/note")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(asJsonString(new NoteController.AddNoteRequest(new NoteController.Payload("any-name"), date))))
+                .content(
+                    asJsonString(
+                        new NoteController.AddNoteRequest(
+                            new NoteController.Payload("any-name"), date))))
         .andDo(print())
         .andExpect(status().isInternalServerError())
-        .andExpect(content().string(containsString("Cannot add a note")));
-  }
-
-  @Test
-  public void shouldReturnRequestConflictWhenNoteAdditionFailedDueNoteWithNameExistsException()
-      throws Exception {
-
-    // given
-    ZonedDateTime date = ZonedDateTime.now();
-    when(findUserUseCase.findUser(any())).thenReturn(Try.success(Anys.ANY_USER));
-    when(addNoteUseCase.addNote(
-            new AddNoteUseCase.AddNoteCommand("any-name", date, Anys.ANY_USER)))
-        .thenReturn(Try.failure(new NoteWithNameExistsException("Cannot add a note")));
-
-    // when & then
-    this.mockMvc
-        .perform(
-            post("/note")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(asJsonString(new NoteController.AddNoteRequest(new NoteController.Payload("any-name"), date))))
-        .andDo(print())
-        .andExpect(status().isConflict())
         .andExpect(content().string(containsString("Cannot add a note")));
   }
 
@@ -114,12 +96,13 @@ class NoteControllerTest {
         .perform(
             post("/note")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(asJsonString(new NoteController.AddNoteRequest(new NoteController.Payload(note.note()), date))))
+                .content(
+                    asJsonString(
+                        new NoteController.AddNoteRequest(
+                            new NoteController.Payload(note.note()), date))))
         .andDo(print())
         .andExpect(status().isCreated())
         .andExpect(content().string(containsString(id.toString())))
         .andExpect(content().string(containsString(note.note())));
   }
-
-
 }
