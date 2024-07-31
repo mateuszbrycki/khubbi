@@ -11,6 +11,6 @@ public class PhotoServiceConfiguration {
   @Bean
   public PhotoService photoService() {
     PhotoInMemoryDatabase photoInMemoryDatabase = new PhotoInMemoryDatabase(HashMap.empty());
-    return new PhotoService(photoInMemoryDatabase);
+    return new PhotoService(photoInMemoryDatabase, photoInMemoryDatabase);
   }
 }

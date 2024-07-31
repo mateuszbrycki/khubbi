@@ -1,30 +1,35 @@
 package com.bookkeeper.app.application.domain.service;
 
-import com.bookkeeper.app.application.domain.model.Photo;
-import com.bookkeeper.app.application.port.in.AddPhotoUseCase;
-import com.bookkeeper.app.application.port.out.AddPhotoPort;
-import com.bookkeeper.app.common.Anys;
-import io.vavr.control.Try;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.junit.jupiter.MockitoExtension;
-
-import java.io.File;
-import java.time.ZonedDateTime;
-import java.util.UUID;
-
 import static org.junit.jupiter.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
+import com.bookkeeper.app.application.domain.model.Photo;
+import com.bookkeeper.app.application.port.in.AddPhotoUseCase;
+import com.bookkeeper.app.application.port.in.ListPhotosUseCase;
+import com.bookkeeper.app.application.port.out.AddPhotoPort;
+import com.bookkeeper.app.application.port.out.ListPhotosPort;
+import com.bookkeeper.app.common.Anys;
+import io.vavr.collection.List;
+import io.vavr.control.Try;
+import java.io.File;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
+import java.util.UUID;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
+
 @ExtendWith(MockitoExtension.class)
 public class PhotoServiceTest {
 
   @Mock private AddPhotoPort addPhotoPort;
+  @Mock private ListPhotosPort listPhotosPort;
 
   @InjectMocks private PhotoService underTest;
 
@@ -53,7 +58,8 @@ public class PhotoServiceTest {
   public void testAddingPhotoFailedDueToExceptionWhenAddingThePhoto() {
 
     // given
-    when(addPhotoPort.addPhoto(any())).thenReturn(Try.failure(new RuntimeException("Any random failure")));
+    when(addPhotoPort.addPhoto(any()))
+        .thenReturn(Try.failure(new RuntimeException("Any random failure")));
 
     // when
     Try<AddPhotoUseCase.Photo> result =
@@ -64,5 +70,32 @@ public class PhotoServiceTest {
     // then
     assertTrue(result.isFailure());
     assertInstanceOf(RuntimeException.class, result.getCause());
+  }
+
+  @Test
+  public void testListPhotosSortedByDate() {
+
+    // given
+    ZonedDateTime firstDate =
+        LocalDateTime.parse("2009-12-03T10:15:30").atZone(ZoneId.systemDefault());
+    ZonedDateTime secondDate =
+        LocalDateTime.parse("2024-12-04T10:16:30").atZone(ZoneId.systemDefault());
+
+    when(listPhotosPort.listPhotos(Anys.ANY_USER))
+        .thenReturn(
+            Try.success(
+                List.of(
+                    new Photo("first-photo", mock(File.class), firstDate, Anys.ANY_USER),
+                    new Photo("second-photo", mock(File.class), secondDate, Anys.ANY_USER))));
+
+    // when
+    Try<List<ListPhotosUseCase.Photo>> result =
+        this.underTest.listPhotos(new ListPhotosUseCase.ListPhotosCommand(Anys.ANY_USER));
+
+    // then
+    assertTrue(result.isSuccess());
+    assertEquals(2, result.get().size());
+    assertEquals(firstDate, result.get().get(0).date());
+    assertEquals(secondDate, result.get().get(1).date());
   }
 }
