@@ -33,15 +33,15 @@ public class PhotoController {
   }
 
   @PostMapping(consumes = "application/x-www-form-urlencoded")
-  public ResponseEntity<?> addPhoto(@ModelAttribute Photo photo, Authentication authentication) {
-    LOG.info("Received add photo request {}", photo);
+  public ResponseEntity<?> addPhoto(@ModelAttribute AddPhotoRequest addPhotoRequest, Authentication authentication) {
+    LOG.info("Received add photo request {}", addPhotoRequest);
 
     return findUserUseCase
         .findUser(new FindUserUseCase.FindUserCommand(authentication.getName()))
         .mapTry(
             user ->
                 new AddPhotoUseCase.AddPhotoCommand(
-                    photo.payload().description(), toFile(photo), photo.date(), user))
+                    addPhotoRequest.payload().description(), toFile(addPhotoRequest), addPhotoRequest.date(), user))
         .flatMap(this.addPhotoUseCase::addPhoto)
         .fold(
             failure -> {
@@ -54,19 +54,19 @@ public class PhotoController {
             result -> new ResponseEntity<>(result, HttpStatus.CREATED));
   }
 
-  private static File toFile(Photo photo) throws IOException {
-    String[] fileNameParts = photo.payload().photo().getOriginalFilename().split("\\.");
+  private static File toFile(AddPhotoRequest addPhotoRequest) throws IOException {
+    String[] fileNameParts = addPhotoRequest.payload().photo().getOriginalFilename().split("\\.");
     String fileExtensions = fileNameParts[fileNameParts.length - 1];
 
     File tempFile = File.createTempFile(UUID.randomUUID().toString(), fileExtensions);
     try (FileOutputStream out = new FileOutputStream(tempFile)) {
-      IOUtils.copy(photo.payload().photo().getInputStream(), out);
+      IOUtils.copy(addPhotoRequest.payload().photo().getInputStream(), out);
     }
 
     return tempFile;
   }
 
-  record Photo(Payload payload, ZonedDateTime date) {}
+  record AddPhotoRequest(Payload payload, ZonedDateTime date) {}
 
   record Payload(MultipartFile photo, String description) {}
 }

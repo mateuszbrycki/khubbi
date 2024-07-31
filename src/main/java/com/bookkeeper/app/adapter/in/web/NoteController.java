@@ -32,13 +32,13 @@ public class NoteController {
   }
 
   @PostMapping(consumes = "application/json", produces = "application/json")
-  public ResponseEntity<?> addNote(@RequestBody Note note, Authentication authentication) {
-    LOG.info("Received add note request {}", note);
+  public ResponseEntity<?> addNote(@RequestBody AddNoteRequest addNoteRequest, Authentication authentication) {
+    LOG.info("Received add note request {}", addNoteRequest);
 
     return findUserUseCase
         .findUser(new FindUserUseCase.FindUserCommand(authentication.getName()))
         .mapTry(
-            user -> new AddNoteUseCase.AddNoteCommand(note.payload().note(), note.date(), user))
+            user -> new AddNoteUseCase.AddNoteCommand(addNoteRequest.payload().note(), addNoteRequest.date(), user))
         .flatMap(this.addNoteUseCase::addNote)
         .fold(
             failure -> {
@@ -57,5 +57,5 @@ public class NoteController {
 
   record Payload(String note) {}
 
-  record Note(Payload payload, ZonedDateTime date) {}
+  record AddNoteRequest(Payload payload, ZonedDateTime date) {}
 }

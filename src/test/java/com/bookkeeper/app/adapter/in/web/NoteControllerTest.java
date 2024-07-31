@@ -48,7 +48,7 @@ class NoteControllerTest {
         .perform(
             post("/note")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(asJsonString(new NoteController.Note(new NoteController.Payload("any-name"), ZonedDateTime.now()))))
+                .content(asJsonString(new NoteController.AddNoteRequest(new NoteController.Payload("any-name"), ZonedDateTime.now()))))
         .andDo(print())
         .andExpect(status().isInternalServerError())
         .andExpect(content().string(containsString("Cannot find the owner")));
@@ -69,7 +69,7 @@ class NoteControllerTest {
         .perform(
             post("/note")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(asJsonString(new NoteController.Note(new NoteController.Payload("any-name"), date))))
+                .content(asJsonString(new NoteController.AddNoteRequest(new NoteController.Payload("any-name"), date))))
         .andDo(print())
         .andExpect(status().isInternalServerError())
         .andExpect(content().string(containsString("Cannot add a note")));
@@ -91,7 +91,7 @@ class NoteControllerTest {
         .perform(
             post("/note")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(asJsonString(new NoteController.Note(new NoteController.Payload("any-name"), date))))
+                .content(asJsonString(new NoteController.AddNoteRequest(new NoteController.Payload("any-name"), date))))
         .andDo(print())
         .andExpect(status().isConflict())
         .andExpect(content().string(containsString("Cannot add a note")));
@@ -114,7 +114,7 @@ class NoteControllerTest {
         .perform(
             post("/note")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(asJsonString(new NoteController.Note(new NoteController.Payload(note.note()), date))))
+                .content(asJsonString(new NoteController.AddNoteRequest(new NoteController.Payload(note.note()), date))))
         .andDo(print())
         .andExpect(status().isCreated())
         .andExpect(content().string(containsString(id.toString())))
