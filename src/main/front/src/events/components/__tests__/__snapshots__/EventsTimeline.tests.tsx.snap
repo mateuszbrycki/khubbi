@@ -11,18 +11,28 @@ exports[`renders timeline with events 1`] = `
   </Row>
   <Row>
     Immutable.List [
-      <li>
-        event-1
-         (
-        12-07-2024 20:00
-        )
-      </li>,
-      <li>
-        event-2
-         (
-        12-07-2024 21:00
-        )
-      </li>,
+      <EventEntry
+        event={
+          {
+            "date": EventDate {
+              "value": "2024-07-12T20:00Z",
+            },
+            "id": "event-1",
+            "note": "event-1",
+          }
+        }
+      />,
+      <EventEntry
+        event={
+          {
+            "date": EventDate {
+              "value": "2024-07-12T21:00Z",
+            },
+            "id": "event-2",
+            "note": "event-2",
+          }
+        }
+      />,
     ]
   </Row>
 </Container>

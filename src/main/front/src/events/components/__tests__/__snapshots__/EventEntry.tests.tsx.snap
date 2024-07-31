@@ -1,0 +1,16 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`renders event entry  1`] = `
+<Card
+  className="p-0 mb-3"
+>
+  <CardBody>
+    <CardText>
+      event-1
+    </CardText>
+  </CardBody>
+  <CardFooter>
+    12-07-2024, 20:00
+  </CardFooter>
+</Card>
+`;

@@ -3,6 +3,7 @@ import {Event} from "../../types";
 import React from "react";
 import {Row} from "react-bootstrap";
 import Container from "react-bootstrap/Container";
+import EventEntry from "./EventEntry";
 
 export interface EventsTimelineProps {
     readonly events: List<Event>
@@ -24,8 +25,7 @@ const EventsTimeline: React.FC<EventsTimelineProps & EventsTimelineActionProps> 
             <h1>Events</h1>
         </Row>
         <Row>
-            {events ? events.map(event => <li
-                key={event.id}>{event.note} ({event.date.format("dd-MM-yyyy HH:mm")})</li>) : <></>}
+            {events ? events.map(event => <EventEntry event={event}/>) : <></>}
         </Row>
     </Container>)
 
