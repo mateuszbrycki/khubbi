@@ -7,6 +7,8 @@ import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
+import com.bookkeeper.app.application.domain.model.EventCreator;
+import com.bookkeeper.app.application.domain.model.EventDate;
 import com.bookkeeper.app.application.domain.model.Photo;
 import com.bookkeeper.app.application.domain.model.User;
 import com.bookkeeper.app.common.Anys;
@@ -38,7 +40,12 @@ public class PhotoInMemoryDatabaseTest {
 
     // given
     PhotoInMemoryDatabase underTest = new PhotoInMemoryDatabase(HashMap.empty());
-    Photo testPhoto = new Photo("test-photo", mock(File.class), ZonedDateTime.now(), Anys.ANY_USER);
+    Photo testPhoto =
+        new Photo(
+            "test-photo",
+            mock(File.class),
+            EventDate.of(ZonedDateTime.now()),
+            EventCreator.of(Anys.ANY_USER));
 
     // when
     Try<Photo> result = underTest.addPhoto(testPhoto);
@@ -60,7 +67,12 @@ public class PhotoInMemoryDatabaseTest {
     when(photos.get(any())).thenReturn(Option.none());
 
     PhotoInMemoryDatabase underTest = new PhotoInMemoryDatabase(photos);
-    Photo testPhoto = new Photo("test-photo", mock(File.class), ZonedDateTime.now(), Anys.ANY_USER);
+    Photo testPhoto =
+        new Photo(
+            "test-photo",
+            mock(File.class),
+            EventDate.of(ZonedDateTime.now()),
+            EventCreator.of(Anys.ANY_USER));
 
     Exception addingPhotoException = new RuntimeException("Error adding a photo");
     when(photos.put(eq(Anys.ANY_USER), eq(List.of(testPhoto)))).thenThrow(addingPhotoException);

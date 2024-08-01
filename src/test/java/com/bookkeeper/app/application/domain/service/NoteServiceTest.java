@@ -4,6 +4,8 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
+import com.bookkeeper.app.application.domain.model.EventCreator;
+import com.bookkeeper.app.application.domain.model.EventDate;
 import com.bookkeeper.app.application.domain.model.Note;
 import com.bookkeeper.app.application.port.in.AddNoteUseCase;
 import com.bookkeeper.app.application.port.in.ListNotesUseCase;
@@ -35,7 +37,12 @@ class NoteServiceTest {
     // given
     when(listNotesPort.listNotes(Anys.ANY_USER)).thenReturn(Try.success(List.empty()));
     when(addNotePort.addNote(any()))
-        .thenReturn(Try.success(new Note("new-note", ZonedDateTime.now(), Anys.ANY_USER)));
+        .thenReturn(
+            Try.success(
+                new Note(
+                    "new-note",
+                    EventDate.of(ZonedDateTime.now()),
+                    EventCreator.of(Anys.ANY_USER))));
 
     // when
     Try<AddNoteUseCase.Note> result =
@@ -68,17 +75,17 @@ class NoteServiceTest {
   public void testListNotesSortedByDate() {
 
     // given
-    ZonedDateTime firstDate =
-        LocalDateTime.parse("2009-12-03T10:15:30").atZone(ZoneId.systemDefault());
-    ZonedDateTime secondDate =
-        LocalDateTime.parse("2024-12-04T10:16:30").atZone(ZoneId.systemDefault());
+    EventDate firstDate =
+        EventDate.of(LocalDateTime.parse("2009-12-03T10:15:30").atZone(ZoneId.systemDefault()));
+    EventDate secondDate =
+        EventDate.of(LocalDateTime.parse("2024-12-04T10:16:30").atZone(ZoneId.systemDefault()));
 
     when(listNotesPort.listNotes(Anys.ANY_USER))
         .thenReturn(
             Try.success(
                 List.of(
-                    new Note("first-note", firstDate, Anys.ANY_USER),
-                    new Note( "second-note", secondDate, Anys.ANY_USER))));
+                    new Note("first-note", firstDate, EventCreator.of(Anys.ANY_USER)),
+                    new Note("second-note", secondDate, EventCreator.of(Anys.ANY_USER)))));
 
     // when
     Try<List<ListNotesUseCase.Note>> result =
@@ -87,7 +94,7 @@ class NoteServiceTest {
     // then
     assertTrue(result.isSuccess());
     assertEquals(2, result.get().size());
-    assertEquals(firstDate, result.get().get(0).date());
-    assertEquals(secondDate, result.get().get(1).date());
+    assertEquals(firstDate.value(), result.get().get(0).date());
+    assertEquals(secondDate.value(), result.get().get(1).date());
   }
 }

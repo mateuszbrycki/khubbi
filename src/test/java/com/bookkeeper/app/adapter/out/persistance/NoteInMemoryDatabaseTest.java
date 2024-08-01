@@ -6,6 +6,8 @@ import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
+import com.bookkeeper.app.application.domain.model.EventCreator;
+import com.bookkeeper.app.application.domain.model.EventDate;
 import com.bookkeeper.app.application.domain.model.Note;
 import com.bookkeeper.app.application.domain.model.User;
 import com.bookkeeper.app.common.Anys;
@@ -36,7 +38,8 @@ class NoteInMemoryDatabaseTest {
 
     // given
     NoteInMemoryDatabase underTest = new NoteInMemoryDatabase(HashMap.empty());
-    Note testNote = new Note("test-note", ZonedDateTime.now(), Anys.ANY_USER);
+    Note testNote =
+        new Note("test-note", EventDate.of(ZonedDateTime.now()), EventCreator.of(Anys.ANY_USER));
 
     // when
     Try<Note> result = underTest.addNote(testNote);
@@ -58,7 +61,8 @@ class NoteInMemoryDatabaseTest {
     when(notes.get(any())).thenReturn(Option.none());
 
     NoteInMemoryDatabase underTest = new NoteInMemoryDatabase(notes);
-    Note testNote = new Note("test-note", ZonedDateTime.now(), Anys.ANY_USER);
+    Note testNote =
+        new Note("test-note", EventDate.of(ZonedDateTime.now()), EventCreator.of(Anys.ANY_USER));
 
     Exception addingNoteException = new RuntimeException("Error adding a note");
     when(notes.put(eq(Anys.ANY_USER), eq(List.of(testNote)))).thenThrow(addingNoteException);

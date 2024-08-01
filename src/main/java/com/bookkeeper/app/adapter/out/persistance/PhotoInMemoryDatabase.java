@@ -20,12 +20,12 @@ public class PhotoInMemoryDatabase implements AddPhotoPort, ListPhotosPort {
   public Try<Photo> addPhoto(Photo photo) {
 
     return this.photos
-        .get(photo.getOwner())
+        .get(photo.getCreator().value())
         .orElse(Option.of(List.empty()))
         .toTry()
         .mapTry(
             photos -> {
-              this.photos = this.photos.put(photo.getOwner(), photos.append(photo));
+              this.photos = this.photos.put(photo.getCreator().value(), photos.append(photo));
               return this.photos;
             })
         .mapTry(t -> photo);

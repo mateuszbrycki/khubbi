@@ -1,5 +1,7 @@
 package com.bookkeeper.app.application.domain.service;
 
+import com.bookkeeper.app.application.domain.model.EventCreator;
+import com.bookkeeper.app.application.domain.model.EventDate;
 import com.bookkeeper.app.application.port.in.AddNoteUseCase;
 import com.bookkeeper.app.application.port.in.ListNotesUseCase;
 import com.bookkeeper.app.application.port.out.AddNotePort;
@@ -28,12 +30,15 @@ public class NoteService implements AddNoteUseCase, ListNotesUseCase {
         "Adding Note '{}' ({}) for {}", command.note(), command.date(), command.owner().getId());
     com.bookkeeper.app.application.domain.model.Note candidate =
         new com.bookkeeper.app.application.domain.model.Note(
-            command.note(), command.date(), command.owner());
+            command.note(), EventDate.of(command.date()), EventCreator.of(command.owner()));
 
     return this.listNotesPort
         .listNotes(command.owner())
         .flatMapTry(note -> this.addNotePort.addNote(candidate))
-        .mapTry(note -> new AddNoteUseCase.Note(note.getId(), note.getNote(), note.getDate()));
+        .mapTry(
+            note ->
+                new AddNoteUseCase.Note(
+                    note.getId().value(), note.getNote(), note.getDate().value()));
   }
 
   @Override
@@ -48,6 +53,6 @@ public class NoteService implements AddNoteUseCase, ListNotesUseCase {
                 notes.map(
                     note ->
                         new ListNotesUseCase.Note(
-                            note.getId(), note.getNote(), note.getDate())));
+                            note.getId().value(), note.getNote(), note.getDate().value())));
   }
 }

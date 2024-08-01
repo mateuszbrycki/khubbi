@@ -1,5 +1,7 @@
 package com.bookkeeper.app.application.domain.service;
 
+import com.bookkeeper.app.application.domain.model.EventCreator;
+import com.bookkeeper.app.application.domain.model.EventDate;
 import com.bookkeeper.app.application.port.in.AddPhotoUseCase;
 import com.bookkeeper.app.application.port.in.ListPhotosUseCase;
 import com.bookkeeper.app.application.port.out.AddPhotoPort;
@@ -30,13 +32,18 @@ public class PhotoService implements AddPhotoUseCase, ListPhotosUseCase {
         command.owner().getId());
     com.bookkeeper.app.application.domain.model.Photo candidate =
         new com.bookkeeper.app.application.domain.model.Photo(
-            command.description(), command.photo(), command.date(), command.owner());
+            command.description(),
+            command.photo(),
+            EventDate.of(command.date()),
+            EventCreator.of(command.owner()));
     return this.addPhotoPort
         .addPhoto(candidate)
         .mapTry(
             photo ->
                 new AddPhotoUseCase.Photo(
-                    photo.getId(), this.buildURL(photo.getId()), photo.getDate()));
+                    photo.getId().value(),
+                    this.buildURL(photo.getId().value()),
+                    photo.getDate().value()));
   }
 
   // TODO mateusz.brycki extract to a separate service
@@ -56,9 +63,9 @@ public class PhotoService implements AddPhotoUseCase, ListPhotosUseCase {
                 photos.map(
                     photo ->
                         new ListPhotosUseCase.Photo(
-                            photo.getId(),
+                            photo.getId().value(),
                             photo.getDescription(),
-                            buildURL(photo.getId()),
-                            photo.getDate())));
+                            buildURL(photo.getId().value()),
+                            photo.getDate().value())));
   }
 }

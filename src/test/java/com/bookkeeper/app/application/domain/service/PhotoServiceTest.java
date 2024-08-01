@@ -6,6 +6,9 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
+import com.bookkeeper.app.application.domain.model.EventCreator;
+import com.bookkeeper.app.application.domain.model.EventDate;
+import com.bookkeeper.app.application.domain.model.EventId;
 import com.bookkeeper.app.application.domain.model.Photo;
 import com.bookkeeper.app.application.port.in.AddPhotoUseCase;
 import com.bookkeeper.app.application.port.in.ListPhotosUseCase;
@@ -41,7 +44,12 @@ public class PhotoServiceTest {
     when(addPhotoPort.addPhoto(any()))
         .thenReturn(
             Try.success(
-                new Photo(id, "new-photo", mock(File.class), ZonedDateTime.now(), Anys.ANY_USER)));
+                new Photo(
+                    EventId.of(id),
+                    "new-photo",
+                    mock(File.class),
+                    EventDate.of(ZonedDateTime.now()),
+                    EventCreator.of(Anys.ANY_USER))));
 
     // when
     Try<AddPhotoUseCase.Photo> result =
@@ -76,17 +84,22 @@ public class PhotoServiceTest {
   public void testListPhotosSortedByDate() {
 
     // given
-    ZonedDateTime firstDate =
-        LocalDateTime.parse("2009-12-03T10:15:30").atZone(ZoneId.systemDefault());
-    ZonedDateTime secondDate =
-        LocalDateTime.parse("2024-12-04T10:16:30").atZone(ZoneId.systemDefault());
+    EventDate firstDate =
+        EventDate.of(LocalDateTime.parse("2009-12-03T10:15:30").atZone(ZoneId.systemDefault()));
+    EventDate secondDate =
+        EventDate.of(LocalDateTime.parse("2024-12-04T10:16:30").atZone(ZoneId.systemDefault()));
 
     when(listPhotosPort.listPhotos(Anys.ANY_USER))
         .thenReturn(
             Try.success(
                 List.of(
-                    new Photo("first-photo", mock(File.class), firstDate, Anys.ANY_USER),
-                    new Photo("second-photo", mock(File.class), secondDate, Anys.ANY_USER))));
+                    new Photo(
+                        "first-photo", mock(File.class), firstDate, EventCreator.of(Anys.ANY_USER)),
+                    new Photo(
+                        "second-photo",
+                        mock(File.class),
+                        secondDate,
+                        EventCreator.of(Anys.ANY_USER)))));
 
     // when
     Try<List<ListPhotosUseCase.Photo>> result =
@@ -95,7 +108,7 @@ public class PhotoServiceTest {
     // then
     assertTrue(result.isSuccess());
     assertEquals(2, result.get().size());
-    assertEquals(firstDate, result.get().get(0).date());
-    assertEquals(secondDate, result.get().get(1).date());
+    assertEquals(firstDate.value(), result.get().get(0).date());
+    assertEquals(secondDate.value(), result.get().get(1).date());
   }
 }

@@ -21,12 +21,12 @@ public class NoteInMemoryDatabase implements AddNotePort, ListNotesPort {
   public Try<Note> addNote(Note note) {
 
     return this.notes
-        .get(note.getOwner())
+        .get(note.getCreator().value())
         .orElse(Option.of(List.empty()))
         .toTry()
         .mapTry(
             notes -> {
-              this.notes = this.notes.put(note.getOwner(), notes.append(note));
+              this.notes = this.notes.put(note.getCreator().value(), notes.append(note));
               return this.notes;
             })
         .mapTry(t -> note);
