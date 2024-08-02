@@ -1,8 +1,8 @@
 plugins {
-	id "java"
-	id "org.springframework.boot" version "3.3.0-SNAPSHOT"
-	id "io.spring.dependency-management" version "1.1.4"
-	id "com.github.node-gradle.node" version "7.0.2"
+    id "java"
+    id "org.springframework.boot" version "3.3.0-SNAPSHOT"
+    id "io.spring.dependency-management" version "1.1.4"
+    id "com.github.node-gradle.node" version "7.0.2"
 }
 
 group = "com.bookkeeper"
@@ -11,52 +11,55 @@ version = "0.0.1-SNAPSHOT"
 def jsonwebtokenVersion = "0.11.5"
 def vavrVersion = "0.10.4"
 def jacksonDatatypeVersion = "2.17.2"
+def vavrJacksonVersion = "0.10.3"
 
 
 java {
-	sourceCompatibility = "21"
+    sourceCompatibility = "21"
 }
 
 repositories {
-	mavenCentral()
-	maven { url "https://repo.spring.io/milestone" }
-	maven { url "https://repo.spring.io/snapshot" }
+    mavenCentral()
+    maven { url "https://repo.spring.io/milestone" }
+    maven { url "https://repo.spring.io/snapshot" }
 }
 
 
 dependencies {
 //	implementation "org.springframework.boot:spring-boot-starter-jooq"
-	implementation "org.springframework.boot:spring-boot-starter-web"
-	implementation "org.springframework.boot:spring-boot-starter-security"
+    implementation "org.springframework.boot:spring-boot-starter-web"
+    implementation "org.springframework.boot:spring-boot-starter-security"
 
-	testImplementation "org.springframework.boot:spring-boot-starter-test"
-	testImplementation "org.springframework.security:spring-security-test"
+    testImplementation "org.springframework.boot:spring-boot-starter-test"
+    testImplementation "org.springframework.security:spring-security-test"
 
-	implementation "io.vavr:vavr:$vavrVersion"
-	implementation "io.jsonwebtoken:jjwt-api:$jsonwebtokenVersion"
-	implementation "io.jsonwebtoken:jjwt-impl:$jsonwebtokenVersion"
-	implementation "io.jsonwebtoken:jjwt-jackson:$jsonwebtokenVersion"
+    implementation "io.vavr:vavr:$vavrVersion"
+    implementation "io.jsonwebtoken:jjwt-api:$jsonwebtokenVersion"
+    implementation "io.jsonwebtoken:jjwt-impl:$jsonwebtokenVersion"
+    implementation "io.jsonwebtoken:jjwt-jackson:$jsonwebtokenVersion"
 
-	implementation "com.fasterxml.jackson.datatype:jackson-datatype-jsr310:$jacksonDatatypeVersion"
+    implementation "com.fasterxml.jackson.datatype:jackson-datatype-jsr310:$jacksonDatatypeVersion"
+
+    implementation("io.vavr:vavr-jackson:$vavrJacksonVersion")
 
 }
 tasks.named("test") {
-	useJUnitPlatform()
+    useJUnitPlatform()
 }
 
 node {
-	nodeProjectDir = file("./src/main/front")
+    nodeProjectDir = file("./src/main/front")
 }
 npmInstall.args = ['--force']
 
 task buildFrontendApp(type: NpmTask) {
-	args = ['run', 'build']
+    args = ['run', 'build']
 }
 
 task copyFrontendApp(type: Copy) {
-	dependsOn('buildFrontendApp')
-	from('./src/main/front/build')
-	into('./build/resources/main/public/.')
+    dependsOn('buildFrontendApp')
+    from('./src/main/front/build')
+    into('./build/resources/main/public/.')
 }
 
 //buildFrontendApp.dependsOn npmInstall
