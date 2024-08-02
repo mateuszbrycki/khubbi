@@ -21,7 +21,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Import;
-import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.security.test.context.support.WithUserDetails;
 import org.springframework.test.web.servlet.MockMvc;
@@ -48,10 +47,9 @@ public class PhotoControllerTest {
     this.mockMvc
         .perform(
             multipart("/photo")
-                .file(FILE)
-                .formField("payload.description", "any-description")
-                .formField("date", ZonedDateTime.now().toString())
-                .contentType(MediaType.APPLICATION_FORM_URLENCODED))
+                .file("payload.photo", FILE.getBytes())
+                .param("payload.description", "any-description")
+                .param("date", ZonedDateTime.now().toString()))
         .andDo(print())
         .andExpect(status().isInternalServerError())
         .andExpect(content().string(containsString("Cannot find the owner")));
@@ -69,9 +67,8 @@ public class PhotoControllerTest {
         .perform(
             multipart("/photo")
                 .file("payload.photo", FILE.getBytes())
-                .formField("payload.description", "any-description")
-                .formField("date", ZonedDateTime.now().toString())
-                .contentType(MediaType.APPLICATION_FORM_URLENCODED))
+                .param("payload.description", "any-description")
+                .param("date", ZonedDateTime.now().toString()))
         .andDo(print())
         .andExpect(status().isInternalServerError())
         .andExpect(content().string(containsString("An error occurred")));
@@ -91,9 +88,8 @@ public class PhotoControllerTest {
         .perform(
             multipart("/photo")
                 .file("payload.photo", FILE.getBytes())
-                .formField("payload.description", "any-description")
-                .formField("date", ZonedDateTime.now().toString())
-                .contentType(MediaType.APPLICATION_FORM_URLENCODED))
+                .param("payload.description", "any-description")
+                .param("date", ZonedDateTime.now().toString()))
         .andDo(print())
         .andExpect(status().isCreated())
         .andExpect(content().string(containsString(id.toString())))

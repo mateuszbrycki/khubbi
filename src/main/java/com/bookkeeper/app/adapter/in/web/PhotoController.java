@@ -14,6 +14,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.tomcat.util.http.fileupload.IOUtils;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
@@ -32,8 +33,11 @@ public class PhotoController {
     this.addPhotoUseCase = addPhotoUseCase;
   }
 
-  @PostMapping(consumes = "application/x-www-form-urlencoded")
-  public ResponseEntity<?> addPhoto(@ModelAttribute AddPhotoRequest addPhotoRequest, Authentication authentication) {
+  @PostMapping(
+      consumes = MediaType.MULTIPART_FORM_DATA_VALUE,
+      produces = MediaType.APPLICATION_JSON_VALUE)
+  public ResponseEntity<?> addPhoto(
+      @ModelAttribute AddPhotoRequest addPhotoRequest, Authentication authentication) {
     LOG.info("Received add photo request {}", addPhotoRequest);
 
     return findUserUseCase
