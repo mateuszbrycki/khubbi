@@ -38,11 +38,33 @@ export class EventDate {
 
 }
 
-export interface Event {
-    readonly note: string;
+export class Photo {
     readonly date: EventDate;
     readonly id: string;
+    readonly description: string;
+    readonly photo: string;
+
+    constructor(id: string, date: EventDate, description: string, photo: string) {
+        this.date = date;
+        this.id = id;
+        this.description = description;
+        this.photo = photo;
+    }
 }
+
+export class Note {
+    readonly date: EventDate;
+    readonly id: string;
+    readonly note: string;
+
+    constructor(id: string, date: EventDate, note: string) {
+        this.date = date;
+        this.id = id;
+        this.note = note;
+    }
+}
+
+export type Event = Photo | Note
 
 export interface User {
     readonly id: string;
