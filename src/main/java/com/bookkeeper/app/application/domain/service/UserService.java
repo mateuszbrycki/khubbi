@@ -15,7 +15,7 @@ import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @AllArgsConstructor
-public class UserService implements AddUserUseCase, FindUserUseCase {
+class UserService implements AddUserUseCase, FindUserUseCase {
 
   private final AddUserPort addUserPort;
   private final ListUsersPort listUsersPort;

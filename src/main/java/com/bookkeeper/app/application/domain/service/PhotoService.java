@@ -14,7 +14,7 @@ import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @AllArgsConstructor
-public class PhotoService implements AddPhotoUseCase, ListPhotosUseCase {
+class PhotoService implements AddPhotoUseCase, ListPhotosUseCase {
 
   private final AddPhotoPort addPhotoPort;
   private final ListPhotosPort listPhotosPort;

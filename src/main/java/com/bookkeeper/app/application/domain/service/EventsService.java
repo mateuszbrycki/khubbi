@@ -13,7 +13,7 @@ import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @AllArgsConstructor
-public class EventsService implements ListEventsUseCase {
+class EventsService implements ListEventsUseCase {
 
   private final ListEventsPort listEventsPort;
 

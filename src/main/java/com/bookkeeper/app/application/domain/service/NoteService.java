@@ -13,7 +13,7 @@ import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @AllArgsConstructor
-public class NoteService implements AddNoteUseCase, ListNotesUseCase {
+class NoteService implements AddNoteUseCase, ListNotesUseCase {
 
   private final AddNotePort addNotePort;
   private final ListNotesPort listNotesPort;
