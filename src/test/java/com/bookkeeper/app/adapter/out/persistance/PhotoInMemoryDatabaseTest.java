@@ -1,5 +1,6 @@
 package com.bookkeeper.app.adapter.out.persistance;
 
+import static com.bookkeeper.app.common.Anys.*;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
@@ -7,8 +8,6 @@ import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-import com.bookkeeper.app.application.domain.model.EventCreator;
-import com.bookkeeper.app.application.domain.model.EventDate;
 import com.bookkeeper.app.application.domain.model.Photo;
 import com.bookkeeper.app.application.domain.model.User;
 import com.bookkeeper.app.common.Anys;
@@ -16,8 +15,6 @@ import io.vavr.collection.HashMap;
 import io.vavr.collection.List;
 import io.vavr.control.Option;
 import io.vavr.control.Try;
-import java.io.File;
-import java.time.ZonedDateTime;
 import org.junit.jupiter.api.Test;
 
 public class PhotoInMemoryDatabaseTest {
@@ -40,12 +37,7 @@ public class PhotoInMemoryDatabaseTest {
 
     // given
     PhotoInMemoryDatabase underTest = new PhotoInMemoryDatabase(HashMap.empty());
-    Photo testPhoto =
-        new Photo(
-            "test-photo",
-            mock(File.class),
-            EventDate.of(ZonedDateTime.now()),
-            EventCreator.of(Anys.ANY_USER));
+    Photo testPhoto = new Photo("test-photo", ANY_FILE, ANY_EVENT_DATE, ANY_EVENT_CREATOR);
 
     // when
     Try<Photo> result = underTest.addPhoto(testPhoto);
@@ -67,12 +59,7 @@ public class PhotoInMemoryDatabaseTest {
     when(photos.get(any())).thenReturn(Option.none());
 
     PhotoInMemoryDatabase underTest = new PhotoInMemoryDatabase(photos);
-    Photo testPhoto =
-        new Photo(
-            "test-photo",
-            mock(File.class),
-            EventDate.of(ZonedDateTime.now()),
-            EventCreator.of(Anys.ANY_USER));
+    Photo testPhoto = new Photo("test-photo", ANY_FILE, ANY_EVENT_DATE, ANY_EVENT_CREATOR);
 
     Exception addingPhotoException = new RuntimeException("Error adding a photo");
     when(photos.put(eq(Anys.ANY_USER), eq(List.of(testPhoto)))).thenThrow(addingPhotoException);

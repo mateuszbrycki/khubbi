@@ -1,13 +1,13 @@
 package com.bookkeeper.app.adapter.out.persistance;
 
+import static com.bookkeeper.app.common.Anys.ANY_EVENT_CREATOR;
+import static com.bookkeeper.app.common.Anys.ANY_EVENT_DATE;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-import com.bookkeeper.app.application.domain.model.EventCreator;
-import com.bookkeeper.app.application.domain.model.EventDate;
 import com.bookkeeper.app.application.domain.model.Note;
 import com.bookkeeper.app.application.domain.model.User;
 import com.bookkeeper.app.common.Anys;
@@ -15,7 +15,6 @@ import io.vavr.collection.HashMap;
 import io.vavr.collection.List;
 import io.vavr.control.Option;
 import io.vavr.control.Try;
-import java.time.ZonedDateTime;
 import org.junit.jupiter.api.Test;
 
 class NoteInMemoryDatabaseTest {
@@ -38,8 +37,7 @@ class NoteInMemoryDatabaseTest {
 
     // given
     NoteInMemoryDatabase underTest = new NoteInMemoryDatabase(HashMap.empty());
-    Note testNote =
-        new Note("test-note", EventDate.of(ZonedDateTime.now()), EventCreator.of(Anys.ANY_USER));
+    Note testNote = new Note("test-note", ANY_EVENT_DATE, ANY_EVENT_CREATOR);
 
     // when
     Try<Note> result = underTest.addNote(testNote);
@@ -61,8 +59,7 @@ class NoteInMemoryDatabaseTest {
     when(notes.get(any())).thenReturn(Option.none());
 
     NoteInMemoryDatabase underTest = new NoteInMemoryDatabase(notes);
-    Note testNote =
-        new Note("test-note", EventDate.of(ZonedDateTime.now()), EventCreator.of(Anys.ANY_USER));
+    Note testNote = new Note("test-note", ANY_EVENT_DATE, ANY_EVENT_CREATOR);
 
     Exception addingNoteException = new RuntimeException("Error adding a note");
     when(notes.put(eq(Anys.ANY_USER), eq(List.of(testNote)))).thenThrow(addingNoteException);

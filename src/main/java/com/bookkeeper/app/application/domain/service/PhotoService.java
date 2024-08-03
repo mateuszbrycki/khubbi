@@ -48,7 +48,7 @@ public class PhotoService implements AddPhotoUseCase, ListPhotosUseCase {
 
   // TODO mateusz.brycki extract to a separate service
   private String buildURL(UUID photoId) {
-    return "https://localhost:8080/photo/{}.jpg";
+    return "https://localhost:8080/photo/{}.jpg".formatted(photoId.toString());
   }
 
   @Override

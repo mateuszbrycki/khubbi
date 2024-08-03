@@ -1,10 +1,11 @@
 package com.bookkeeper.app.application.domain.service;
 
+import static com.bookkeeper.app.common.Anys.ANY_EVENT_CREATOR;
+import static com.bookkeeper.app.common.Anys.ANY_EVENT_DATE;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
-import com.bookkeeper.app.application.domain.model.EventCreator;
 import com.bookkeeper.app.application.domain.model.EventDate;
 import com.bookkeeper.app.application.domain.model.Note;
 import com.bookkeeper.app.application.port.in.AddNoteUseCase;
@@ -37,12 +38,7 @@ class NoteServiceTest {
     // given
     when(listNotesPort.listNotes(Anys.ANY_USER)).thenReturn(Try.success(List.empty()));
     when(addNotePort.addNote(any()))
-        .thenReturn(
-            Try.success(
-                new Note(
-                    "new-note",
-                    EventDate.of(ZonedDateTime.now()),
-                    EventCreator.of(Anys.ANY_USER))));
+        .thenReturn(Try.success(new Note("new-note", ANY_EVENT_DATE, ANY_EVENT_CREATOR)));
 
     // when
     Try<AddNoteUseCase.Note> result =
@@ -84,8 +80,8 @@ class NoteServiceTest {
         .thenReturn(
             Try.success(
                 List.of(
-                    new Note("first-note", firstDate, EventCreator.of(Anys.ANY_USER)),
-                    new Note("second-note", secondDate, EventCreator.of(Anys.ANY_USER)))));
+                    new Note("first-note", firstDate, ANY_EVENT_CREATOR),
+                    new Note("second-note", secondDate, ANY_EVENT_CREATOR))));
 
     // when
     Try<List<ListNotesUseCase.Note>> result =

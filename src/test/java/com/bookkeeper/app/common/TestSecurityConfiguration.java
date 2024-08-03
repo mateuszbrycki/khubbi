@@ -10,12 +10,18 @@ import com.bookkeeper.app.adapter.out.persistance.RefreshTokenRepository;
 import com.bookkeeper.app.adapter.out.persistance.UserInMemoryRepository;
 import com.bookkeeper.app.adapter.out.persistance.UserTokenRepository;
 import io.vavr.control.Try;
+import io.vavr.jackson.datatype.VavrModule;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Import;
 
 @Import(SecurityConfiguration.class)
 public class TestSecurityConfiguration {
+
+  @Bean
+  public VavrModule vavrModule() {
+    return new VavrModule();
+  }
 
   @Bean
   public UserInMemoryRepository userInMemoryRepositoryForUserDetailsService() {

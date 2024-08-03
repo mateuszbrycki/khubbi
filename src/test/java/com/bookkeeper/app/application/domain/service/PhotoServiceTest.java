@@ -1,12 +1,11 @@
 package com.bookkeeper.app.application.domain.service;
 
+import static com.bookkeeper.app.common.Anys.*;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-import com.bookkeeper.app.application.domain.model.EventCreator;
 import com.bookkeeper.app.application.domain.model.EventDate;
 import com.bookkeeper.app.application.domain.model.EventId;
 import com.bookkeeper.app.application.domain.model.Photo;
@@ -17,7 +16,6 @@ import com.bookkeeper.app.application.port.out.ListPhotosPort;
 import com.bookkeeper.app.common.Anys;
 import io.vavr.collection.List;
 import io.vavr.control.Try;
-import java.io.File;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
@@ -45,17 +43,13 @@ public class PhotoServiceTest {
         .thenReturn(
             Try.success(
                 new Photo(
-                    EventId.of(id),
-                    "new-photo",
-                    mock(File.class),
-                    EventDate.of(ZonedDateTime.now()),
-                    EventCreator.of(Anys.ANY_USER))));
+                    EventId.of(id), "new-photo", ANY_FILE, ANY_EVENT_DATE, ANY_EVENT_CREATOR)));
 
     // when
     Try<AddPhotoUseCase.Photo> result =
         this.underTest.addPhoto(
             new AddPhotoUseCase.AddPhotoCommand(
-                "new-photo", mock(File.class), ZonedDateTime.now(), Anys.ANY_USER));
+                "new-photo", ANY_FILE, ZonedDateTime.now(), Anys.ANY_USER));
 
     // then
     assertTrue(result.isSuccess());
@@ -73,7 +67,7 @@ public class PhotoServiceTest {
     Try<AddPhotoUseCase.Photo> result =
         this.underTest.addPhoto(
             new AddPhotoUseCase.AddPhotoCommand(
-                "new-photo", mock(File.class), ZonedDateTime.now(), Anys.ANY_USER));
+                "new-photo", ANY_FILE, ZonedDateTime.now(), Anys.ANY_USER));
 
     // then
     assertTrue(result.isFailure());
@@ -93,13 +87,8 @@ public class PhotoServiceTest {
         .thenReturn(
             Try.success(
                 List.of(
-                    new Photo(
-                        "first-photo", mock(File.class), firstDate, EventCreator.of(Anys.ANY_USER)),
-                    new Photo(
-                        "second-photo",
-                        mock(File.class),
-                        secondDate,
-                        EventCreator.of(Anys.ANY_USER)))));
+                    new Photo("first-photo", ANY_FILE, firstDate, ANY_EVENT_CREATOR),
+                    new Photo("second-photo", ANY_FILE, secondDate, ANY_EVENT_CREATOR))));
 
     // when
     Try<List<ListPhotosUseCase.Photo>> result =
