@@ -52,8 +52,8 @@ class UserServiceTest {
 
     // then
     assertTrue(user.isSuccess());
-    assertEquals("email", user.get().getEmail());
-    assertEquals("fullName", user.get().getFullName());
+    assertEquals("email", user.get().email());
+    assertEquals("fullName", user.get().fullName());
   }
 
   @Test
@@ -90,7 +90,7 @@ class UserServiceTest {
     // when
     Try<User> user =
         underTest.addUser(
-            new AddUserUseCase.AddUserCommand(existingUser.getEmail(), "password", "fullName"));
+            new AddUserUseCase.AddUserCommand(existingUser.email(), "password", "fullName"));
 
     // then
     assertTrue(user.isFailure());

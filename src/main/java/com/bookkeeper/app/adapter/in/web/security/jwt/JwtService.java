@@ -9,20 +9,17 @@ import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
+import io.vavr.control.Try;
 import java.security.Key;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Function;
-
-import io.vavr.control.Try;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.userdetails.UserDetails;
 
+@Slf4j
 public class JwtService {
-
-  private static final Logger LOG = LogManager.getLogger(JwtService.class);
 
   private final String secretKey;
   private final long jwtExpiration;
@@ -80,13 +77,13 @@ public class JwtService {
             .signWith(getSignInKey(), SignatureAlgorithm.HS256)
             .compact();
 
-    LOG.info("Building JWT token for {} with expiration {}", email, expirationTime.toString());
+    log.info("Building JWT token for {} with expiration {}", email, expirationTime.toString());
     return new JwtToken(token, expirationTime);
   }
 
   public boolean isTokenValid(String token, UserDetails userDetails) {
     try {
-      LOG.info("Validating JWT token for {} ", userDetails.getUsername());
+      log.info("Validating JWT token for {} ", userDetails.getUsername());
 
       final String email = extractEmail(token);
       return (email.equals(userDetails.getUsername())) && !isTokenExpired(token);
@@ -98,7 +95,7 @@ public class JwtService {
 
   private boolean isTokenExpired(String token) {
     boolean isExpired = extractExpiration(token).before(new Date());
-    LOG.info("Validating JWT token expiration time. Token expired: {} ", isExpired);
+    log.info("Validating JWT token expiration time. Token expired: {} ", isExpired);
     return isExpired;
   }
 
@@ -120,7 +117,7 @@ public class JwtService {
   }
 
   private void markTokenAsActive(String email, JwtToken token) {
-    LOG.info("Marking JWT Token as active for {}", email);
+    log.info("Marking JWT Token as active for {}", email);
     this.listUsersPort
         .findByEmail(email)
         .mapTry(this::toUserDetails)
@@ -129,17 +126,17 @@ public class JwtService {
   }
 
   public Try<Boolean> invalidateUserTokens(String email) {
-    LOG.info("Invalidating JWT Tokens for {}", email);
+    log.info("Invalidating JWT Tokens for {}", email);
     return Try.of(() -> this.userTokenRepository.removeTokens(email));
   }
 
   private UserDetails toUserDetails(com.bookkeeper.app.application.domain.model.User user) {
     return new User(
-        user.getId(),
-        user.getFullName(),
-        user.getEmail(),
-        user.getPassword(),
-        user.getCreatedAt(),
-        user.getUpdatedAt());
+        user.id(),
+        user.fullName(),
+        user.email(),
+        user.password(),
+        user.createdAt(),
+        user.updatedAt());
   }
 }

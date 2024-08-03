@@ -16,35 +16,34 @@ public class Anys {
   public static final String ANY_EMAIL = "any-email";
 
   public static final User ANY_USER =
-      new User(
-          UUID.randomUUID(),
-          "any-fullname",
-          ANY_EMAIL,
-          "any-password",
-          Date.from(Instant.now()),
-          Date.from(Instant.now()));
+      User.builder()
+          .id(UUID.randomUUID())
+          .fullName("any-fullname")
+          .email(ANY_EMAIL)
+          .password("any-password")
+          .createdAt(Date.from(Instant.now()))
+          .updatedAt(Date.from(Instant.now()))
+          .build();
 
   public static final EventCreator ANY_EVENT_CREATOR = EventCreator.of(ANY_USER);
 
   public static final User ANY_ANOTHER_USER =
-      new User(
-          UUID.randomUUID(),
-          "any-fullname-2",
-          ANY_EMAIL,
-          "any-password-2",
-          Date.from(Instant.now()),
-          Date.from(Instant.now()));
+      ANY_USER
+          .withId(UUID.randomUUID())
+          .withFullName("another-fullname")
+          .withPassword("another-password");
 
   public static final EventCreator ANY_ANOTHER_EVENT_CREATOR = EventCreator.of(ANY_ANOTHER_USER);
 
   public static final com.bookkeeper.app.adapter.in.web.security.User ANY_SECURITY_USER =
-      new com.bookkeeper.app.adapter.in.web.security.User(
-          UUID.randomUUID(),
-          "any-fullname",
-          ANY_EMAIL,
-          "any-password",
-          Date.from(Instant.now()),
-          Date.from(Instant.now()));
+      com.bookkeeper.app.adapter.in.web.security.User.builder()
+          .id(UUID.randomUUID())
+          .fullName("any-fullname")
+          .email(ANY_EMAIL)
+          .password("any-password")
+          .createdAt(Date.from(Instant.now()))
+          .updatedAt(Date.from(Instant.now()))
+          .build();
 
   public static final EventDate ANY_EVENT_DATE = EventDate.of(ZonedDateTime.now());
 

@@ -43,7 +43,11 @@ class NoteServiceTest {
     // when
     Try<AddNoteUseCase.Note> result =
         this.underTest.addNote(
-            new AddNoteUseCase.AddNoteCommand("new-note", ZonedDateTime.now(), Anys.ANY_USER));
+            AddNoteUseCase.AddNoteCommand.builder()
+                .note("new-note")
+                .date(ZonedDateTime.now())
+                .owner(Anys.ANY_USER)
+                .build());
 
     // then
     assertTrue(result.isSuccess());
@@ -60,7 +64,11 @@ class NoteServiceTest {
     // when
     Try<AddNoteUseCase.Note> result =
         this.underTest.addNote(
-            new AddNoteUseCase.AddNoteCommand("new-note", ZonedDateTime.now(), Anys.ANY_USER));
+            AddNoteUseCase.AddNoteCommand.builder()
+                .note("new-note")
+                .date(ZonedDateTime.now())
+                .owner(Anys.ANY_USER)
+                .build());
 
     // then
     assertTrue(result.isFailure());

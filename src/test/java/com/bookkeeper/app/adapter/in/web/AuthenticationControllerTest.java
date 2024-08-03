@@ -114,9 +114,9 @@ class AuthenticationControllerTest {
 
     AuthenticationController.RegisterUserDto registerUserDto =
         new AuthenticationController.RegisterUserDto();
-    registerUserDto.setEmail(user.getEmail());
-    registerUserDto.setFullName(user.getFullName());
-    registerUserDto.setPassword(user.getPassword());
+    registerUserDto.setEmail(user.email());
+    registerUserDto.setFullName(user.fullName());
+    registerUserDto.setPassword(user.password());
 
     // when & then
     this.mockMvc
@@ -126,12 +126,14 @@ class AuthenticationControllerTest {
                 .content(asJsonString(registerUserDto)))
         .andDo(print())
         .andExpect(status().isCreated())
-        .andExpect(content().string(containsString(user.getId().toString())))
-        .andExpect(content().string(containsString(user.getEmail())));
+        .andExpect(content().string(containsString(user.id().toString())))
+        .andExpect(content().string(containsString(user.email())));
   }
+
 
   @Test
   public void shouldReturnUnauthorizedWhenUserNoAuthenticated() throws Exception {
+
     // given
     when(authenticationManager.authenticate(any())).thenReturn(new TestAuthentication(false));
 

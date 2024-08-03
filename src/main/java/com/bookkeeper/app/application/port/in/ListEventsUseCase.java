@@ -6,12 +6,17 @@ import io.vavr.collection.Map;
 import io.vavr.control.Try;
 import java.time.ZonedDateTime;
 import java.util.UUID;
+import lombok.Builder;
+import lombok.NonNull;
 
 public interface ListEventsUseCase {
 
   Try<List<Event>> listEvents(ListEventsQuery query);
 
-  record ListEventsQuery(User owner) {}
+  @Builder
+  record ListEventsQuery(@NonNull User owner) {}
 
-  record Event(UUID id, ZonedDateTime date, Map<String, Object> properties) {}
+  @Builder
+  record Event(
+      @NonNull UUID id, @NonNull ZonedDateTime date, @NonNull Map<String, Object> properties) {}
 }

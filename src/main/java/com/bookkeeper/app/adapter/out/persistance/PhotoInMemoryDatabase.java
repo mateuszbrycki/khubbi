@@ -8,24 +8,22 @@ import io.vavr.collection.List;
 import io.vavr.collection.Map;
 import io.vavr.control.Option;
 import io.vavr.control.Try;
+import lombok.AllArgsConstructor;
 
+@AllArgsConstructor
 public class PhotoInMemoryDatabase implements AddPhotoPort, ListPhotosPort {
   private Map<User, List<Photo>> photos;
-
-  public PhotoInMemoryDatabase(Map<User, List<Photo>> photos) {
-    this.photos = photos;
-  }
 
   @Override
   public Try<Photo> addPhoto(Photo photo) {
 
     return this.photos
-        .get(photo.getCreator().value())
+        .get(photo.creator().value())
         .orElse(Option.of(List.empty()))
         .toTry()
         .mapTry(
             photos -> {
-              this.photos = this.photos.put(photo.getCreator().value(), photos.append(photo));
+              this.photos = this.photos.put(photo.creator().value(), photos.append(photo));
               return this.photos;
             })
         .mapTry(t -> photo);
@@ -35,5 +33,4 @@ public class PhotoInMemoryDatabase implements AddPhotoPort, ListPhotosPort {
   public Try<List<Photo>> listPhotos(User owner) {
     return this.photos.get(owner).orElse(Option.of(List.empty())).toTry();
   }
-
 }

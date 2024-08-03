@@ -8,25 +8,23 @@ import io.vavr.collection.List;
 import io.vavr.collection.Map;
 import io.vavr.control.Option;
 import io.vavr.control.Try;
+import lombok.AllArgsConstructor;
 
+@AllArgsConstructor
 public class NoteInMemoryDatabase implements AddNotePort, ListNotesPort {
 
   private Map<User, List<Note>> notes;
-
-  public NoteInMemoryDatabase(Map<User, List<Note>> notes) {
-    this.notes = notes;
-  }
 
   @Override
   public Try<Note> addNote(Note note) {
 
     return this.notes
-        .get(note.getCreator().value())
+        .get(note.creator().value())
         .orElse(Option.of(List.empty()))
         .toTry()
         .mapTry(
             notes -> {
-              this.notes = this.notes.put(note.getCreator().value(), notes.append(note));
+              this.notes = this.notes.put(note.creator().value(), notes.append(note));
               return this.notes;
             })
         .mapTry(t -> note);

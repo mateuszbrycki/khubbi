@@ -3,32 +3,25 @@ package com.bookkeeper.app.adapter.in.web.security.refresh;
 import com.bookkeeper.app.adapter.out.persistance.RefreshTokenRepository;
 import io.vavr.control.Option;
 import io.vavr.control.Try;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-
 import java.time.Instant;
 import java.util.Date;
 import java.util.UUID;
+import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
+@Slf4j
+@AllArgsConstructor
 public class RefreshTokenService {
-
-  private static final Logger LOG = LogManager.getLogger(RefreshTokenService.class);
 
   private final RefreshTokenRepository refreshTokenRepository;
   private final long refreshTokenExpiration;
-
-  public RefreshTokenService(
-      RefreshTokenRepository refreshTokenRepository, long refreshTokenExpiration) {
-    this.refreshTokenRepository = refreshTokenRepository;
-    this.refreshTokenExpiration = refreshTokenExpiration;
-  }
 
   public RefreshToken createRefreshToken(String email) {
     if (email == null || email.isEmpty()) {
       throw new IllegalArgumentException("Email cannot be null or empty");
     }
 
-    LOG.info("Generating refresh token for user {}", email);
+    log.info("Generating refresh token for user {}", email);
     RefreshToken refreshToken =
         new RefreshToken(
             UUID.randomUUID().toString(),
@@ -45,12 +38,12 @@ public class RefreshTokenService {
   }
 
   public Boolean isTokenValid(RefreshToken refreshToken) {
-    LOG.info("Checking refresh token validity for {}", refreshToken.email());
+    log.info("Checking refresh token validity for {}", refreshToken.email());
     return refreshToken.expiration().compareTo(new Date(Instant.now().toEpochMilli())) > 0;
   }
 
   public Try<Boolean> invalidateUserTokens(String email) {
-    LOG.info("Invalidating Refresh Tokens for {}", email);
+    log.info("Invalidating Refresh Tokens for {}", email);
     return Try.of(() -> this.refreshTokenRepository.removeTokens(email));
   }
 }

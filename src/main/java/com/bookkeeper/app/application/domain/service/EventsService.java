@@ -8,21 +8,18 @@ import io.vavr.collection.HashMap;
 import io.vavr.collection.List;
 import io.vavr.collection.Map;
 import io.vavr.control.Try;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
+@Slf4j
+@AllArgsConstructor
 public class EventsService implements ListEventsUseCase {
-  private static final Logger LOG = LogManager.getLogger(EventsService.class);
 
   private final ListEventsPort listEventsPort;
 
-  public EventsService(ListEventsPort listEventsPort) {
-    this.listEventsPort = listEventsPort;
-  }
-
   @Override
   public Try<List<Event>> listEvents(ListEventsQuery query) {
-    LOG.info("Listing events for {}", query.owner().getId());
+    log.info("Listing events for {}", query.owner().id());
     return this.listEventsPort
         .listEvents(query.owner())
         .mapTry(
@@ -30,10 +27,11 @@ public class EventsService implements ListEventsUseCase {
                 events
                     .map(
                         event ->
-                            new Event(
-                                event.getId().value(),
-                                event.getDate().value(),
-                                getProperties(event)))
+                            Event.builder()
+                                .id(event.id().value())
+                                .date(event.date().value())
+                                .properties(getProperties(event))
+                                .build())
                     .sortBy(Event::date));
   }
 
@@ -41,9 +39,8 @@ public class EventsService implements ListEventsUseCase {
       com.bookkeeper.app.application.domain.model.Event event) {
     return switch (event) {
       case Photo photo ->
-          HashMap.of(
-              "description", photo.getDescription(), "photo", photo.getPhoto().getAbsolutePath());
-      case Note note -> HashMap.of("note", note.getNote());
+          HashMap.of("description", photo.description(), "photo", photo.photo().getAbsolutePath());
+      case Note note -> HashMap.of("note", note.note());
       default -> HashMap.empty();
     };
   }

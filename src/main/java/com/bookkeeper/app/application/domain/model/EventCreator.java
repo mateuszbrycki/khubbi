@@ -1,5 +1,6 @@
 package com.bookkeeper.app.application.domain.model;
 
+
 public record EventCreator(User value) {
 
   public static EventCreator of(User value) {

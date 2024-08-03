@@ -10,8 +10,9 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.time.ZonedDateTime;
 import java.util.UUID;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import lombok.AllArgsConstructor;
+import lombok.NonNull;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.tomcat.util.http.fileupload.IOUtils;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -22,33 +23,30 @@ import org.springframework.web.multipart.MultipartFile;
 
 @RestController
 @RequestMapping("/photo")
+@Slf4j
+@AllArgsConstructor
 public class PhotoController {
-  private static final Logger LOG = LogManager.getLogger(PhotoController.class);
 
   private final FindUserUseCase findUserUseCase;
   private final AddPhotoUseCase addPhotoUseCase;
-
-  public PhotoController(FindUserUseCase findUserUseCase, AddPhotoUseCase addPhotoUseCase) {
-    this.findUserUseCase = findUserUseCase;
-    this.addPhotoUseCase = addPhotoUseCase;
-  }
 
   @PostMapping(
       consumes = MediaType.MULTIPART_FORM_DATA_VALUE,
       produces = MediaType.APPLICATION_JSON_VALUE)
   public ResponseEntity<?> addPhoto(
       @ModelAttribute AddPhotoRequest addPhotoRequest, Authentication authentication) {
-    LOG.info("Received add photo request {}", addPhotoRequest);
+    log.info("Received add photo request {}", addPhotoRequest);
 
     return findUserUseCase
-        .findUser(new FindUserUseCase.FindUserQuery(authentication.getName()))
+        .findUser(FindUserUseCase.FindUserQuery.builder().email(authentication.getName()).build())
         .mapTry(
             user ->
-                new AddPhotoUseCase.AddPhotoCommand(
-                    addPhotoRequest.payload().description(),
-                    toFile(addPhotoRequest),
-                    addPhotoRequest.date(),
-                    user))
+                AddPhotoUseCase.AddPhotoCommand.builder()
+                    .description(addPhotoRequest.payload().description())
+                    .photo(toFile(addPhotoRequest))
+                    .date(addPhotoRequest.date())
+                    .owner(user)
+                    .build())
         .flatMap(this.addPhotoUseCase::addPhoto)
         .fold(
             failure -> {
@@ -73,7 +71,7 @@ public class PhotoController {
     return tempFile;
   }
 
-  record AddPhotoRequest(Payload payload, ZonedDateTime date) {}
+  record AddPhotoRequest(@NonNull Payload payload, @NonNull ZonedDateTime date) {}
 
-  record Payload(MultipartFile photo, String description) {}
+  record Payload(@NonNull MultipartFile photo, @NonNull String description) {}
 }

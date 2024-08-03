@@ -1,9 +1,13 @@
 package com.bookkeeper.app.adapter.in.web.security;
 
 import java.util.*;
+import lombok.Builder;
+import lombok.EqualsAndHashCode;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
+@Builder
+@EqualsAndHashCode
 public class User implements UserDetails {
 
   private UUID id; // TODO mateusz.brycki consider introducing UserId value object
@@ -60,23 +64,5 @@ public class User implements UserDetails {
   @Override
   public boolean isEnabled() {
     return true;
-  }
-
-  @Override
-  public boolean equals(Object o) {
-    if (this == o) return true;
-    if (o == null || getClass() != o.getClass()) return false;
-    User user = (User) o;
-    return Objects.equals(id, user.id)
-        && Objects.equals(fullName, user.fullName)
-        && Objects.equals(email, user.email)
-        && Objects.equals(password, user.password)
-        && Objects.equals(createdAt, user.createdAt)
-        && Objects.equals(updatedAt, user.updatedAt);
-  }
-
-  @Override
-  public int hashCode() {
-    return Objects.hash(id, fullName, email, password, createdAt, updatedAt);
   }
 }

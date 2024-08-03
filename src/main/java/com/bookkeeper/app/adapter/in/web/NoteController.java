@@ -5,8 +5,9 @@ import static io.vavr.API.*;
 import com.bookkeeper.app.application.port.in.AddNoteUseCase;
 import com.bookkeeper.app.application.port.in.FindUserUseCase;
 import java.time.ZonedDateTime;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import lombok.AllArgsConstructor;
+import lombok.NonNull;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
@@ -17,29 +18,27 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("/note")
+@Slf4j
+@AllArgsConstructor
 public class NoteController {
-
-  private static final Logger LOG = LogManager.getLogger(NoteController.class);
 
   private final AddNoteUseCase addNoteUseCase;
   private final FindUserUseCase findUserUseCase;
 
-  public NoteController(AddNoteUseCase addNoteUseCase, FindUserUseCase findUserUseCase) {
-    this.addNoteUseCase = addNoteUseCase;
-    this.findUserUseCase = findUserUseCase;
-  }
-
   @PostMapping(consumes = "application/json", produces = "application/json")
   public ResponseEntity<?> addNote(
       @RequestBody AddNoteRequest addNoteRequest, Authentication authentication) {
-    LOG.info("Received add note request {}", addNoteRequest);
+    log.info("Received add note request {}", addNoteRequest);
 
     return findUserUseCase
         .findUser(new FindUserUseCase.FindUserQuery(authentication.getName()))
         .mapTry(
             user ->
-                new AddNoteUseCase.AddNoteCommand(
-                    addNoteRequest.payload().note(), addNoteRequest.date(), user))
+                AddNoteUseCase.AddNoteCommand.builder()
+                    .note(addNoteRequest.payload().note())
+                    .date(addNoteRequest.date())
+                    .owner(user)
+                    .build())
         .flatMap(this.addNoteUseCase::addNote)
         .fold(
             failure -> {
@@ -50,7 +49,7 @@ public class NoteController {
             result -> new ResponseEntity<>(result, HttpStatus.CREATED));
   }
 
-  record Payload(String note) {}
+  record Payload(@NonNull String note) {}
 
-  record AddNoteRequest(Payload payload, ZonedDateTime date) {}
+  record AddNoteRequest(@NonNull Payload payload, @NonNull ZonedDateTime date) {}
 }

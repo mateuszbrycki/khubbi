@@ -8,26 +8,20 @@ import com.bookkeeper.app.application.port.out.AddNotePort;
 import com.bookkeeper.app.application.port.out.ListNotesPort;
 import io.vavr.collection.List;
 import io.vavr.control.Try;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
+@Slf4j
+@AllArgsConstructor
 public class NoteService implements AddNoteUseCase, ListNotesUseCase {
-
-  private static final Logger LOG = LogManager.getLogger(NoteService.class);
 
   private final AddNotePort addNotePort;
   private final ListNotesPort listNotesPort;
 
-  public NoteService(AddNotePort addNotePort, ListNotesPort listNotesPort) {
-    this.addNotePort = addNotePort;
-    this.listNotesPort = listNotesPort;
-  }
-
   @Override
   public Try<AddNoteUseCase.Note> addNote(AddNoteCommand command) {
 
-    LOG.info(
-        "Adding Note '{}' ({}) for {}", command.note(), command.date(), command.owner().getId());
+    log.info("Adding Note '{}' ({}) for {}", command.note(), command.date(), command.owner().id());
     com.bookkeeper.app.application.domain.model.Note candidate =
         new com.bookkeeper.app.application.domain.model.Note(
             command.note(), EventDate.of(command.date()), EventCreator.of(command.owner()));
@@ -37,22 +31,28 @@ public class NoteService implements AddNoteUseCase, ListNotesUseCase {
         .flatMapTry(note -> this.addNotePort.addNote(candidate))
         .mapTry(
             note ->
-                new AddNoteUseCase.Note(
-                    note.getId().value(), note.getNote(), note.getDate().value()));
+                AddNoteUseCase.Note.builder()
+                    .id(note.id().value())
+                    .note(note.note())
+                    .date(note.date().value())
+                    .build());
   }
 
   @Override
   public Try<List<ListNotesUseCase.Note>> listNotes(ListNotesQuery command) {
 
-    LOG.info("Listing notes for {}", command.owner().getId());
+    log.info("Listing notes for {}", command.owner().id());
     return listNotesPort
         .listNotes(command.owner())
-        .map(notes -> notes.sortBy(com.bookkeeper.app.application.domain.model.Note::getDate))
+        .map(notes -> notes.sortBy(com.bookkeeper.app.application.domain.model.Note::date))
         .map(
             notes ->
                 notes.map(
                     note ->
-                        new ListNotesUseCase.Note(
-                            note.getId().value(), note.getNote(), note.getDate().value())));
+                        ListNotesUseCase.Note.builder()
+                            .id(note.id().value())
+                            .note(note.note())
+                            .date(note.date().value())
+                            .build()));
   }
 }

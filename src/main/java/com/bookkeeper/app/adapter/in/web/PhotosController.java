@@ -2,8 +2,8 @@ package com.bookkeeper.app.adapter.in.web;
 
 import com.bookkeeper.app.application.port.in.FindUserUseCase;
 import com.bookkeeper.app.application.port.in.ListPhotosUseCase;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
@@ -13,26 +13,23 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("/photos")
+@Slf4j
+@AllArgsConstructor
 public class PhotosController {
-
-  private static final Logger LOG = LogManager.getLogger(PhotosController.class);
 
   private final ListPhotosUseCase listPhotosUseCase;
   private final FindUserUseCase findUserUseCase;
 
-  public PhotosController(ListPhotosUseCase listPhotosUseCase, FindUserUseCase findUserUseCase) {
-    this.listPhotosUseCase = listPhotosUseCase;
-    this.findUserUseCase = findUserUseCase;
-  }
-
   @GetMapping
   public ResponseEntity<?> listPhotos(Authentication authentication) {
-    LOG.info("Received list photos request from {}", authentication.getName());
+    log.info("Received list photos request from {}", authentication.getName());
 
     return findUserUseCase
-        .findUser(new FindUserUseCase.FindUserQuery(authentication.getName()))
+        .findUser(FindUserUseCase.FindUserQuery.builder().email(authentication.getName()).build())
         .flatMapTry(
-            user -> this.listPhotosUseCase.listPhotos(new ListPhotosUseCase.ListPhotosQuery(user)))
+            user ->
+                this.listPhotosUseCase.listPhotos(
+                    ListPhotosUseCase.ListPhotosQuery.builder().owner(user).build()))
         .fold(
             failure ->
                 new ResponseEntity<>(

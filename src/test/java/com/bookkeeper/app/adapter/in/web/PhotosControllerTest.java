@@ -55,7 +55,7 @@ class PhotosControllerTest {
 
     // given
     when(findUserUseCase.findUser(any())).thenReturn(Try.success(Anys.ANY_USER));
-    when(listPhotosUseCase.listPhotos(new ListPhotosUseCase.ListPhotosQuery(any())))
+    when(listPhotosUseCase.listPhotos(any(ListPhotosUseCase.ListPhotosQuery.class)))
         .thenReturn(Try.success(List.empty()));
 
     // when & then
@@ -84,7 +84,7 @@ class PhotosControllerTest {
             "photo-2",
             "https://localhost:8080/photo-2.png",
             ZonedDateTime.now());
-    when(listPhotosUseCase.listPhotos(new ListPhotosUseCase.ListPhotosQuery(any())))
+    when(listPhotosUseCase.listPhotos(any(ListPhotosUseCase.ListPhotosQuery.class)))
         .thenReturn(Try.success(List.of(photo1, photo2)));
 
     // when & then
@@ -111,7 +111,7 @@ class PhotosControllerTest {
 
     // given
     when(findUserUseCase.findUser(any())).thenReturn(Try.success(Anys.ANY_USER));
-    when(listPhotosUseCase.listPhotos(new ListPhotosUseCase.ListPhotosQuery(any())))
+    when(listPhotosUseCase.listPhotos(any(ListPhotosUseCase.ListPhotosQuery.class)))
         .thenReturn(Try.failure(new RuntimeException("Cannot retrieve photos")));
 
     // when & then

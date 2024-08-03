@@ -5,12 +5,20 @@ import io.vavr.collection.List;
 import io.vavr.control.Try;
 import java.time.ZonedDateTime;
 import java.util.UUID;
+import lombok.Builder;
+import lombok.NonNull;
 
 public interface ListPhotosUseCase {
 
   Try<List<Photo>> listPhotos(ListPhotosQuery command);
 
-  record ListPhotosQuery(User owner) {}
+  @Builder
+  record ListPhotosQuery(@NonNull User owner) {}
 
-    record Photo(UUID id, String description, String url, ZonedDateTime date) {}
+  @Builder
+  record Photo(
+      @NonNull UUID id,
+      @NonNull String description,
+      @NonNull String url,
+      @NonNull ZonedDateTime date) {}
 }

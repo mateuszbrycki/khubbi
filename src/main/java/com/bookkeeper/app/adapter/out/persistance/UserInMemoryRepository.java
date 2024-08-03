@@ -6,16 +6,13 @@ import com.bookkeeper.app.application.port.out.ListUsersPort;
 import io.vavr.Value;
 import io.vavr.collection.List;
 import io.vavr.collection.Map;
-import io.vavr.control.Option;
 import io.vavr.control.Try;
+import lombok.AllArgsConstructor;
 
+@AllArgsConstructor
 public class UserInMemoryRepository implements AddUserPort, ListUsersPort {
 
   private Map<String, User> users;
-
-  public UserInMemoryRepository(Map<String, User> users) {
-    this.users = users;
-  }
 
   public Try<User> findByEmail(String email) {
     return Try.of(() -> users.get(email)).flatMapTry(Value::toTry);
@@ -27,7 +24,7 @@ public class UserInMemoryRepository implements AddUserPort, ListUsersPort {
   }
 
   private User add(User user) {
-    this.users = this.users.put(user.getEmail(), user);
+    this.users = this.users.put(user.email(), user);
     return user;
   }
 

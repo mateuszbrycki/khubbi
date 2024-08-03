@@ -13,8 +13,8 @@ import io.vavr.control.Option;
 import io.vavr.control.Try;
 import java.util.Date;
 import java.util.UUID;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -23,11 +23,11 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
+@Slf4j
 @RequestMapping("/auth")
 @RestController
+@AllArgsConstructor
 public class AuthenticationController {
-
-  private static final Logger LOG = LogManager.getLogger(AuthenticationController.class);
 
   private final AddUserUseCase addUserUseCase;
   private final JwtService jwtService;
@@ -35,22 +35,9 @@ public class AuthenticationController {
   private final PasswordEncoder passwordEncoder;
   private final RefreshTokenService refreshTokenService;
 
-  public AuthenticationController(
-      AuthenticationManager authenticationManager,
-      AddUserUseCase addUserUseCase,
-      JwtService jwtService,
-      RefreshTokenService refreshTokenService,
-      PasswordEncoder passwordEncoder) {
-    this.authenticationManager = authenticationManager;
-    this.addUserUseCase = addUserUseCase;
-    this.jwtService = jwtService;
-    this.refreshTokenService = refreshTokenService;
-    this.passwordEncoder = passwordEncoder;
-  }
-
   @PostMapping("/signup")
   public ResponseEntity<?> register(@RequestBody RegisterUserDto registerUserDto) {
-    LOG.info("Received registration request {}", registerUserDto);
+    log.info("Received registration request {}", registerUserDto);
     Try<RegisterResponse> user =
         addUserUseCase
             .addUser(
@@ -61,9 +48,9 @@ public class AuthenticationController {
             .map(
                 addUserResult ->
                     new RegisterResponse()
-                        .setId(addUserResult.getId())
-                        .setEmail(addUserResult.getEmail())
-                        .setCreatedAt(addUserResult.getCreatedAt()));
+                        .setId(addUserResult.id())
+                        .setEmail(addUserResult.email())
+                        .setCreatedAt(addUserResult.createdAt()));
 
     return user.fold(
         failure -> {
@@ -79,14 +66,14 @@ public class AuthenticationController {
 
   @PostMapping("/login")
   public ResponseEntity<?> authenticate(@RequestBody LoginUserDto loginUserDto) {
-    LOG.info("Received login request {}", loginUserDto);
+    log.info("Received login request {}", loginUserDto);
     Authentication authentication =
         authenticationManager.authenticate(
             new UsernamePasswordAuthenticationToken(
                 loginUserDto.getEmail(), loginUserDto.getPassword()));
 
     if (authentication.isAuthenticated()) {
-      LOG.info("User logged in successfully. Generating JWT token.");
+      log.info("User logged in successfully. Generating JWT token.");
       JwtToken jwtToken = jwtService.generateToken(loginUserDto.getEmail());
       RefreshToken refreshToken = refreshTokenService.createRefreshToken(loginUserDto.getEmail());
 
@@ -104,7 +91,7 @@ public class AuthenticationController {
       return ResponseEntity.ok(loginResponse);
     }
 
-    LOG.info("User not logged in.");
+    log.info("User not logged in.");
     return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
   }
 

@@ -10,21 +10,15 @@ import io.vavr.control.Try;
 import java.time.Instant;
 import java.util.Date;
 import java.util.UUID;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
+@Slf4j
+@AllArgsConstructor
 public class UserService implements AddUserUseCase, FindUserUseCase {
-
-  private static final Logger LOG = LogManager.getLogger(UserService.class);
 
   private final AddUserPort addUserPort;
   private final ListUsersPort listUsersPort;
-
-  public UserService(
-      AddUserPort addUserPort, ListUsersPort listUsersPort) {
-    this.addUserPort = addUserPort;
-    this.listUsersPort = listUsersPort;
-  }
 
   @Override
   public Try<User> addUser(AddUserCommand command) {
@@ -34,14 +28,10 @@ public class UserService implements AddUserUseCase, FindUserUseCase {
         new User(
             UUID.randomUUID(), command.fullName(), command.email(), command.password(), now, now);
 
-    LOG.info(
-        "Adding user {} ({} - {})",
-        candidate.getId(),
-        candidate.getEmail(),
-        candidate.getFullName());
+    log.info("Adding user {} ({} - {})", candidate.id(), candidate.email(), candidate.fullName());
     return this.listUsersPort
         .listUsers()
-        .map(users -> users.filter(user -> user.getEmail().equals(command.email())))
+        .map(users -> users.filter(user -> user.email().equals(command.email())))
         .flatMapTry(
             users ->
                 users.isEmpty()
@@ -53,7 +43,7 @@ public class UserService implements AddUserUseCase, FindUserUseCase {
 
   @Override
   public Try<User> findUser(FindUserQuery command) {
-    LOG.info("Looking for user {}", command.email());
+    log.info("Looking for user {}", command.email());
 
     return this.listUsersPort.findByEmail(command.email()).toTry();
   }

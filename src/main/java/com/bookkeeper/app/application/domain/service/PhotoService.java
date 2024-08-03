@@ -9,27 +9,23 @@ import com.bookkeeper.app.application.port.out.ListPhotosPort;
 import io.vavr.collection.List;
 import io.vavr.control.Try;
 import java.util.UUID;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
+@Slf4j
+@AllArgsConstructor
 public class PhotoService implements AddPhotoUseCase, ListPhotosUseCase {
-  private static final Logger LOG = LogManager.getLogger(PhotoService.class);
 
   private final AddPhotoPort addPhotoPort;
   private final ListPhotosPort listPhotosPort;
 
-  public PhotoService(AddPhotoPort addPhotoPort, ListPhotosPort listPhotosPort) {
-    this.addPhotoPort = addPhotoPort;
-    this.listPhotosPort = listPhotosPort;
-  }
-
   @Override
   public Try<AddPhotoUseCase.Photo> addPhoto(AddPhotoCommand command) {
-    LOG.info(
+    log.info(
         "Adding photo '{}' ({}) for {}",
         command.description(),
         command.date(),
-        command.owner().getId());
+        command.owner().id());
     com.bookkeeper.app.application.domain.model.Photo candidate =
         new com.bookkeeper.app.application.domain.model.Photo(
             command.description(),
@@ -40,10 +36,11 @@ public class PhotoService implements AddPhotoUseCase, ListPhotosUseCase {
         .addPhoto(candidate)
         .mapTry(
             photo ->
-                new AddPhotoUseCase.Photo(
-                    photo.getId().value(),
-                    this.buildURL(photo.getId().value()),
-                    photo.getDate().value()));
+                AddPhotoUseCase.Photo.builder()
+                    .id(photo.id().value())
+                    .url(this.buildURL(photo.id().value()))
+                    .date(photo.date().value())
+                    .build());
   }
 
   // TODO mateusz.brycki extract to a separate service
@@ -54,18 +51,19 @@ public class PhotoService implements AddPhotoUseCase, ListPhotosUseCase {
   @Override
   public Try<List<ListPhotosUseCase.Photo>> listPhotos(ListPhotosQuery command) {
 
-    LOG.info("Listing photos for {}", command.owner().getId());
+    log.info("Listing photos for {}", command.owner().id());
     return listPhotosPort
         .listPhotos(command.owner())
-        .map(photos -> photos.sortBy(com.bookkeeper.app.application.domain.model.Photo::getDate))
+        .map(photos -> photos.sortBy(com.bookkeeper.app.application.domain.model.Photo::date))
         .map(
             photos ->
                 photos.map(
                     photo ->
-                        new ListPhotosUseCase.Photo(
-                            photo.getId().value(),
-                            photo.getDescription(),
-                            buildURL(photo.getId().value()),
-                            photo.getDate().value())));
+                        ListPhotosUseCase.Photo.builder()
+                            .id(photo.id().value())
+                            .url(buildURL(photo.id().value()))
+                            .description(photo.description())
+                            .date(photo.date().value())
+                            .build()));
   }
 }

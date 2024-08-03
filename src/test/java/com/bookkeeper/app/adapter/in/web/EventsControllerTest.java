@@ -56,7 +56,7 @@ class EventsControllerTest {
 
     // given
     when(findUserUseCase.findUser(any())).thenReturn(Try.success(Anys.ANY_USER));
-    when(listEventsUseCase.listEvents(new ListEventsUseCase.ListEventsQuery(any())))
+    when(listEventsUseCase.listEvents(any(ListEventsUseCase.ListEventsQuery.class)))
         .thenReturn(Try.success(List.empty()));
 
     // when & then
@@ -81,11 +81,10 @@ class EventsControllerTest {
             UUID.randomUUID(),
             ZonedDateTime.now(),
             HashMap.of("description", "description-1", "photo", "photo-1"));
-    when(listEventsUseCase.listEvents(new ListEventsUseCase.ListEventsQuery(any())))
+    when(listEventsUseCase.listEvents(any(ListEventsUseCase.ListEventsQuery.class)))
         .thenReturn(Try.success(List.of(event1, event2)));
 
     // when & then
-    // TODO mateusz.brycki asssert properties
     this.mockMvc
         .perform(get("/events"))
         .andDo(print())
@@ -126,7 +125,7 @@ class EventsControllerTest {
 
     // given
     when(findUserUseCase.findUser(any())).thenReturn(Try.success(Anys.ANY_USER));
-    when(listEventsUseCase.listEvents(new ListEventsUseCase.ListEventsQuery(any())))
+    when(listEventsUseCase.listEvents(any(ListEventsUseCase.ListEventsQuery.class)))
         .thenReturn(Try.failure(new RuntimeException("Cannot retrieve notes")));
 
     // when & then

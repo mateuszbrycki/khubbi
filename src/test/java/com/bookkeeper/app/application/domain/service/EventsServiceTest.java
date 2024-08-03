@@ -61,7 +61,7 @@ class EventsServiceTest {
   public void shouldReturnEventsOrderedByDate() {
     // given
     Photo photo = new Photo("test-photo-description", ANY_FILE, ANY_EVENT_DATE, ANY_EVENT_CREATOR);
-    when(photo.getPhoto().getAbsolutePath()).thenReturn(ANY_FILE_PATH);
+    when(photo.photo().getAbsolutePath()).thenReturn(ANY_FILE_PATH);
     Note note =
         new Note("test-note", EventDate.of(ZonedDateTime.now().minusDays(2)), ANY_EVENT_CREATOR);
 
@@ -77,15 +77,12 @@ class EventsServiceTest {
     assertThat(events.get()) // order matters!
         .containsExactly(
             new ListEventsUseCase.Event(
-                note.getId().value(), note.getDate().value(), HashMap.of("note", note.getNote())),
+                note.id().value(), note.date().value(), HashMap.of("note", note.note())),
             new ListEventsUseCase.Event(
-                photo.getId().value(),
-                photo.getDate().value(),
+                photo.id().value(),
+                photo.date().value(),
                 HashMap.of(
-                    "description",
-                    photo.getDescription(),
-                    "photo",
-                    photo.getPhoto().getAbsolutePath())));
+                    "description", photo.description(), "photo", photo.photo().getAbsolutePath())));
   }
 
   @Test
@@ -108,8 +105,8 @@ class EventsServiceTest {
     assertThat(events.get()) // order matters!
         .containsExactly(
             new ListEventsUseCase.Event(
-                testEvent.getId().value(),
-                testEvent.getDate().value(),
+                testEvent.id().value(),
+                testEvent.date().value(),
                 HashMap.of("testEvent", testEvent.getTestValue())));
   }
 

@@ -93,12 +93,12 @@ public class SecurityConfiguration {
 
   private UserDetails toUserDetails(com.bookkeeper.app.application.domain.model.User user) {
     return new User(
-        user.getId(),
-        user.getFullName(),
-        user.getEmail(),
-        user.getPassword(),
-        user.getCreatedAt(),
-        user.getUpdatedAt());
+        user.id(),
+        user.fullName(),
+        user.email(),
+        user.password(),
+        user.createdAt(),
+        user.updatedAt());
   }
 
   @Bean

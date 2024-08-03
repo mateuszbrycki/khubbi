@@ -9,24 +9,22 @@ import io.vavr.collection.List;
 import io.vavr.collection.Map;
 import io.vavr.control.Option;
 import io.vavr.control.Try;
+import lombok.AllArgsConstructor;
 
+@AllArgsConstructor
 public class EventsInMemoryDatabase
     implements AddNotePort, ListNotesPort, AddPhotoPort, ListPhotosPort, ListEventsPort {
 
   private Map<User, List<Event>> events;
 
-  public EventsInMemoryDatabase(Map<User, List<Event>> events) {
-    this.events = events;
-  }
-
   private <T extends Event> Try<T> addEvent(T event) {
     return this.events
-        .get(event.getCreator().value())
+        .get(event.creator().value())
         .orElse(Option.of(List.empty()))
         .toTry()
         .mapTry(
             events -> {
-              this.events = this.events.put(event.getCreator().value(), events.append(event));
+              this.events = this.events.put(event.creator().value(), events.append(event));
               return event;
             });
   }

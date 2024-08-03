@@ -55,7 +55,7 @@ class NotesControllerTest {
 
     // given
     when(findUserUseCase.findUser(any())).thenReturn(Try.success(Anys.ANY_USER));
-    when(listNotesUseCase.listNotes(new ListNotesUseCase.ListNotesQuery(any())))
+    when(listNotesUseCase.listNotes(any(ListNotesUseCase.ListNotesQuery.class)))
         .thenReturn(Try.success(List.empty()));
 
     // when & then
@@ -76,7 +76,7 @@ class NotesControllerTest {
         new ListNotesUseCase.Note(UUID.randomUUID(), "note-1", ZonedDateTime.now());
     ListNotesUseCase.Note note2 =
         new ListNotesUseCase.Note(UUID.randomUUID(), "note-2", ZonedDateTime.now());
-    when(listNotesUseCase.listNotes(new ListNotesUseCase.ListNotesQuery(any())))
+    when(listNotesUseCase.listNotes(any(ListNotesUseCase.ListNotesQuery.class)))
         .thenReturn(Try.success(List.of(note1, note2)));
 
     // when & then
@@ -97,11 +97,11 @@ class NotesControllerTest {
   }
 
   @Test
-  public void shouldReturnInternalServerErrorWhenRetrivalFailed() throws Exception {
+  public void shouldReturnInternalServerErrorWhenRetrievalFailed() throws Exception {
 
     // given
     when(findUserUseCase.findUser(any())).thenReturn(Try.success(Anys.ANY_USER));
-    when(listNotesUseCase.listNotes(new ListNotesUseCase.ListNotesQuery(any())))
+    when(listNotesUseCase.listNotes(any(ListNotesUseCase.ListNotesQuery.class)))
         .thenReturn(Try.failure(new RuntimeException("Cannot retrieve notes")));
 
     // when & then

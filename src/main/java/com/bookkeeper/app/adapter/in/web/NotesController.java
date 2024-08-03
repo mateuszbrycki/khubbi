@@ -2,8 +2,8 @@ package com.bookkeeper.app.adapter.in.web;
 
 import com.bookkeeper.app.application.port.in.FindUserUseCase;
 import com.bookkeeper.app.application.port.in.ListNotesUseCase;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
@@ -13,26 +13,23 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("/notes")
+@Slf4j
+@AllArgsConstructor
 public class NotesController {
-
-  private static final Logger LOG = LogManager.getLogger(NotesController.class);
 
   private final ListNotesUseCase listNotesUseCase;
   private final FindUserUseCase findUserUseCase;
 
-  public NotesController(ListNotesUseCase listNotesUseCase, FindUserUseCase findUserUseCase) {
-    this.listNotesUseCase = listNotesUseCase;
-    this.findUserUseCase = findUserUseCase;
-  }
-
   @GetMapping
   public ResponseEntity<?> listNotes(Authentication authentication) {
-    LOG.info("Received list notes request from {}", authentication.getName());
+    log.info("Received list notes request from {}", authentication.getName());
 
     return findUserUseCase
-        .findUser(new FindUserUseCase.FindUserQuery(authentication.getName()))
+        .findUser(FindUserUseCase.FindUserQuery.builder().email(authentication.getName()).build())
         .flatMapTry(
-            user -> this.listNotesUseCase.listNotes(new ListNotesUseCase.ListNotesQuery(user)))
+            user ->
+                this.listNotesUseCase.listNotes(
+                    ListNotesUseCase.ListNotesQuery.builder().owner(user).build()))
         .fold(
             failure ->
                 new ResponseEntity<>(

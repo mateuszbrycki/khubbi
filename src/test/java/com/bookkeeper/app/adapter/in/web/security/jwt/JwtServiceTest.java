@@ -251,12 +251,12 @@ class JwtServiceTest {
     verify(userTokenRepository, times(1))
         .refreshToken(
             new com.bookkeeper.app.adapter.in.web.security.User(
-                ANY_USER.getId(),
-                ANY_USER.getFullName(),
-                ANY_USER.getEmail(),
-                ANY_USER.getPassword(),
-                ANY_USER.getCreatedAt(),
-                ANY_USER.getUpdatedAt()),
+                ANY_USER.id(),
+                ANY_USER.fullName(),
+                ANY_USER.email(),
+                ANY_USER.password(),
+                ANY_USER.createdAt(),
+                ANY_USER.updatedAt()),
             token.getToken());
   }
 
