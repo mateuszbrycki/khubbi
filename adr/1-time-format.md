@@ -32,10 +32,12 @@ displayed to the user.
 
 ## Consequences
 
-It becomes easier to manipulate date. This also simplifies testing setup so that there are no differences between local
-machines
-and remote pipelines (especially problematic in snapshot tests).
-Sorting any types of components gets easier as there is no burden required to adjusting dates to the same baseline.
+1. It becomes easier to manipulate date.
+1. Testing setup is simplified so that there are no differences between local machines and remote pipelines (especially
+   problematic in snapshot tests).
+1. Sorting any types of components gets easier as there is no burden required to adjusting dates to the same baseline.
+1. Since there is no timezone, the information about daylight savings changes is lost. A user from Poland will have
+   wrong time when displaying in the summer an event that has been added in the winter.
 
 # Links
 
