@@ -1,12 +1,12 @@
 import {List} from "immutable";
 import {getEvents, getOpenAddEventForm} from "../selectors";
 import {initialEventsState} from "../state";
-import {initialAuthorizationState} from "../../../authorization/store/state";
 import {EventDate, EventForms} from "../../../types";
+import {initialState} from "../../../store/state";
 
 test('should return events from state', () => {
     const state = {
-        authorizationState: initialAuthorizationState,
+        ...initialState,
         eventsState: {
             ...initialEventsState,
             events: List.of({
@@ -36,7 +36,7 @@ test('should return events from state', () => {
 
 test('should return open add event form', () => {
     const state = {
-        authorizationState: initialAuthorizationState,
+        ...initialState,
         eventsState: {
             ...initialEventsState,
             addEventForm: EventForms.NOTE

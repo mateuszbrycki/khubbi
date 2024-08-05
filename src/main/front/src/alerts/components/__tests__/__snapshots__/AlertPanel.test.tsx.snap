@@ -1,0 +1,81 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Alert Panel renders alerts 1`] = `
+<React.Fragment>
+  <ToastContainer
+    className="p-3"
+    position="bottom-end"
+    style={
+      {
+        "zIndex": 1,
+      }
+    }
+  >
+    Immutable.List [
+      <Toast
+        autohide={true}
+        bg="danger"
+        delay={1}
+        id="id-1"
+        onClose={[Function]}
+        show={true}
+      >
+        <ToastHeader>
+          <strong
+            className="me-auto"
+          >
+            Error
+          </strong>
+        </ToastHeader>
+        <ToastBody>
+          test-error
+        </ToastBody>
+      </Toast>,
+      <Toast
+        autohide={true}
+        bg="success"
+        delay={1}
+        id="id-2"
+        onClose={[Function]}
+        show={true}
+      >
+        <ToastHeader>
+          <strong
+            className="me-auto"
+          >
+            Success
+          </strong>
+        </ToastHeader>
+        <ToastBody>
+          test-success
+        </ToastBody>
+      </Toast>,
+      <Toast
+        autohide={true}
+        bg="warning"
+        delay={1}
+        id="id-3"
+        onClose={[Function]}
+        show={true}
+      >
+        <ToastHeader>
+          <strong
+            className="me-auto"
+          >
+            Warning
+          </strong>
+        </ToastHeader>
+        <ToastBody>
+          test-warning
+        </ToastBody>
+      </Toast>,
+    ]
+  </ToastContainer>
+</React.Fragment>
+`;
+
+exports[`Alert Panel renders empty list when no alerts 1`] = `
+<React.Fragment>
+  <React.Fragment />
+</React.Fragment>
+`;

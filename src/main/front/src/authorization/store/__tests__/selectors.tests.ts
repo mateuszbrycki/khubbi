@@ -1,12 +1,12 @@
 import {getJWTToken, getRefreshToken, isAuthenticated, isRefreshTokenValid} from "../selectors";
-import {initialEventsState} from "../../../events/store/state";
 import {initialAuthorizationState} from "../state";
+import {initialState} from "../../../store/state";
 
 describe('isAuthenticated', () => {
 
     test('should confirm authentication', () => {
         const state = {
-            eventsState: initialEventsState,
+            ...initialState,
             authorizationState: {
                 ...initialAuthorizationState,
                 jwtToken: {
@@ -14,13 +14,14 @@ describe('isAuthenticated', () => {
                     expiresIn: Date.now() + 1000000
                 }
             },
+
         }
         const result = isAuthenticated(state)
         expect(result).toEqual(true)
     })
     test('should confirm that user is not authenticated', () => {
         const state = {
-            eventsState: initialEventsState,
+            ...initialState,
             authorizationState: {
                 ...initialAuthorizationState,
                 jwtToken: null
@@ -34,7 +35,7 @@ describe('isAuthenticated', () => {
 describe('getJWTToken', () => {
     test('should return null as token is empty', () => {
         const state = {
-            eventsState: initialEventsState,
+            ...initialState,
             authorizationState: {
                 ...initialAuthorizationState,
                 jwtToken: null
@@ -45,7 +46,7 @@ describe('getJWTToken', () => {
     })
     test('should return token', () => {
         const state = {
-            eventsState: initialEventsState,
+            ...initialState,
             authorizationState: {
                 ...initialAuthorizationState,
                 jwtToken: {
@@ -62,7 +63,7 @@ describe('getJWTToken', () => {
 describe('getRefreshToken', () => {
     test('should return null as token is empty', () => {
         const state = {
-            eventsState: initialEventsState,
+            ...initialState,
             authorizationState: {
                 ...initialAuthorizationState,
                 refreshToken: null
@@ -73,7 +74,7 @@ describe('getRefreshToken', () => {
     })
     test('should return token', () => {
         const state = {
-            eventsState: initialEventsState,
+            ...initialState,
             authorizationState: {
                 ...initialAuthorizationState,
                 refreshToken: {
@@ -90,7 +91,7 @@ describe('getRefreshToken', () => {
 describe('isRefreshTokenValid', () => {
     test('should return false as token is empty', () => {
         const state = {
-            eventsState: initialEventsState,
+            ...initialState,
             authorizationState: {
                 ...initialAuthorizationState,
                 refreshToken: null
@@ -101,7 +102,7 @@ describe('isRefreshTokenValid', () => {
     })
     test('should return true if token is valid', () => {
         const state = {
-            eventsState: initialEventsState,
+            ...initialState,
             authorizationState: {
                 ...initialAuthorizationState,
                 refreshToken: {
@@ -115,7 +116,7 @@ describe('isRefreshTokenValid', () => {
     })
     test('should return false if token expired', () => {
         const state = {
-            eventsState: initialEventsState,
+            ...initialState,
             authorizationState: {
                 ...initialAuthorizationState,
                 refreshToken: {

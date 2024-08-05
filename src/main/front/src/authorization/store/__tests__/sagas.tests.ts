@@ -205,11 +205,46 @@ describe('Refresh JWT Token Saga', () => {
 describe('User JWT Token Refresh Failed Saga', () => {
     it('pushes logout and redirects to login', async () => {
 
-        await expectSaga(logoutUserSaga, AuthorizationApi)
+        const logoutMock = jest.fn(() => Promise.resolve({}));
+
+        const api: AuthorizationHttpApi = {
+            ...AuthorizationApi,
+            logout: logoutMock
+        }
+
+        await expectSaga(logoutUserSaga, api)
             .put({
                 type: Types.UserLoggedOut
             })
             .put(push("/login"))
+            .dispatch({
+                type: Types.LogoutUser
+            })
+            .run()
+    })
+
+    // https://github.com/jfairbank/redux-saga-test-plan/blob/master/docs/integration-testing/partial-matching.md
+    it('shows notification on failed logout', async () => {
+
+        const logoutMock = jest.fn(() => Promise.reject({
+            response: {
+                data: {
+                    description: "Something went wrong"
+                }
+            }
+        }));
+
+        const api: AuthorizationHttpApi = {
+            ...AuthorizationApi,
+            logout: logoutMock
+        }
+
+        await expectSaga(logoutUserSaga, api)
+            .put.like({
+                action: {
+                    type: "SHOW_ALERT"
+                }
+            })
             .dispatch({
                 type: Types.LogoutUser
             })

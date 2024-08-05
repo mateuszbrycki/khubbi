@@ -10,12 +10,13 @@ export interface AuthRouteProps {
 }
 
 
-export const AuthenticationAwareGate: React.FC<AuthRouteProps> = ({
-                                                                      isAuthenticated,
-                                                                      children,
-                                                                      redirectToIfLogged,
-                                                                      redirectToIfNotLogged
-                                                                  }) => {
+export const AuthenticationAwareGate: React.FC<AuthRouteProps> = (props) => {
+    const {
+        isAuthenticated,
+        children,
+        redirectToIfLogged,
+        redirectToIfNotLogged
+    } = props
 
     const currentURL = useLocation().pathname
 

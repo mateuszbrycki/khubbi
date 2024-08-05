@@ -1,4 +1,6 @@
 import {DateTimeFormatter, LocalDateTime, ZonedDateTime, ZoneId} from "js-joda";
+import {v4 as uuidv4} from 'uuid';
+
 
 export class EventDate {
     value: ZonedDateTime
@@ -80,5 +82,39 @@ export class EventForms {
     public static readonly REMINDER = new EventForms('Reminder');
 
     private constructor(public readonly name: string) {
+    }
+}
+
+export class AlertType {
+
+    public static readonly ERROR = new AlertType('ERROR', "Error", "danger");
+    public static readonly WARNING = new AlertType('WARNING', "Warning", "warning");
+    public static readonly SUCCESS = new AlertType('SUCCESS', "Success", "success");
+
+    private constructor(public readonly type: string, public readonly title: string, public readonly bg: string) {
+    }
+}
+
+export class AlertMessage {
+    public readonly id: string;
+    public readonly message: string;
+    public readonly type: AlertType;
+
+    constructor(id: string, message: string, type: AlertType) {
+        this.id = id
+        this.message = message
+        this.type = type
+    }
+
+    public static error(message: string) {
+        return new AlertMessage(uuidv4(), message, AlertType.ERROR)
+    }
+
+    public static success(message: string) {
+        return new AlertMessage(uuidv4(), message, AlertType.SUCCESS)
+    }
+
+    public static warning(message: string) {
+        return new AlertMessage(uuidv4(), message, AlertType.WARNING)
     }
 }

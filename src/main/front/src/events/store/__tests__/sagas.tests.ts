@@ -62,7 +62,7 @@ describe('Load events Saga', () => {
 
 describe('Add note saga', () => {
     it('pushes success action with details on success', async () => {
-        const addEventMock = jest.fn(() => Promise.resolve());
+        const addEventMock = jest.fn(() => Promise.resolve({}));
 
         const api: EventsHttpApi = {
             ...EventsApi,
@@ -88,7 +88,7 @@ describe('Add note saga', () => {
 
 describe('Add photo saga', () => {
     it('pushes success action with details on success', async () => {
-        const addPhotoMock = jest.fn(() => Promise.resolve());
+        const addPhotoMock = jest.fn(() => Promise.resolve({}));
 
         const api: EventsHttpApi = {
             ...EventsApi,

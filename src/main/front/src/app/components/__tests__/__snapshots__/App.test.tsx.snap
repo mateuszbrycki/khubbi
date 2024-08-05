@@ -1,8 +1,157 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
+exports[`application component renders alerts renders correctly 1`] = `
+<React.Fragment>
+  <HistoryRouter
+    history={
+      {
+        "action": "POP",
+        "back": [Function],
+        "block": [Function],
+        "createHref": [Function],
+        "forward": [Function],
+        "go": [Function],
+        "goBack": [Function],
+        "goForward": [Function],
+        "length": undefined,
+        "listen": [Function],
+        "listenObject": false,
+        "location": {
+          "hash": "",
+          "key": "default",
+          "pathname": "/",
+          "search": "",
+          "state": null,
+        },
+        "push": [Function],
+        "replace": [Function],
+      }
+    }
+  >
+    <Navbar
+      className="bg-body-tertiary"
+      expand="lg"
+    >
+      <Container>
+        <NavbarBrand
+          href="#home"
+        >
+          bookkeeper
+        </NavbarBrand>
+        <NavbarToggle
+          aria-controls="basic-navbar-nav"
+        />
+        <NavbarCollapse
+          id="basic-navbar-nav"
+        >
+          <Nav
+            className="me-auto"
+          >
+            <NavLink>
+               
+              <Link
+                to="/"
+              >
+                Home
+              </Link>
+            </NavLink>
+            <NavLink>
+               
+              <Link
+                to="/login"
+              >
+                Login
+              </Link>
+            </NavLink>
+          </Nav>
+          <Nav
+            className="ml-auto"
+          >
+            <React.Fragment />
+          </Nav>
+        </NavbarCollapse>
+      </Container>
+    </Navbar>
+    <Container>
+      <Routes>
+        <Route
+          element={
+            <AuthenticationAwareGate
+              isAuthenticated={false}
+              redirectToIfLogged="/dashboard"
+            >
+              <h1>
+                Welcome in bookkeeper
+              </h1>
+            </AuthenticationAwareGate>
+          }
+          path="/"
+        />
+        <Route
+          element={
+            <AuthenticationAwareGate
+              isAuthenticated={false}
+              redirectToIfLogged="/dashboard"
+            >
+              <Memo(Connect(EntryForms)) />
+            </AuthenticationAwareGate>
+          }
+          path="/login"
+        />
+        <Route
+          element={
+            <AuthenticationAwareGate
+              isAuthenticated={false}
+              redirectToIfNotLogged="/login"
+            >
+              <Memo(Connect(Dashboard)) />
+            </AuthenticationAwareGate>
+          }
+          path="/dashboard"
+        />
+      </Routes>
+    </Container>
+  </HistoryRouter>
+  <AlertPanel
+    alertTimeoutMs={10000}
+    alerts={
+      Immutable.List [
+        AlertMessage {
+          "id": "id-1",
+          "message": "test-alert-error",
+          "type": AlertType {
+            "bg": "danger",
+            "title": "Error",
+            "type": "ERROR",
+          },
+        },
+        AlertMessage {
+          "id": "id-2",
+          "message": "test-alert-warning",
+          "type": AlertType {
+            "bg": "warning",
+            "title": "Warning",
+            "type": "WARNING",
+          },
+        },
+        AlertMessage {
+          "id": "id-3",
+          "message": "test-alert-success",
+          "type": AlertType {
+            "bg": "success",
+            "title": "Success",
+            "type": "SUCCESS",
+          },
+        },
+      ]
+    }
+    hideAlert={[Function]}
+  />
+</React.Fragment>
+`;
+
 exports[`application component user is authenticated renders correctly 1`] = `
 <React.Fragment>
-   
   <HistoryRouter
     history={
       {
@@ -114,12 +263,16 @@ exports[`application component user is authenticated renders correctly 1`] = `
       </Routes>
     </Container>
   </HistoryRouter>
+  <AlertPanel
+    alertTimeoutMs={10000}
+    alerts={Immutable.List []}
+    hideAlert={[Function]}
+  />
 </React.Fragment>
 `;
 
 exports[`application component user is not authenticated renders correctly 1`] = `
 <React.Fragment>
-   
   <HistoryRouter
     history={
       {
@@ -230,5 +383,10 @@ exports[`application component user is not authenticated renders correctly 1`] =
       </Routes>
     </Container>
   </HistoryRouter>
+  <AlertPanel
+    alertTimeoutMs={10000}
+    alerts={Immutable.List []}
+    hideAlert={[Function]}
+  />
 </React.Fragment>
 `;

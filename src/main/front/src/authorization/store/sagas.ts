@@ -18,63 +18,66 @@ import {
 } from './actions'
 import {push} from "redux-first-history";
 import {getRefreshToken, isAuthenticated, isRefreshTokenValid} from "./selectors";
+import {AlertMessage} from "../../types";
+import {ShowAlertAction} from "../../alerts/store/actions";
 
 function* callLogin(api: AuthorizationHttpApi, email: string, password: string): Generator<any, any, LoginResponse> {
     return yield api.login(email, password)
-        .then(response => {
-            return response
-        })
-        // TODO mateusz.brycki - dispatch error and show notification
-        .catch(err => console.error(err))
+        .then(response => ({response}))
+        .catch(error => ({error}))
 }
 
 function* callRegister(api: AuthorizationHttpApi, email: string, password: string): Generator<any, any, RegisterResponse> {
     return yield api.register(email, password)
-        .then(response => {
-            return response
-        })
-        // TODO mateusz.brycki - dispatch error and show notification
-        .catch(err => console.error(err))
+        .then(response => ({response}))
+        .catch(error => ({error}))
 }
 
 function* callLogout(api: AuthorizationHttpApi): Generator<any, any, LogoutResponse> {
     return yield api.logout()
-        .then(response => {
-            return response
-        })
-        // TODO mateusz.brycki - dispatch error and show notification
-        .catch(err => console.error(err))
+        .then(response => ({response}))
+        .catch(error => ({error}))
 }
 
 function* callRefreshToken(api: AuthorizationHttpApi, refreshToken: string): Generator<any, any, RefreshTokenResponse> {
     return yield api.refreshToken(refreshToken)
-        .then(response => {
-            return response
-        })
-        // TODO mateusz.brycki - dispatch error and show notification
-        .catch(err => console.error(err))
+        .then(response => ({response}))
+        .catch(error => ({error}))
 }
 
 function* registerUserSaga(api: AuthorizationHttpApi): IterableIterator<unknown> {
     yield takeEvery((a: Action): a is RegisterUser => a.type === Types.RegisterUser, function* (a: RegisterUser) {
-        const response: RegisterResponse = yield call(callRegister, api, a.payload.email, a.payload.password);
-        yield put(UserRegisteredAction(response.id, response.email, response.createdAt))
+        const {error, response} = yield call(callRegister, api, a.payload.email, a.payload.password);
+
+        if (response) {
+            yield put(UserRegisteredAction(response.id, response.email, response.createdAt))
+        } else {
+            yield put(ShowAlertAction(AlertMessage.error("Error when registering user: " + error.response.data.description)))
+        }
     })
 }
 
 function* loginUserSaga(api: AuthorizationHttpApi): IterableIterator<unknown> {
     yield takeEvery((a: Action): a is LoginUser => a.type === Types.LoginUser, function* (a: LoginUser) {
-        const response: LoginResponse = yield call(callLogin, api, a.payload.email, a.payload.password);
-        yield put(UserLoggedInAction(response.jwtToken, response.refreshToken))
-        yield put(push("/dashboard"))
+        const {error, response} = yield call(callLogin, api, a.payload.email, a.payload.password);
+        if (response) {
+            yield put(UserLoggedInAction(response.jwtToken, response.refreshToken))
+            yield put(push("/dashboard"))
+        } else {
+            yield put(ShowAlertAction(AlertMessage.error(error.response.data.description)))
+        }
     })
 }
 
 function* logoutUserSaga(api: AuthorizationHttpApi): IterableIterator<unknown> {
     yield takeEvery((a: Action): a is LogoutUser => a.type === Types.LogoutUser, function* (a: LogoutUser) {
-        const response: LogoutResponse = yield call(callLogout, api);
-        yield put(UserLoggedOutAction())
-        yield put(push("/login"))
+        const {error, response} = yield call(callLogout, api);
+        if (response) {
+            yield put(UserLoggedOutAction())
+            yield put(push("/login"))
+        } else {
+            yield put(ShowAlertAction(AlertMessage.error("Error when logging out: " + error.response.data.description)))
+        }
     })
 
 }
@@ -83,7 +86,7 @@ function* refreshJWTTokenSaga(api: AuthorizationHttpApi): IterableIterator<unkno
     yield takeEvery((a: Action): a is RefreshUserJWT => a.type === Types.RefreshUserJWT, function* (a: RefreshUserJWT): any {
 
         const refreshToken = yield select(getRefreshToken)
-        const response: RefreshTokenResponse = yield call(callRefreshToken, api, refreshToken);
+        const {error, response} = yield call(callRefreshToken, api, refreshToken);
 
         if (response) {
             yield put(UserJWTTokenRefreshedAction(response.jwtToken, response.expiresIn));

@@ -8,6 +8,7 @@ import {persistReducer, persistStore} from 'redux-persist'
 import storage from 'redux-persist/lib/storage'
 import {eventsReducer} from "../events/store/reducers";
 import {authorizationReducer} from "../authorization/store/reducers";
+import {alertsReducer} from "../alerts/store/reducers";
 
 const {createReduxHistory, routerMiddleware, routerReducer} = createReduxHistoryContext({
     history: createBrowserHistory(),
@@ -25,6 +26,7 @@ const persistConfig = {
 const presistedReducer = persistReducer(persistConfig, combineReducers({
     eventsState: eventsReducer,
     authorizationState: authorizationReducer,
+    alertsState: alertsReducer,
     router: routerReducer
 }));
 
