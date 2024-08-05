@@ -9,6 +9,10 @@ public record EventDate(ZonedDateTime value) implements Comparable<EventDate> {
     return new EventDate(value);
   }
 
+  public static EventDate now() {
+    return new EventDate(ZonedDateTime.now());
+  }
+
   @Override
   public boolean equals(Object o) {
     if (this == o) return true;

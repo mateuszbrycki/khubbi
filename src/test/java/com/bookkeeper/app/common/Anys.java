@@ -7,7 +7,6 @@ import com.bookkeeper.app.application.domain.model.EventDate;
 import com.bookkeeper.app.application.domain.model.User;
 import java.io.File;
 import java.time.Instant;
-import java.time.ZonedDateTime;
 import java.util.Date;
 import java.util.UUID;
 
@@ -45,7 +44,7 @@ public class Anys {
           .updatedAt(Date.from(Instant.now()))
           .build();
 
-  public static final EventDate ANY_EVENT_DATE = EventDate.of(ZonedDateTime.now());
+  public static final EventDate ANY_EVENT_DATE = EventDate.now();
 
   public static final File ANY_FILE = mock(File.class);
   public static final String ANY_FILE_PATH = "any-file-path";

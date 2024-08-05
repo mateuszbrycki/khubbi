@@ -1,7 +1,6 @@
 package com.bookkeeper.app.application.domain.model;
 
 import java.io.File;
-import java.util.UUID;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 
@@ -18,7 +17,7 @@ public class Photo extends Event {
   }
 
   public Photo(String description, File photo, EventDate date, EventCreator creator) {
-    super(EventId.of(UUID.randomUUID()), date, creator);
+    super(EventId.random(), date, creator);
     this.description = description;
     this.photo = photo;
   }

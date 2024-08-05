@@ -13,7 +13,6 @@ import io.vavr.collection.HashMap;
 import io.vavr.collection.List;
 import io.vavr.control.Try;
 import java.time.ZonedDateTime;
-import java.util.UUID;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -90,8 +89,7 @@ class EventsServiceTest {
   public void shouldMapEventsPropertiesIntoMapForUnknownType() {
     // given
     TestEvent testEvent =
-        new TestEvent(
-            EventId.of(UUID.randomUUID()), ANY_EVENT_DATE, ANY_EVENT_CREATOR, "some-test-value");
+        new TestEvent(EventId.random(), ANY_EVENT_DATE, ANY_EVENT_CREATOR, "some-test-value");
 
     when(listEventsPort.listEvents(ANY_USER)).thenReturn(Try.success(List.of(testEvent)));
 
