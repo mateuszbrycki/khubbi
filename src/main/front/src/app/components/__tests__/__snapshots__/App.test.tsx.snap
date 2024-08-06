@@ -47,22 +47,18 @@ exports[`application component renders alerts renders correctly 1`] = `
           <Nav
             className="me-auto"
           >
-            <NavLink>
-               
-              <Link
-                to="/"
-              >
-                Home
-              </Link>
-            </NavLink>
-            <NavLink>
-               
-              <Link
-                to="/login"
-              >
-                Login
-              </Link>
-            </NavLink>
+            <Link
+              className="nav-link"
+              to="/"
+            >
+              Home
+            </Link>
+            <Link
+              className="nav-link"
+              to="/login"
+            >
+              Login
+            </Link>
           </Nav>
           <Nav
             className="ml-auto"
@@ -197,28 +193,24 @@ exports[`application component user is authenticated renders correctly 1`] = `
           <Nav
             className="me-auto"
           >
-            <NavLink>
-               
-              <Link
-                to="/"
-              >
-                Home
-              </Link>
-            </NavLink>
+            <Link
+              className="nav-link"
+              to="/"
+            >
+              Home
+            </Link>
             <React.Fragment />
           </Nav>
           <Nav
             className="ml-auto"
           >
-            <NavLink>
-               
-              <Link
-                onClick={[Function]}
-                to="/"
-              >
-                Logout
-              </Link>
-            </NavLink>
+            <Link
+              className="nav-link"
+              onClick={[Function]}
+              to="/"
+            >
+              Logout
+            </Link>
           </Nav>
         </NavbarCollapse>
       </Container>
@@ -318,22 +310,18 @@ exports[`application component user is not authenticated renders correctly 1`] =
           <Nav
             className="me-auto"
           >
-            <NavLink>
-               
-              <Link
-                to="/"
-              >
-                Home
-              </Link>
-            </NavLink>
-            <NavLink>
-               
-              <Link
-                to="/login"
-              >
-                Login
-              </Link>
-            </NavLink>
+            <Link
+              className="nav-link"
+              to="/"
+            >
+              Home
+            </Link>
+            <Link
+              className="nav-link"
+              to="/login"
+            >
+              Login
+            </Link>
           </Nav>
           <Nav
             className="ml-auto"

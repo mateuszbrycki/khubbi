@@ -39,7 +39,8 @@ const EventsManagement: React.FC<EventsManagementProps & EventsManagementActionP
     }, {
         eventForm: EventForms.REMINDER,
         icon: <Icon.StopwatchFill className="me-2"/>
-    }).map(form => <Col><Button
+    }).map(form => <Col key={`${form.eventForm.name}-button`}><Button
+        key={`${form.eventForm.name}-button`}
         className={`btn-light d-inline m-3 ${showEventForm === form.eventForm ? " active" : ""}`}
         onClick={() => showEventForm === form.eventForm ? closeAddEventForm() : openAddEventForm(form.eventForm)}
         data-testid={`show-add-${form.eventForm.name}-button`}

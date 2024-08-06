@@ -55,14 +55,15 @@ const App: React.FC<AppProps & AppActionProps> = (props) => {
                     <Navbar.Toggle aria-controls="basic-navbar-nav"/>
                     <Navbar.Collapse id="basic-navbar-nav">
                         <Nav className="me-auto">
-                            <Nav.Link> <Link to={`/`}>Home</Link></Nav.Link>
-                            {isAuthenticated ? <></> : <Nav.Link> <Link to={`/login`}>Login</Link></Nav.Link>}
+                            <Link to={`/`} className="nav-link">Home</Link>
+                            {isAuthenticated ? <></> :
+                                <Link to={`/login`} className="nav-link">Login</Link>}
                         </Nav>
                         <Nav className="ml-auto">
-                            {isAuthenticated ? <Nav.Link> <Link to="/" onClick={event => {
+                            {isAuthenticated ? <Link to="/" onClick={event => {
                                 event.preventDefault();
                                 logoutUser();
-                            }}>Logout</Link></Nav.Link> : <></>}
+                            }} className="nav-link">Logout</Link> : <></>}
                         </Nav>
                     </Navbar.Collapse>
                 </Container>
