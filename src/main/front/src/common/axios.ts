@@ -5,11 +5,11 @@ import {RefreshUserJWTAction, UserJWTTokenRefreshFailedAction} from "../authoriz
 
 axios.interceptors.request.use(config => {
         // TODO mateusz.brycki implement pattern-based URL matching
-        // TODO mateusz.brycki consider if that's a good place to refresh the token
-        const isAuthEndpoint = config.url?.includes("/auth/");
+    const isAuthEndpoint = config.url?.includes("/auth/")
+    const isLogoutEndpoint = config.url?.endsWith("/auth/logout")
 
         const authToken = getJWTToken(store.getState());
-        if (!isAuthEndpoint && authToken) {
+    if ((!isAuthEndpoint || isLogoutEndpoint) && authToken) {
             config.headers.Authorization = `Bearer ${authToken}`;
         }
         return config;

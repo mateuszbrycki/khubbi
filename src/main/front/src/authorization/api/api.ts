@@ -50,7 +50,7 @@ const Api: AuthorizationHttpApi = {
     logout: () => {
         return axios.get(`${AUTH_BASE_URL}/logout`)
             .then(res => {
-                return res.data
+                return res
             })
     },
     refreshToken: (refreshToken: string) => {
