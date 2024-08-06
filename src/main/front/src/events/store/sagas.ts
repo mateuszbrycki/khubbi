@@ -30,7 +30,7 @@ function* loadEventsSaga(api: EventsHttpApi): IterableIterator<unknown> {
         if (response) {
             yield put(EventsLoadedAction(response));
         } else {
-            yield put(ShowAlertAction(AlertMessage.error("Error when loading events: " + error.response.data.description)))
+            yield put(ShowAlertAction(AlertMessage.error("Error when loading events: " + error.response.data.message)))
         }
     })
 }
@@ -41,7 +41,7 @@ function* addNoteSaga(api: EventsHttpApi): IterableIterator<unknown> {
         if (response) {
             yield put(LoadEventsAction());
         } else {
-            yield put(ShowAlertAction(AlertMessage.error("Error when adding note: " + error.response.data.description)))
+            yield put(ShowAlertAction(AlertMessage.error("Error when adding note: " + error.response.data.message)))
         }
     })
 }
@@ -52,7 +52,7 @@ function* addPhotoSaga(api: EventsHttpApi): IterableIterator<unknown> {
         if (response) {
             yield put(LoadEventsAction());
         } else {
-            yield put(ShowAlertAction(AlertMessage.error("Error when adding photo: " + error.response.data.description)))
+            yield put(ShowAlertAction(AlertMessage.error("Error when adding photo: " + error.response.data.message)))
         }
     })
 }

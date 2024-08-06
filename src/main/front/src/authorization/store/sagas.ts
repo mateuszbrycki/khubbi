@@ -52,7 +52,7 @@ function* registerUserSaga(api: AuthorizationHttpApi): IterableIterator<unknown>
         if (response) {
             yield put(UserRegisteredAction(response.id, response.email, response.createdAt))
         } else {
-            yield put(ShowAlertAction(AlertMessage.error("Error when registering user: " + error.response.data.description)))
+            yield put(ShowAlertAction(AlertMessage.error("Error when registering user: " + error.response.data.message)))
         }
     })
 }
@@ -64,7 +64,7 @@ function* loginUserSaga(api: AuthorizationHttpApi): IterableIterator<unknown> {
             yield put(UserLoggedInAction(response.jwtToken, response.refreshToken))
             yield put(push("/dashboard"))
         } else {
-            yield put(ShowAlertAction(AlertMessage.error(error.response.data.description)))
+            yield put(ShowAlertAction(AlertMessage.error(error.response.data.message)))
         }
     })
 }
@@ -76,7 +76,7 @@ function* logoutUserSaga(api: AuthorizationHttpApi): IterableIterator<unknown> {
             yield put(UserLoggedOutAction())
             yield put(push("/login"))
         } else {
-            yield put(ShowAlertAction(AlertMessage.error("Error when logging out: " + error.response.data.description)))
+            yield put(ShowAlertAction(AlertMessage.error("Error when logging out: " + error.response.data.message)))
         }
     })
 

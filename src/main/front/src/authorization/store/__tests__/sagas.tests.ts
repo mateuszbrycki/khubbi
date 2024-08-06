@@ -6,6 +6,7 @@ import {push} from "redux-first-history";
 import {initialState} from "../../../store/state";
 import {initialEventsState} from "../../../events/store/state";
 import {initialAuthorizationState} from "../state";
+import {Types as AlertTypes} from "../../../alerts/store/actions"
 
 const generateValidTokenExpiration: () => number =
     () => Date.now() + 100_000
@@ -33,6 +34,39 @@ describe('Register User Saga', () => {
                     id: "any-id",
                     email: "email",
                     createdAt: "12345"
+                }
+            })
+            .dispatch({
+                type: Types.RegisterUser,
+                payload: {
+                    email: "test-email",
+                    password: "test-password"
+                }
+            })
+            .run()
+            .then(() => {
+                expect(registerMock).toHaveBeenCalledWith("test-email", "test-password")
+            })
+    })
+
+    it('pushes show alert action on api call failure', async () => {
+        const registerMock = jest.fn(() => Promise.reject({
+            response: {
+                data: {
+                    description: "Something went wrong"
+                }
+            }
+        }));
+
+        const api: AuthorizationHttpApi = {
+            ...AuthorizationApi,
+            register: registerMock
+        }
+
+        await expectSaga(registerUserSaga, api)
+            .put.like({
+                action: {
+                    type: AlertTypes.ShowAlert
                 }
             })
             .dispatch({
@@ -95,6 +129,39 @@ describe('Login User Saga', () => {
                 expect(loginMock).toHaveBeenCalledWith("test-email", "test-password")
             })
     })
+
+    it('pushes show alert action on api call failure', async () => {
+        const loginMock = jest.fn(() => Promise.reject({
+            response: {
+                data: {
+                    description: "Something went wrong"
+                }
+            }
+        }));
+
+        const api: AuthorizationHttpApi = {
+            ...AuthorizationApi,
+            login: loginMock
+        }
+
+        await expectSaga(loginUserSaga, api)
+            .put.like({
+                action: {
+                    type: AlertTypes.ShowAlert
+                }
+            })
+            .dispatch({
+                type: Types.LoginUser,
+                payload: {
+                    email: "test-email",
+                    password: "test-password"
+                }
+            })
+            .run()
+            .then(() => {
+                expect(loginMock).toHaveBeenCalledWith("test-email", "test-password")
+            })
+    })
 })
 
 describe('Logout User Saga', () => {
@@ -112,6 +179,35 @@ describe('Logout User Saga', () => {
                 type: Types.UserLoggedOut
             })
             .put(push("/login"))
+            .dispatch({
+                type: Types.LogoutUser
+            })
+            .run()
+            .then(() => {
+                expect(logoutMock).toHaveBeenCalled()
+            })
+    })
+
+    it('pushes show alert action on api call failure', async () => {
+        const logoutMock = jest.fn(() => Promise.reject({
+            response: {
+                data: {
+                    description: "Something went wrong"
+                }
+            }
+        }));
+
+        const api: AuthorizationHttpApi = {
+            ...AuthorizationApi,
+            logout: logoutMock
+        }
+
+        await expectSaga(logoutUserSaga, api)
+            .put.like({
+                action: {
+                    type: AlertTypes.ShowAlert
+                }
+            })
             .dispatch({
                 type: Types.LogoutUser
             })
@@ -242,7 +338,7 @@ describe('User JWT Token Refresh Failed Saga', () => {
         await expectSaga(logoutUserSaga, api)
             .put.like({
                 action: {
-                    type: "SHOW_ALERT"
+                    type: AlertTypes.ShowAlert
                 }
             })
             .dispatch({

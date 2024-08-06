@@ -4,6 +4,7 @@ import {Types} from "../actions";
 import {EventsApi, EventsHttpApi} from "../../api/api";
 import {List} from "immutable";
 import {EventDate} from "../../../types";
+import {Types as AlertTypes} from "../../../alerts/store/actions";
 
 
 describe('Load events Saga', () => {
@@ -58,6 +59,35 @@ describe('Load events Saga', () => {
                 expect(fetchEventsMock).toHaveBeenCalled()
             })
     })
+
+    it('pushes show alert action on api call failure', async () => {
+        const fetchEventsMock = jest.fn(() => Promise.reject({
+            response: {
+                data: {
+                    description: "Something went wrong"
+                }
+            }
+        }));
+
+        const api: EventsHttpApi = {
+            ...EventsApi,
+            fetchEvents: fetchEventsMock
+        }
+
+        await expectSaga(loadEventsSaga, api)
+            .put.like({
+                action: {
+                    type: AlertTypes.ShowAlert
+                }
+            })
+            .dispatch({
+                type: Types.LoadEvents,
+            })
+            .run()
+            .then(() => {
+                expect(fetchEventsMock).toHaveBeenCalled()
+            })
+    })
 })
 
 describe('Add note saga', () => {
@@ -71,6 +101,39 @@ describe('Add note saga', () => {
         await expectSaga(addNoteSaga, api)
             .put({
                 type: Types.LoadEvents,
+            })
+            .dispatch({
+                type: Types.AddNote,
+                payload: {
+                    note: "event-1",
+                    date: EventDate.ofDateAndTime("2024-07-12T20:00"),
+                }
+            })
+            .run()
+            .then(() => {
+                expect(addEventMock).toHaveBeenCalled()
+            })
+    })
+
+    it('pushes show alert action on api call failure', async () => {
+        const addEventMock = jest.fn(() => Promise.reject({
+            response: {
+                data: {
+                    description: "Something went wrong"
+                }
+            }
+        }));
+
+        const api: EventsHttpApi = {
+            ...EventsApi,
+            addNote: addEventMock
+        }
+
+        await expectSaga(addNoteSaga, api)
+            .put.like({
+                action: {
+                    type: AlertTypes.ShowAlert
+                }
             })
             .dispatch({
                 type: Types.AddNote,
@@ -109,6 +172,40 @@ describe('Add photo saga', () => {
             .run()
             .then(() => {
                 expect(addPhotoMock).toHaveBeenCalled()
+            })
+    })
+
+    it('pushes show alert action on api call failure', async () => {
+        const addEventMock = jest.fn(() => Promise.reject({
+            response: {
+                data: {
+                    description: "Something went wrong"
+                }
+            }
+        }));
+
+        const api: EventsHttpApi = {
+            ...EventsApi,
+            addPhoto: addEventMock
+        }
+
+        await expectSaga(addPhotoSaga, api)
+            .put.like({
+                action: {
+                    type: AlertTypes.ShowAlert
+                }
+            })
+            .dispatch({
+                type: Types.AddPhoto,
+                payload: {
+                    description: "description-1",
+                    file: new File(["(⌐□_□)"], "image.png", {type: "image/png", lastModified: 1722023600022}),
+                    date: EventDate.ofDateAndTime("2024-07-12T20:00"),
+                }
+            })
+            .run()
+            .then(() => {
+                expect(addEventMock).toHaveBeenCalled()
             })
     })
 })
