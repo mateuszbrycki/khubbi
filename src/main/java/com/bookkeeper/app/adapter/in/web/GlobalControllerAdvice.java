@@ -2,6 +2,7 @@ package com.bookkeeper.app.adapter.in.web;
 
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.security.SignatureException;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.AccessDeniedException;
@@ -10,11 +11,14 @@ import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
+@Slf4j
 @RestControllerAdvice
 public class GlobalControllerAdvice {
 
   @ExceptionHandler(Exception.class)
   public ResponseEntity<RequestResult.RequestError> handleSecurityException(Exception exception) {
+
+    log.error("Received exception", exception);
 
     if (exception instanceof BadCredentialsException) {
       return new ResponseEntity<>(
