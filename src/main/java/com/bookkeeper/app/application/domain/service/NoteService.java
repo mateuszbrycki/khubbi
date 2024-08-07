@@ -1,8 +1,8 @@
 package com.bookkeeper.app.application.domain.service;
 
 import com.bookkeeper.app.application.domain.model.EventCreator;
-import com.bookkeeper.app.application.domain.model.EventDate;
 import com.bookkeeper.app.application.port.in.AddNoteUseCase;
+import com.bookkeeper.app.application.port.in.FindUserUseCase;
 import com.bookkeeper.app.application.port.in.ListNotesUseCase;
 import com.bookkeeper.app.application.port.out.AddNotePort;
 import com.bookkeeper.app.application.port.out.ListNotesPort;
@@ -15,20 +15,23 @@ import lombok.extern.slf4j.Slf4j;
 @AllArgsConstructor
 class NoteService implements AddNoteUseCase, ListNotesUseCase {
 
+  private final UserService userService;
   private final AddNotePort addNotePort;
   private final ListNotesPort listNotesPort;
 
   @Override
   public Try<AddNoteUseCase.Note> addNote(AddNoteCommand command) {
 
-    log.info("Adding Note '{}' ({}) for {}", command.note(), command.date(), command.owner().id());
-    com.bookkeeper.app.application.domain.model.Note candidate =
-        new com.bookkeeper.app.application.domain.model.Note(
-            command.note(), EventDate.of(command.date()), EventCreator.of(command.owner()));
+    log.info(
+        "Adding Note '{}' ({}) for {}", command.note(), command.date(), command.creator().value());
 
-    return this.listNotesPort
-        .listNotes(command.owner())
-        .flatMapTry(note -> this.addNotePort.addNote(candidate))
+    return userService
+        .findUser(FindUserUseCase.FindUserQuery.builder().email(command.creator().value()).build())
+        .map(
+            user ->
+                new com.bookkeeper.app.application.domain.model.Note(
+                    command.note(), command.date(), EventCreator.of(user)))
+        .flatMapTry(this.addNotePort::addNote)
         .mapTry(
             note ->
                 AddNoteUseCase.Note.builder()

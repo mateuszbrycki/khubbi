@@ -9,6 +9,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+import com.bookkeeper.app.application.domain.model.EventDate;
+import com.bookkeeper.app.application.domain.model.UserEmail;
 import com.bookkeeper.app.application.port.in.AddNoteUseCase;
 import com.bookkeeper.app.application.port.in.FindUserUseCase;
 import com.bookkeeper.app.common.Anys;
@@ -36,27 +38,6 @@ class NoteControllerTest {
   @MockBean private FindUserUseCase findUserUseCase;
 
   @Test
-  public void shouldReturnRequestErrorWhenOwnerIsNotFound() throws Exception {
-
-    // given
-    when(findUserUseCase.findUser(any()))
-        .thenReturn(Try.failure(new Exception("Cannot find the owner")));
-
-    // when & then
-    this.mockMvc
-        .perform(
-            post("/note")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(
-                    asJsonString(
-                        new NoteController.AddNoteRequest(
-                            new NoteController.Payload("any-name"), ZonedDateTime.now()))))
-        .andDo(print())
-        .andExpect(status().isInternalServerError())
-        .andExpect(content().string(containsString("Cannot find the owner")));
-  }
-
-  @Test
   public void shouldReturnRequestErrorWhenNoteAdditionFailedDueToAnyError() throws Exception {
 
     // given
@@ -65,8 +46,8 @@ class NoteControllerTest {
     when(addNoteUseCase.addNote(
             AddNoteUseCase.AddNoteCommand.builder()
                 .note("any-name")
-                .date(date)
-                .owner(Anys.ANY_USER)
+                .date(EventDate.of(date))
+                .creator(UserEmail.of(Anys.ANY_EMAIL))
                 .build()))
         .thenReturn(Try.failure(new Exception("Cannot add a note")));
 
@@ -95,8 +76,8 @@ class NoteControllerTest {
     when(addNoteUseCase.addNote(
             AddNoteUseCase.AddNoteCommand.builder()
                 .note(note.note())
-                .date(date)
-                .owner(Anys.ANY_USER)
+                .date(EventDate.of(date))
+                .creator(UserEmail.of(Anys.ANY_EMAIL))
                 .build()))
         .thenReturn(Try.success(note));
 

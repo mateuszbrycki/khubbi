@@ -41,7 +41,7 @@ public class PhotoControllerTest {
   public void shouldReturnRequestErrorWhenOwnerIsNotFound() throws Exception {
     // given
     when(findUserUseCase.findUser(any()))
-        .thenReturn(Try.failure(new Exception("Cannot find the owner")));
+        .thenReturn(Try.failure(new Exception("Cannot find the creator")));
 
     // when & then
     this.mockMvc
@@ -52,7 +52,7 @@ public class PhotoControllerTest {
                 .param("date", ZonedDateTime.now().toString()))
         .andDo(print())
         .andExpect(status().isInternalServerError())
-        .andExpect(content().string(containsString("Cannot find the owner")));
+        .andExpect(content().string(containsString("Cannot find the creator")));
   }
 
   @Test

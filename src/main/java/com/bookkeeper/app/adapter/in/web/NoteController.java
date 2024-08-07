@@ -2,8 +2,9 @@ package com.bookkeeper.app.adapter.in.web;
 
 import static io.vavr.API.*;
 
+import com.bookkeeper.app.application.domain.model.EventDate;
+import com.bookkeeper.app.application.domain.model.UserEmail;
 import com.bookkeeper.app.application.port.in.AddNoteUseCase;
-import com.bookkeeper.app.application.port.in.FindUserUseCase;
 import java.time.ZonedDateTime;
 import lombok.AllArgsConstructor;
 import lombok.NonNull;
@@ -23,23 +24,19 @@ import org.springframework.web.bind.annotation.RestController;
 public class NoteController {
 
   private final AddNoteUseCase addNoteUseCase;
-  private final FindUserUseCase findUserUseCase;
 
   @PostMapping(consumes = "application/json", produces = "application/json")
   public ResponseEntity<?> addNote(
       @RequestBody AddNoteRequest addNoteRequest, Authentication authentication) {
     log.info("Received add note request {}", addNoteRequest);
 
-    return findUserUseCase
-        .findUser(new FindUserUseCase.FindUserQuery(authentication.getName()))
-        .mapTry(
-            user ->
-                AddNoteUseCase.AddNoteCommand.builder()
-                    .note(addNoteRequest.payload().note())
-                    .date(addNoteRequest.date())
-                    .owner(user)
-                    .build())
-        .flatMap(this.addNoteUseCase::addNote)
+    return addNoteUseCase
+        .addNote(
+            AddNoteUseCase.AddNoteCommand.builder()
+                .creator(UserEmail.of(authentication.getName()))
+                .date(EventDate.of(addNoteRequest.date()))
+                .note(addNoteRequest.payload().note())
+                .build())
         .fold(
             failure -> {
               HttpStatus status = Match(failure).of(Case($(), HttpStatus.INTERNAL_SERVER_ERROR));

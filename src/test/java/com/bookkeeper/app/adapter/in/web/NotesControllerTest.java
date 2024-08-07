@@ -40,14 +40,14 @@ class NotesControllerTest {
 
     // given
     when(findUserUseCase.findUser(any()))
-        .thenReturn(Try.failure(new Exception("Cannot find the owner")));
+        .thenReturn(Try.failure(new Exception("Cannot find the creator")));
 
     // when & then
     this.mockMvc
         .perform(get("/notes"))
         .andDo(print())
         .andExpect(status().isInternalServerError())
-        .andExpect(content().string(containsString("Cannot find the owner")));
+        .andExpect(content().string(containsString("Cannot find the creator")));
   }
 
   @Test

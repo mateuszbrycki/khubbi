@@ -3,6 +3,7 @@ package com.bookkeeper.app.application.domain.model;
 import java.time.ZonedDateTime;
 import java.util.Objects;
 
+@ValueObject
 public record EventDate(ZonedDateTime value) implements Comparable<EventDate> {
 
   public static EventDate of(ZonedDateTime value) {

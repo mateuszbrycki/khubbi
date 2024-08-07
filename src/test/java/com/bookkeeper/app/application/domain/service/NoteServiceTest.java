@@ -1,13 +1,13 @@
 package com.bookkeeper.app.application.domain.service;
 
-import static com.bookkeeper.app.common.Anys.ANY_EVENT_CREATOR;
-import static com.bookkeeper.app.common.Anys.ANY_EVENT_DATE;
+import static com.bookkeeper.app.common.Anys.*;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
 import com.bookkeeper.app.application.domain.model.EventDate;
 import com.bookkeeper.app.application.domain.model.Note;
+import com.bookkeeper.app.application.domain.model.UserEmail;
 import com.bookkeeper.app.application.port.in.AddNoteUseCase;
 import com.bookkeeper.app.application.port.in.ListNotesUseCase;
 import com.bookkeeper.app.application.port.out.AddNotePort;
@@ -17,7 +17,6 @@ import io.vavr.collection.List;
 import io.vavr.control.Try;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
-import java.time.ZonedDateTime;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -26,6 +25,8 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 @ExtendWith(MockitoExtension.class)
 class NoteServiceTest {
+  @Mock private UserService userService;
+
   @Mock private AddNotePort addNotePort;
 
   @Mock private ListNotesPort listNotesPort;
@@ -36,7 +37,7 @@ class NoteServiceTest {
   public void testNoteSuccessfullyAdded() {
 
     // given
-    when(listNotesPort.listNotes(Anys.ANY_USER)).thenReturn(Try.success(List.empty()));
+    when(userService.findUser(any())).thenReturn(Try.success(ANY_USER));
     when(addNotePort.addNote(any()))
         .thenReturn(Try.success(new Note("new-note", ANY_EVENT_DATE, ANY_EVENT_CREATOR)));
 
@@ -45,8 +46,8 @@ class NoteServiceTest {
         this.underTest.addNote(
             AddNoteUseCase.AddNoteCommand.builder()
                 .note("new-note")
-                .date(ZonedDateTime.now())
-                .owner(Anys.ANY_USER)
+                .date(EventDate.now())
+                .creator(UserEmail.of(Anys.ANY_EMAIL))
                 .build());
 
     // then
@@ -55,10 +56,31 @@ class NoteServiceTest {
   }
 
   @Test
+  public void testAddingNoteFailedDueToUserNotFound() {
+
+    // given
+    when(userService.findUser(any()))
+        .thenReturn(Try.failure(new RuntimeException("Cannot Find User")));
+
+    // when
+    Try<AddNoteUseCase.Note> result =
+        this.underTest.addNote(
+            AddNoteUseCase.AddNoteCommand.builder()
+                .note("new-note")
+                .date(EventDate.now())
+                .creator(UserEmail.of(Anys.ANY_EMAIL))
+                .build());
+
+    // then
+    assertTrue(result.isFailure());
+    assertInstanceOf(RuntimeException.class, result.getCause());
+  }
+
+  @Test
   public void testAddingNoteFailedDueToExceptionWhenAddingTheNote() {
 
     // given
-    when(listNotesPort.listNotes(Anys.ANY_USER)).thenReturn(Try.success(List.empty()));
+    when(userService.findUser(any())).thenReturn(Try.success(ANY_USER));
     when(addNotePort.addNote(any())).thenThrow(new RuntimeException("Any random failure"));
 
     // when
@@ -66,8 +88,8 @@ class NoteServiceTest {
         this.underTest.addNote(
             AddNoteUseCase.AddNoteCommand.builder()
                 .note("new-note")
-                .date(ZonedDateTime.now())
-                .owner(Anys.ANY_USER)
+                .date(EventDate.now())
+                .creator(UserEmail.of(Anys.ANY_EMAIL))
                 .build());
 
     // then

@@ -8,6 +8,7 @@ import lombok.NonNull;
 public interface FindUserUseCase {
   Try<User> findUser(FindUserQuery command);
 
+  // TODO mateusz.brycki consider UserEmail here
   @Builder
   record FindUserQuery(@NonNull String email) {}
 }

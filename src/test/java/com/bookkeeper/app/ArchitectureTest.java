@@ -88,7 +88,9 @@ public class ArchitectureTest {
           .andShould(
               haveRawType(
                   JavaClass.Predicates.resideInAPackage("..port.in..")
-                      .or(JavaClass.Predicates.resideInAPackage("..port.out.."))
+                      .or(
+                          JavaClass.Predicates.resideInAPackage("..port.out..")
+                              .or(JavaClass.Predicates.resideInAPackage("..domain.service..")))
                       .or(JavaClass.Predicates.type(org.slf4j.Logger.class))));
 
   @ArchTest

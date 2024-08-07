@@ -8,8 +8,9 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 public class ServicesConfiguration {
   @Bean
-  NoteService noteService(AddNotePort addNotePort, ListNotesPort listNotesPort) {
-    return new NoteService(addNotePort, listNotesPort);
+  NoteService noteService(
+      UserService userService, AddNotePort addNotePort, ListNotesPort listNotesPort) {
+    return new NoteService(userService, addNotePort, listNotesPort);
   }
 
   @Bean
