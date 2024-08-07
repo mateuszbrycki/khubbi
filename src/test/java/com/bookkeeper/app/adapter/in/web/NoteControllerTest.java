@@ -2,7 +2,6 @@ package com.bookkeeper.app.adapter.in.web;
 
 import static com.bookkeeper.app.common.JsonUtils.asJsonString;
 import static org.hamcrest.Matchers.containsString;
-import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
@@ -12,7 +11,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import com.bookkeeper.app.application.domain.model.EventDate;
 import com.bookkeeper.app.application.domain.model.UserEmail;
 import com.bookkeeper.app.application.port.in.AddNoteUseCase;
-import com.bookkeeper.app.application.port.in.FindUserUseCase;
 import com.bookkeeper.app.common.Anys;
 import com.bookkeeper.app.common.TestSecurityConfiguration;
 import io.vavr.control.Try;
@@ -35,14 +33,11 @@ class NoteControllerTest {
 
   @MockBean private AddNoteUseCase addNoteUseCase;
 
-  @MockBean private FindUserUseCase findUserUseCase;
-
   @Test
   public void shouldReturnRequestErrorWhenNoteAdditionFailedDueToAnyError() throws Exception {
 
     // given
     ZonedDateTime date = ZonedDateTime.now();
-    when(findUserUseCase.findUser(any())).thenReturn(Try.success(Anys.ANY_USER));
     when(addNoteUseCase.addNote(
             AddNoteUseCase.AddNoteCommand.builder()
                 .note("any-name")
@@ -69,7 +64,6 @@ class NoteControllerTest {
   public void shouldReturnCreatedWhenNoteAdditionSucceeded() throws Exception {
 
     // given
-    when(findUserUseCase.findUser(any())).thenReturn(Try.success(Anys.ANY_USER));
     ZonedDateTime date = ZonedDateTime.now();
     UUID id = UUID.randomUUID();
     AddNoteUseCase.Note note = new AddNoteUseCase.Note(id, "note-name", date);

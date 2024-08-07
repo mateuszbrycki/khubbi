@@ -44,18 +44,25 @@ class NoteService implements AddNoteUseCase, ListNotesUseCase {
   @Override
   public Try<List<ListNotesUseCase.Note>> listNotes(ListNotesQuery command) {
 
-    log.info("Listing notes for {}", command.owner().id());
-    return listNotesPort
-        .listNotes(command.owner())
-        .map(notes -> notes.sortBy(com.bookkeeper.app.application.domain.model.Note::date))
-        .map(
-            notes ->
-                notes.map(
-                    note ->
-                        ListNotesUseCase.Note.builder()
-                            .id(note.id().value())
-                            .note(note.note())
-                            .date(note.date().value())
-                            .build()));
+    log.info("Listing notes for {}", command.creator().value());
+
+    return userService
+        .findUser(FindUserUseCase.FindUserQuery.builder().email(command.creator().value()).build())
+        .flatMap(
+            user ->
+                listNotesPort
+                    .listNotes(user)
+                    .map(
+                        notes ->
+                            notes.sortBy(com.bookkeeper.app.application.domain.model.Note::date))
+                    .map(
+                        notes ->
+                            notes.map(
+                                note ->
+                                    ListNotesUseCase.Note.builder()
+                                        .id(note.id().value())
+                                        .note(note.note())
+                                        .date(note.date().value())
+                                        .build())));
   }
 }

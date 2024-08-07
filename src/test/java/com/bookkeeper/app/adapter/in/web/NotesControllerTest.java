@@ -1,13 +1,11 @@
 package com.bookkeeper.app.adapter.in.web;
 
-import static org.hamcrest.Matchers.containsString;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
-import com.bookkeeper.app.application.port.in.FindUserUseCase;
 import com.bookkeeper.app.application.port.in.ListNotesUseCase;
 import com.bookkeeper.app.common.Anys;
 import com.bookkeeper.app.common.TestSecurityConfiguration;
@@ -33,28 +31,10 @@ class NotesControllerTest {
 
   @MockBean private ListNotesUseCase listNotesUseCase;
 
-  @MockBean private FindUserUseCase findUserUseCase;
-
-  @Test
-  public void shouldReturnRequestErrorWhenOwnerIsNotFound() throws Exception {
-
-    // given
-    when(findUserUseCase.findUser(any()))
-        .thenReturn(Try.failure(new Exception("Cannot find the creator")));
-
-    // when & then
-    this.mockMvc
-        .perform(get("/notes"))
-        .andDo(print())
-        .andExpect(status().isInternalServerError())
-        .andExpect(content().string(containsString("Cannot find the creator")));
-  }
-
   @Test
   public void shouldReturnEmptyListWhenNoNotesArePresent() throws Exception {
 
     // given
-    when(findUserUseCase.findUser(any())).thenReturn(Try.success(Anys.ANY_USER));
     when(listNotesUseCase.listNotes(any(ListNotesUseCase.ListNotesQuery.class)))
         .thenReturn(Try.success(List.empty()));
 
@@ -70,7 +50,6 @@ class NotesControllerTest {
   public void shouldReturnListWithTwoElementsWhenTwoNotesArePresent() throws Exception {
 
     // given
-    when(findUserUseCase.findUser(any())).thenReturn(Try.success(Anys.ANY_USER));
 
     ListNotesUseCase.Note note1 =
         new ListNotesUseCase.Note(UUID.randomUUID(), "note-1", ZonedDateTime.now());
@@ -100,7 +79,6 @@ class NotesControllerTest {
   public void shouldReturnInternalServerErrorWhenRetrievalFailed() throws Exception {
 
     // given
-    when(findUserUseCase.findUser(any())).thenReturn(Try.success(Anys.ANY_USER));
     when(listNotesUseCase.listNotes(any(ListNotesUseCase.ListNotesQuery.class)))
         .thenReturn(Try.failure(new RuntimeException("Cannot retrieve notes")));
 

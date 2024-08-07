@@ -1,6 +1,6 @@
 package com.bookkeeper.app.application.port.in;
 
-import com.bookkeeper.app.application.domain.model.User;
+import com.bookkeeper.app.application.domain.model.UserEmail;
 import io.vavr.collection.List;
 import io.vavr.control.Try;
 import java.time.ZonedDateTime;
@@ -13,7 +13,7 @@ public interface ListNotesUseCase {
   Try<List<Note>> listNotes(ListNotesQuery command);
 
   @Builder
-  record ListNotesQuery(@NonNull User owner) {}
+  record ListNotesQuery(@NonNull UserEmail creator) {}
 
   @Builder
   record Note(@NonNull UUID id, @NonNull String note, @NonNull ZonedDateTime date) {}

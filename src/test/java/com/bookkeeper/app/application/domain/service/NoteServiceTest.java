@@ -98,6 +98,22 @@ class NoteServiceTest {
   }
 
   @Test
+  public void testListNotesShouldFailDueToUserNotFound() {
+
+    // given
+    when(userService.findUser(any()))
+        .thenReturn(Try.failure(new RuntimeException("Cannot Find User")));
+
+    // when
+    Try<List<ListNotesUseCase.Note>> result =
+        this.underTest.listNotes(new ListNotesUseCase.ListNotesQuery(UserEmail.of(ANY_EMAIL)));
+
+    // then
+    assertTrue(result.isFailure());
+    assertInstanceOf(RuntimeException.class, result.getCause());
+  }
+
+  @Test
   public void testListNotesSortedByDate() {
 
     // given
@@ -106,6 +122,7 @@ class NoteServiceTest {
     EventDate secondDate =
         EventDate.of(LocalDateTime.parse("2024-12-04T10:16:30").atZone(ZoneId.systemDefault()));
 
+    when(userService.findUser(any())).thenReturn(Try.success(Anys.ANY_USER));
     when(listNotesPort.listNotes(Anys.ANY_USER))
         .thenReturn(
             Try.success(
@@ -115,7 +132,7 @@ class NoteServiceTest {
 
     // when
     Try<List<ListNotesUseCase.Note>> result =
-        this.underTest.listNotes(new ListNotesUseCase.ListNotesQuery(Anys.ANY_USER));
+        this.underTest.listNotes(new ListNotesUseCase.ListNotesQuery(UserEmail.of(ANY_EMAIL)));
 
     // then
     assertTrue(result.isSuccess());
