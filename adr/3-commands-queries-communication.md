@@ -23,7 +23,7 @@ other
 
 ### Input Ports Accept Raw Parameters (Value Objects and Primitive Types)
 
-![3-raw-parameters.jpg](/Users/mateuszbrycki/projects/bookkeeper/adr/resources/3-raw-parameters.jpg)
+![3-raw-parameters.jpg](./resources/3-raw-parameters.jpg)
 
 With this approach *Input Ports* accept value objects and primitive types as parameters. The concept of commands and
 queries
@@ -43,7 +43,7 @@ Cons:
 
 ### Input Ports Accept Commands and Queries
 
-![3-commands-queries.jpg](/Users/mateuszbrycki/projects/bookkeeper/adr/resources/3-commands-queries.jpg)
+![3-commands-queries.jpg](./resources/3-commands-queries.jpg)
 
 In this solution, *Input Ports* defines both commands and queries and knows how to act upon receiving them.
 
@@ -59,7 +59,7 @@ Cons:
 
 ### Input Adapters Push Commands and Queries to an Event Bus/Proxy
 
-![3-event-bus.jpg](/Users/mateuszbrycki/projects/bookkeeper/adr/resources/3-event-bus.jpg)
+![3-event-bus.jpg](./resources/3-event-bus.jpg)
 
 The third option introduces the concept of an *Event Bus* (or a Proxy layer alternatively) that translates commands and
 queries
