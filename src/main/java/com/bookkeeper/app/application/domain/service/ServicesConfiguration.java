@@ -1,6 +1,7 @@
 package com.bookkeeper.app.application.domain.service;
 
 import com.bookkeeper.app.adapter.out.persistance.UserInMemoryRepository;
+import com.bookkeeper.app.application.port.in.FindUserUseCase;
 import com.bookkeeper.app.application.port.out.*;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -9,14 +10,14 @@ import org.springframework.context.annotation.Configuration;
 public class ServicesConfiguration {
   @Bean
   NoteService noteService(
-      UserService userService, AddNotePort addNotePort, ListNotesPort listNotesPort) {
-    return new NoteService(userService, addNotePort, listNotesPort);
+      FindUserUseCase findUserUseCase, AddNotePort addNotePort, ListNotesPort listNotesPort) {
+    return new NoteService(findUserUseCase, addNotePort, listNotesPort);
   }
 
   @Bean
   PhotoService photoService(
-      UserService userService, AddPhotoPort addPhotoPort, ListPhotosPort listPhotosPort) {
-    return new PhotoService(userService, addPhotoPort, listPhotosPort);
+      FindUserUseCase findUserUseCase, AddPhotoPort addPhotoPort, ListPhotosPort listPhotosPort) {
+    return new PhotoService(findUserUseCase, addPhotoPort, listPhotosPort);
   }
 
   @Bean
@@ -25,7 +26,7 @@ public class ServicesConfiguration {
   }
 
   @Bean
-  EventsService eventsService(ListEventsPort listEventsPort) {
-    return new EventsService(listEventsPort);
+  EventsService eventsService(FindUserUseCase findUserUseCase, ListEventsPort listEventsPort) {
+    return new EventsService(findUserUseCase, listEventsPort);
   }
 }

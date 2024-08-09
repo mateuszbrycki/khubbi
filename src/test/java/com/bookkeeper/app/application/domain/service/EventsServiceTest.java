@@ -4,9 +4,11 @@ import static com.bookkeeper.app.common.Anys.*;
 import static com.bookkeeper.app.common.Anys.ANY_EVENT_CREATOR;
 import static org.assertj.vavr.api.VavrAssertions.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
 import com.bookkeeper.app.application.domain.model.*;
+import com.bookkeeper.app.application.port.in.FindUserUseCase;
 import com.bookkeeper.app.application.port.in.ListEventsUseCase;
 import com.bookkeeper.app.application.port.out.ListEventsPort;
 import io.vavr.collection.HashMap;
@@ -23,19 +25,35 @@ import org.mockito.junit.jupiter.MockitoExtension;
 @ExtendWith(MockitoExtension.class)
 class EventsServiceTest {
 
+  @Mock private FindUserUseCase findUserUseCase;
   @Mock private ListEventsPort listEventsPort;
 
   @InjectMocks private EventsService underTest;
 
   @Test
+  public void shouldReturnFailureWhenUserNotFOund() {
+    // given
+    when(findUserUseCase.findUser(any()))
+        .thenReturn(Try.failure(new RuntimeException("User not found")));
+    // when
+    Try<List<ListEventsUseCase.Event>> events =
+        underTest.listEvents(UserEmail.of(ANY_USER.email()));
+
+    // then
+    assertThat(events).isFailure();
+    assertThat(events).failReasonHasMessage("User not found");
+  }
+
+  @Test
   public void shouldReturnFailureWhenListingEventsFailed() {
     // given
+    when(findUserUseCase.findUser(any())).thenReturn(Try.success(ANY_USER));
     when(listEventsPort.listEvents(ANY_USER))
         .thenReturn(Try.failure(new RuntimeException("An error occurred")));
 
     // when
     Try<List<ListEventsUseCase.Event>> events =
-        underTest.listEvents(new ListEventsUseCase.ListEventsQuery(ANY_USER));
+        underTest.listEvents(UserEmail.of(ANY_USER.email()));
 
     // then
     assertThat(events).isFailure();
@@ -45,11 +63,12 @@ class EventsServiceTest {
   @Test
   public void shouldReturnEmptyListIfNoEventsAdded() {
     // given
+    when(findUserUseCase.findUser(any())).thenReturn(Try.success(ANY_USER));
     when(listEventsPort.listEvents(ANY_USER)).thenReturn(Try.success(List.empty()));
 
     // when
     Try<List<ListEventsUseCase.Event>> events =
-        underTest.listEvents(new ListEventsUseCase.ListEventsQuery(ANY_USER));
+        underTest.listEvents(UserEmail.of(ANY_USER.email()));
 
     // then
     assertThat(events).isSuccess();
@@ -59,6 +78,8 @@ class EventsServiceTest {
   @Test
   public void shouldReturnEventsOrderedByDate() {
     // given
+    when(findUserUseCase.findUser(any())).thenReturn(Try.success(ANY_USER));
+
     Photo photo = new Photo("test-photo-description", ANY_FILE, ANY_EVENT_DATE, ANY_EVENT_CREATOR);
     when(photo.photo().getAbsolutePath()).thenReturn(ANY_FILE_PATH);
     Note note =
@@ -68,7 +89,7 @@ class EventsServiceTest {
 
     // when
     Try<List<ListEventsUseCase.Event>> events =
-        underTest.listEvents(new ListEventsUseCase.ListEventsQuery(ANY_USER));
+        underTest.listEvents(UserEmail.of(ANY_USER.email()));
 
     // then
     assertThat(events).isSuccess();
@@ -95,7 +116,7 @@ class EventsServiceTest {
 
     // when
     Try<List<ListEventsUseCase.Event>> events =
-        underTest.listEvents(new ListEventsUseCase.ListEventsQuery(ANY_USER));
+        underTest.listEvents(UserEmail.of(ANY_USER.email()));
 
     // then
     assertThat(events).isSuccess();

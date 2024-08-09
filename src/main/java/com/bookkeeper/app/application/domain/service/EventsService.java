@@ -2,6 +2,8 @@ package com.bookkeeper.app.application.domain.service;
 
 import com.bookkeeper.app.application.domain.model.Note;
 import com.bookkeeper.app.application.domain.model.Photo;
+import com.bookkeeper.app.application.domain.model.UserEmail;
+import com.bookkeeper.app.application.port.in.FindUserUseCase;
 import com.bookkeeper.app.application.port.in.ListEventsUseCase;
 import com.bookkeeper.app.application.port.out.ListEventsPort;
 import io.vavr.collection.HashMap;
@@ -15,13 +17,16 @@ import lombok.extern.slf4j.Slf4j;
 @AllArgsConstructor
 class EventsService implements ListEventsUseCase {
 
+  private final FindUserUseCase findUserUseCase;
   private final ListEventsPort listEventsPort;
 
   @Override
-  public Try<List<Event>> listEvents(ListEventsQuery query) {
-    log.info("Listing events for {}", query.owner().id());
-    return this.listEventsPort
-        .listEvents(query.owner())
+  public Try<List<Event>> listEvents(UserEmail email) {
+    log.info("Listing events for {}", email);
+
+    return this.findUserUseCase
+        .findUser(email)
+        .flatMap(listEventsPort::listEvents)
         .mapTry(
             events ->
                 events

@@ -1,6 +1,6 @@
 package com.bookkeeper.app.application.port.in;
 
-import com.bookkeeper.app.application.domain.model.User;
+import com.bookkeeper.app.application.domain.model.UserEmail;
 import io.vavr.collection.List;
 import io.vavr.collection.Map;
 import io.vavr.control.Try;
@@ -11,10 +11,7 @@ import lombok.NonNull;
 
 public interface ListEventsUseCase {
 
-  Try<List<Event>> listEvents(ListEventsQuery query);
-
-  @Builder
-  record ListEventsQuery(@NonNull User owner) {}
+  Try<List<Event>> listEvents(@NonNull UserEmail owner);
 
   @Builder
   record Event(

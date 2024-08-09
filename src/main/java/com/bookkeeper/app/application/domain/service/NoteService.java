@@ -4,6 +4,7 @@ import com.bookkeeper.app.application.domain.model.EventCreator;
 import com.bookkeeper.app.application.domain.model.EventDate;
 import com.bookkeeper.app.application.domain.model.UserEmail;
 import com.bookkeeper.app.application.port.in.AddNoteUseCase;
+import com.bookkeeper.app.application.port.in.FindUserUseCase;
 import com.bookkeeper.app.application.port.in.ListNotesUseCase;
 import com.bookkeeper.app.application.port.out.AddNotePort;
 import com.bookkeeper.app.application.port.out.ListNotesPort;
@@ -17,7 +18,7 @@ import lombok.extern.slf4j.Slf4j;
 @AllArgsConstructor
 class NoteService implements AddNoteUseCase, ListNotesUseCase {
 
-  private final UserService userService;
+  private final FindUserUseCase findUserUseCase;
   private final AddNotePort addNotePort;
   private final ListNotesPort listNotesPort;
 
@@ -27,7 +28,7 @@ class NoteService implements AddNoteUseCase, ListNotesUseCase {
 
     log.info("Adding Note '{}' ({}) for {}", note, date, creator);
 
-    return userService
+    return findUserUseCase
         .findUser(UserEmail.of(creator.value()))
         .map(
             user ->
@@ -48,7 +49,7 @@ class NoteService implements AddNoteUseCase, ListNotesUseCase {
 
     log.info("Listing notes for {}", creator.value());
 
-    return userService
+    return findUserUseCase
         .findUser(UserEmail.of(creator.value()))
         .flatMap(
             user ->

@@ -1,12 +1,12 @@
 package com.bookkeeper.app.adapter.in.web;
 
-import static org.hamcrest.Matchers.containsString;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
+import com.bookkeeper.app.application.domain.model.UserEmail;
 import com.bookkeeper.app.application.port.in.FindUserUseCase;
 import com.bookkeeper.app.application.port.in.ListEventsUseCase;
 import com.bookkeeper.app.common.Anys;
@@ -37,27 +37,11 @@ class EventsControllerTest {
   @MockBean private FindUserUseCase findUserUseCase;
 
   @Test
-  public void shouldReturnRequestErrorWhenOwnerIsNotFound() throws Exception {
-
-    // given
-    when(findUserUseCase.findUser(any()))
-        .thenReturn(Try.failure(new Exception("Cannot find the creator")));
-
-    // when & then
-    this.mockMvc
-        .perform(get("/events"))
-        .andDo(print())
-        .andExpect(status().isInternalServerError())
-        .andExpect(content().string(containsString("Cannot find the creator")));
-  }
-
-  @Test
   public void shouldReturnEmptyListWhenNoNotesArePresent() throws Exception {
 
     // given
     when(findUserUseCase.findUser(any())).thenReturn(Try.success(Anys.ANY_USER));
-    when(listEventsUseCase.listEvents(any(ListEventsUseCase.ListEventsQuery.class)))
-        .thenReturn(Try.success(List.empty()));
+    when(listEventsUseCase.listEvents(any(UserEmail.class))).thenReturn(Try.success(List.empty()));
 
     // when & then
     this.mockMvc
@@ -81,7 +65,7 @@ class EventsControllerTest {
             UUID.randomUUID(),
             ZonedDateTime.now(),
             HashMap.of("description", "description-1", "photo", "photo-1"));
-    when(listEventsUseCase.listEvents(any(ListEventsUseCase.ListEventsQuery.class)))
+    when(listEventsUseCase.listEvents(any(UserEmail.class)))
         .thenReturn(Try.success(List.of(event1, event2)));
 
     // when & then
@@ -125,7 +109,7 @@ class EventsControllerTest {
 
     // given
     when(findUserUseCase.findUser(any())).thenReturn(Try.success(Anys.ANY_USER));
-    when(listEventsUseCase.listEvents(any(ListEventsUseCase.ListEventsQuery.class)))
+    when(listEventsUseCase.listEvents(any(UserEmail.class)))
         .thenReturn(Try.failure(new RuntimeException("Cannot retrieve notes")));
 
     // when & then
