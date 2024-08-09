@@ -36,7 +36,7 @@ class PhotoService implements AddPhotoUseCase, ListPhotosUseCase {
         .findUser(creator)
         .map(
             user ->
-                new com.bookkeeper.app.application.domain.model.Photo(
+                com.bookkeeper.app.application.domain.model.Photo.create(
                     description, photo, date, EventCreator.of(user)))
         .flatMapTry(this.addPhotoPort::addPhoto)
         .mapTry(

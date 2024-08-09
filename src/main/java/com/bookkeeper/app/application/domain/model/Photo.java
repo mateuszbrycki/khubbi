@@ -10,15 +10,13 @@ public class Photo extends Event {
   private final String description;
   private final File photo;
 
-  public Photo(EventId id, String description, File photo, EventDate date, EventCreator creator) {
+  Photo(EventId id, String description, File photo, EventDate date, EventCreator creator) {
     super(id, date, creator);
     this.description = description;
     this.photo = photo;
   }
 
-  public Photo(String description, File photo, EventDate date, EventCreator creator) {
-    super(EventId.random(), date, creator);
-    this.description = description;
-    this.photo = photo;
+  public static Photo create(String description, File photo, EventDate date, EventCreator creator) {
+    return new Photo(EventId.random(), description, photo, date, creator);
   }
 }

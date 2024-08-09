@@ -39,7 +39,7 @@ class NoteServiceTest {
     // given
     when(userService.findUser(any())).thenReturn(Try.success(ANY_USER));
     when(addNotePort.addNote(any()))
-        .thenReturn(Try.success(new Note("new-note", ANY_EVENT_DATE, ANY_EVENT_CREATOR)));
+        .thenReturn(Try.success(Note.create("new-note", ANY_EVENT_DATE, ANY_EVENT_CREATOR)));
 
     // when
     Try<AddNoteUseCase.Note> result =
@@ -111,8 +111,8 @@ class NoteServiceTest {
         .thenReturn(
             Try.success(
                 List.of(
-                    new Note("first-note", firstDate, ANY_EVENT_CREATOR),
-                    new Note("second-note", secondDate, ANY_EVENT_CREATOR))));
+                    Note.create("first-note", firstDate, ANY_EVENT_CREATOR),
+                    Note.create("second-note", secondDate, ANY_EVENT_CREATOR))));
 
     // when
     Try<List<ListNotesUseCase.Note>> result = this.underTest.listNotes(UserEmail.of(ANY_EMAIL));

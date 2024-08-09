@@ -7,7 +7,6 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
 import com.bookkeeper.app.application.domain.model.EventDate;
-import com.bookkeeper.app.application.domain.model.EventId;
 import com.bookkeeper.app.application.domain.model.Photo;
 import com.bookkeeper.app.application.domain.model.UserEmail;
 import com.bookkeeper.app.application.port.in.AddPhotoUseCase;
@@ -21,7 +20,6 @@ import io.vavr.control.Try;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
-import java.util.UUID;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -58,13 +56,9 @@ public class PhotoServiceTest {
   public void testPhotoSuccessfullyAdded() {
 
     // given
-    UUID id = UUID.randomUUID();
     when(findUserUseCase.findUser(UserEmail.of(ANY_EMAIL))).thenReturn(Try.success(ANY_USER));
-    when(addPhotoPort.addPhoto(any()))
-        .thenReturn(
-            Try.success(
-                new Photo(
-                    EventId.of(id), "new-photo", ANY_FILE, ANY_EVENT_DATE, ANY_EVENT_CREATOR)));
+    Photo photo = Photo.create("new-photo", ANY_FILE, ANY_EVENT_DATE, ANY_EVENT_CREATOR);
+    when(addPhotoPort.addPhoto(any())).thenReturn(Try.success(photo));
 
     // when
     Try<AddPhotoUseCase.Photo> result =
@@ -73,7 +67,7 @@ public class PhotoServiceTest {
 
     // then
     assertTrue(result.isSuccess());
-    assertEquals(id.toString(), result.get().id().toString());
+    assertEquals(photo.id().value().toString(), result.get().id().toString());
   }
 
   @Test
@@ -124,8 +118,8 @@ public class PhotoServiceTest {
         .thenReturn(
             Try.success(
                 List.of(
-                    new Photo("first-photo", ANY_FILE, firstDate, ANY_EVENT_CREATOR),
-                    new Photo("second-photo", ANY_FILE, secondDate, ANY_EVENT_CREATOR))));
+                    Photo.create("first-photo", ANY_FILE, firstDate, ANY_EVENT_CREATOR),
+                    Photo.create("second-photo", ANY_FILE, secondDate, ANY_EVENT_CREATOR))));
 
     // when
     Try<List<ListPhotosUseCase.Photo>> result =

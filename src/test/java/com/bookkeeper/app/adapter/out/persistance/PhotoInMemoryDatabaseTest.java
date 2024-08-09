@@ -37,7 +37,7 @@ public class PhotoInMemoryDatabaseTest {
 
     // given
     PhotoInMemoryDatabase underTest = new PhotoInMemoryDatabase(HashMap.empty());
-    Photo testPhoto = new Photo("test-photo", ANY_FILE, ANY_EVENT_DATE, ANY_EVENT_CREATOR);
+    Photo testPhoto = Photo.create("test-photo", ANY_FILE, ANY_EVENT_DATE, ANY_EVENT_CREATOR);
 
     // when
     Try<Photo> result = underTest.addPhoto(testPhoto);
@@ -59,7 +59,7 @@ public class PhotoInMemoryDatabaseTest {
     when(photos.get(any())).thenReturn(Option.none());
 
     PhotoInMemoryDatabase underTest = new PhotoInMemoryDatabase(photos);
-    Photo testPhoto = new Photo("test-photo", ANY_FILE, ANY_EVENT_DATE, ANY_EVENT_CREATOR);
+    Photo testPhoto = Photo.create("test-photo", ANY_FILE, ANY_EVENT_DATE, ANY_EVENT_CREATOR);
 
     Exception addingPhotoException = new RuntimeException("Error adding a photo");
     when(photos.put(eq(Anys.ANY_USER), eq(List.of(testPhoto)))).thenThrow(addingPhotoException);

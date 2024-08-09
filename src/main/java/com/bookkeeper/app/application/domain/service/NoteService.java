@@ -32,7 +32,7 @@ class NoteService implements AddNoteUseCase, ListNotesUseCase {
         .findUser(UserEmail.of(creator.value()))
         .map(
             user ->
-                new com.bookkeeper.app.application.domain.model.Note(
+                com.bookkeeper.app.application.domain.model.Note.create(
                     note, date, EventCreator.of(user)))
         .flatMapTry(this.addNotePort::addNote)
         .mapTry(

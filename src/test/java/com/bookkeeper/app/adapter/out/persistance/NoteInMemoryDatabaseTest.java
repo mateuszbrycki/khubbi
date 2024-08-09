@@ -37,7 +37,7 @@ class NoteInMemoryDatabaseTest {
 
     // given
     NoteInMemoryDatabase underTest = new NoteInMemoryDatabase(HashMap.empty());
-    Note testNote = new Note("test-note", ANY_EVENT_DATE, ANY_EVENT_CREATOR);
+    Note testNote = Note.create("test-note", ANY_EVENT_DATE, ANY_EVENT_CREATOR);
 
     // when
     Try<Note> result = underTest.addNote(testNote);
@@ -59,7 +59,7 @@ class NoteInMemoryDatabaseTest {
     when(notes.get(any())).thenReturn(Option.none());
 
     NoteInMemoryDatabase underTest = new NoteInMemoryDatabase(notes);
-    Note testNote = new Note("test-note", ANY_EVENT_DATE, ANY_EVENT_CREATOR);
+    Note testNote = Note.create("test-note", ANY_EVENT_DATE, ANY_EVENT_CREATOR);
 
     Exception addingNoteException = new RuntimeException("Error adding a note");
     when(notes.put(eq(Anys.ANY_USER), eq(List.of(testNote)))).thenThrow(addingNoteException);

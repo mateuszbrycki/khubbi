@@ -39,7 +39,7 @@ class EventsInMemoryDatabaseTest {
     HashMap<User, List<Event>> mapMock = prepareMapMock();
     EventsInMemoryDatabase underTest = new EventsInMemoryDatabase(mapMock);
 
-    Note note = new Note("test-note", ANY_EVENT_DATE, ANY_EVENT_CREATOR);
+    Note note = Note.create("test-note", ANY_EVENT_DATE, ANY_EVENT_CREATOR);
 
     // when
     Try<Note> result = underTest.addNote(note);
@@ -54,7 +54,7 @@ class EventsInMemoryDatabaseTest {
 
     // given
     EventsInMemoryDatabase underTest = new EventsInMemoryDatabase(HashMap.empty());
-    Note note = new Note("test-note", ANY_EVENT_DATE, ANY_EVENT_CREATOR);
+    Note note = Note.create("test-note", ANY_EVENT_DATE, ANY_EVENT_CREATOR);
 
     underTest.addNote(note);
 
@@ -71,9 +71,9 @@ class EventsInMemoryDatabaseTest {
   public void shouldSaveNotesAndReturnAllAddedNotes() {
     // given
     EventsInMemoryDatabase underTest = new EventsInMemoryDatabase(HashMap.empty());
-    Note note1 = new Note("test-note-1", ANY_EVENT_DATE, ANY_EVENT_CREATOR);
-    Note note2 = new Note("test-note-2", ANY_EVENT_DATE, ANY_EVENT_CREATOR);
-    Note note3 = new Note("test-note-3", ANY_EVENT_DATE, ANY_EVENT_CREATOR);
+    Note note1 = Note.create("test-note-1", ANY_EVENT_DATE, ANY_EVENT_CREATOR);
+    Note note2 = Note.create("test-note-2", ANY_EVENT_DATE, ANY_EVENT_CREATOR);
+    Note note3 = Note.create("test-note-3", ANY_EVENT_DATE, ANY_EVENT_CREATOR);
 
     underTest.addNote(note1);
     underTest.addNote(note2);
@@ -97,7 +97,8 @@ class EventsInMemoryDatabaseTest {
 
     EventsInMemoryDatabase underTest = new EventsInMemoryDatabase(mapMock);
 
-    Photo photo = new Photo("test-photo-description", ANY_FILE, ANY_EVENT_DATE, ANY_EVENT_CREATOR);
+    Photo photo =
+        Photo.create("test-photo-description", ANY_FILE, ANY_EVENT_DATE, ANY_EVENT_CREATOR);
 
     // when
     Try<Photo> result = underTest.addPhoto(photo);
@@ -133,7 +134,8 @@ class EventsInMemoryDatabaseTest {
   public void shouldSavePhotoAndReturnOneElementList() {
     // given
     EventsInMemoryDatabase underTest = new EventsInMemoryDatabase(HashMap.empty());
-    Photo photo = new Photo("test-photo-description", ANY_FILE, ANY_EVENT_DATE, ANY_EVENT_CREATOR);
+    Photo photo =
+        Photo.create("test-photo-description", ANY_FILE, ANY_EVENT_DATE, ANY_EVENT_CREATOR);
 
     underTest.addPhoto(photo);
 
@@ -151,11 +153,11 @@ class EventsInMemoryDatabaseTest {
     // given
     EventsInMemoryDatabase underTest = new EventsInMemoryDatabase(HashMap.empty());
     Photo photo1 =
-        new Photo("test-photo-description-1", ANY_FILE, ANY_EVENT_DATE, ANY_EVENT_CREATOR);
+        Photo.create("test-photo-description-1", ANY_FILE, ANY_EVENT_DATE, ANY_EVENT_CREATOR);
     Photo photo2 =
-        new Photo("test-photo-description-2", ANY_FILE, ANY_EVENT_DATE, ANY_EVENT_CREATOR);
+        Photo.create("test-photo-description-2", ANY_FILE, ANY_EVENT_DATE, ANY_EVENT_CREATOR);
     Photo photo3 =
-        new Photo("test-photo-description-3", ANY_FILE, ANY_EVENT_DATE, ANY_EVENT_CREATOR);
+        Photo.create("test-photo-description-3", ANY_FILE, ANY_EVENT_DATE, ANY_EVENT_CREATOR);
 
     underTest.addPhoto(photo1);
     underTest.addPhoto(photo2);
@@ -190,8 +192,9 @@ class EventsInMemoryDatabaseTest {
 
     // given
     EventsInMemoryDatabase underTest = new EventsInMemoryDatabase(HashMap.empty());
-    Photo photo = new Photo("test-photo-description", ANY_FILE, ANY_EVENT_DATE, ANY_EVENT_CREATOR);
-    Note note = new Note("test-note", ANY_EVENT_DATE, ANY_EVENT_CREATOR);
+    Photo photo =
+        Photo.create("test-photo-description", ANY_FILE, ANY_EVENT_DATE, ANY_EVENT_CREATOR);
+    Note note = Note.create("test-note", ANY_EVENT_DATE, ANY_EVENT_CREATOR);
 
     underTest.addPhoto(photo);
     underTest.addNote(note);
@@ -210,12 +213,13 @@ class EventsInMemoryDatabaseTest {
   public void shouldReturnEventsCreatedByGivenUser() {
     // given
     EventsInMemoryDatabase underTest = new EventsInMemoryDatabase(HashMap.empty());
-    Photo photo1 = new Photo("test-photo-description", ANY_FILE, ANY_EVENT_DATE, ANY_EVENT_CREATOR);
-    Note note1 = new Note("test-note", ANY_EVENT_DATE, ANY_EVENT_CREATOR);
+    Photo photo1 =
+        Photo.create("test-photo-description", ANY_FILE, ANY_EVENT_DATE, ANY_EVENT_CREATOR);
+    Note note1 = Note.create("test-note", ANY_EVENT_DATE, ANY_EVENT_CREATOR);
 
     Photo photo2 =
-        new Photo("test-photo-description", ANY_FILE, ANY_EVENT_DATE, ANY_ANOTHER_EVENT_CREATOR);
-    Note note2 = new Note("test-note", ANY_EVENT_DATE, ANY_ANOTHER_EVENT_CREATOR);
+        Photo.create("test-photo-description", ANY_FILE, ANY_EVENT_DATE, ANY_ANOTHER_EVENT_CREATOR);
+    Note note2 = Note.create("test-note", ANY_EVENT_DATE, ANY_ANOTHER_EVENT_CREATOR);
 
     underTest.addPhoto(photo1);
     underTest.addNote(note1);

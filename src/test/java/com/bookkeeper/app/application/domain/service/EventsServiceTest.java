@@ -80,10 +80,11 @@ class EventsServiceTest {
     // given
     when(findUserUseCase.findUser(any())).thenReturn(Try.success(ANY_USER));
 
-    Photo photo = new Photo("test-photo-description", ANY_FILE, ANY_EVENT_DATE, ANY_EVENT_CREATOR);
+    Photo photo =
+        Photo.create("test-photo-description", ANY_FILE, ANY_EVENT_DATE, ANY_EVENT_CREATOR);
     when(photo.photo().getAbsolutePath()).thenReturn(ANY_FILE_PATH);
     Note note =
-        new Note("test-note", EventDate.of(ZonedDateTime.now().minusDays(2)), ANY_EVENT_CREATOR);
+        Note.create("test-note", EventDate.of(ZonedDateTime.now().minusDays(2)), ANY_EVENT_CREATOR);
 
     when(listEventsPort.listEvents(ANY_USER)).thenReturn(Try.success(List.of(photo, note)));
 
