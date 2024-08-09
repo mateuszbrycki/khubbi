@@ -10,10 +10,7 @@ import lombok.NonNull;
 
 public interface ListNotesUseCase {
 
-  Try<List<Note>> listNotes(ListNotesQuery command);
-
-  @Builder
-  record ListNotesQuery(@NonNull UserEmail creator) {}
+  Try<List<Note>> listNotes(@NonNull UserEmail creator);
 
   @Builder
   record Note(@NonNull UUID id, @NonNull String note, @NonNull ZonedDateTime date) {}

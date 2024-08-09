@@ -24,10 +24,7 @@ public class NotesController {
     log.info("Received list notes request from {}", authentication.getName());
 
     return this.listNotesUseCase
-        .listNotes(
-            ListNotesUseCase.ListNotesQuery.builder()
-                .creator(UserEmail.of(authentication.getName()))
-                .build())
+        .listNotes(UserEmail.of(authentication.getName()))
         .fold(
             failure ->
                 new ResponseEntity<>(

@@ -6,6 +6,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
+import com.bookkeeper.app.application.domain.model.UserEmail;
 import com.bookkeeper.app.application.port.in.ListNotesUseCase;
 import com.bookkeeper.app.common.Anys;
 import com.bookkeeper.app.common.TestSecurityConfiguration;
@@ -35,8 +36,7 @@ class NotesControllerTest {
   public void shouldReturnEmptyListWhenNoNotesArePresent() throws Exception {
 
     // given
-    when(listNotesUseCase.listNotes(any(ListNotesUseCase.ListNotesQuery.class)))
-        .thenReturn(Try.success(List.empty()));
+    when(listNotesUseCase.listNotes(any(UserEmail.class))).thenReturn(Try.success(List.empty()));
 
     // when & then
     this.mockMvc
@@ -55,7 +55,7 @@ class NotesControllerTest {
         new ListNotesUseCase.Note(UUID.randomUUID(), "note-1", ZonedDateTime.now());
     ListNotesUseCase.Note note2 =
         new ListNotesUseCase.Note(UUID.randomUUID(), "note-2", ZonedDateTime.now());
-    when(listNotesUseCase.listNotes(any(ListNotesUseCase.ListNotesQuery.class)))
+    when(listNotesUseCase.listNotes(any(UserEmail.class)))
         .thenReturn(Try.success(List.of(note1, note2)));
 
     // when & then
@@ -79,7 +79,7 @@ class NotesControllerTest {
   public void shouldReturnInternalServerErrorWhenRetrievalFailed() throws Exception {
 
     // given
-    when(listNotesUseCase.listNotes(any(ListNotesUseCase.ListNotesQuery.class)))
+    when(listNotesUseCase.listNotes(any(UserEmail.class)))
         .thenReturn(Try.failure(new RuntimeException("Cannot retrieve notes")));
 
     // when & then

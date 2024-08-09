@@ -90,8 +90,7 @@ class NoteServiceTest {
         .thenReturn(Try.failure(new RuntimeException("Cannot Find User")));
 
     // when
-    Try<List<ListNotesUseCase.Note>> result =
-        this.underTest.listNotes(new ListNotesUseCase.ListNotesQuery(UserEmail.of(ANY_EMAIL)));
+    Try<List<ListNotesUseCase.Note>> result = this.underTest.listNotes(UserEmail.of(ANY_EMAIL));
 
     // then
     assertTrue(result.isFailure());
@@ -116,8 +115,7 @@ class NoteServiceTest {
                     new Note("second-note", secondDate, ANY_EVENT_CREATOR))));
 
     // when
-    Try<List<ListNotesUseCase.Note>> result =
-        this.underTest.listNotes(new ListNotesUseCase.ListNotesQuery(UserEmail.of(ANY_EMAIL)));
+    Try<List<ListNotesUseCase.Note>> result = this.underTest.listNotes(UserEmail.of(ANY_EMAIL));
 
     // then
     assertTrue(result.isSuccess());

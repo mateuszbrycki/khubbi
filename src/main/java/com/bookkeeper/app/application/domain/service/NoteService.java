@@ -45,12 +45,12 @@ class NoteService implements AddNoteUseCase, ListNotesUseCase {
   }
 
   @Override
-  public Try<List<ListNotesUseCase.Note>> listNotes(ListNotesQuery command) {
+  public Try<List<ListNotesUseCase.Note>> listNotes(@NonNull UserEmail creator) {
 
-    log.info("Listing notes for {}", command.creator().value());
+    log.info("Listing notes for {}", creator.value());
 
     return userService
-        .findUser(FindUserUseCase.FindUserQuery.builder().email(command.creator().value()).build())
+        .findUser(FindUserUseCase.FindUserQuery.builder().email(creator.value()).build())
         .flatMap(
             user ->
                 listNotesPort
