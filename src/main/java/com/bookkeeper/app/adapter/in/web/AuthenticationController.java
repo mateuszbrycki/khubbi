@@ -41,10 +41,9 @@ public class AuthenticationController {
     Try<RegisterResponse> user =
         addUserUseCase
             .addUser(
-                new AddUserUseCase.AddUserCommand(
-                    registerUserDto.getEmail(),
-                    passwordEncoder.encode(registerUserDto.getPassword()),
-                    registerUserDto.getFullName()))
+                registerUserDto.getEmail(),
+                passwordEncoder.encode(registerUserDto.getPassword()),
+                registerUserDto.getFullName())
             .map(
                 addUserResult ->
                     new RegisterResponse()

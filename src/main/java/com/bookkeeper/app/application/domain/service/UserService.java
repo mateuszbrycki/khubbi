@@ -23,17 +23,16 @@ class UserService implements AddUserUseCase, FindUserUseCase {
   private final ListUsersPort listUsersPort;
 
   @Override
-  public Try<User> addUser(AddUserCommand command) {
+  public Try<User> addUser(
+      @NonNull String email, @NonNull String password, @NonNull String fullName) {
 
     Date now = Date.from(Instant.now());
-    User candidate =
-        new User(
-            UUID.randomUUID(), command.fullName(), command.email(), command.password(), now, now);
+    User candidate = new User(UUID.randomUUID(), fullName, email, password, now, now);
 
     log.info("Adding user {} ({} - {})", candidate.id(), candidate.email(), candidate.fullName());
     return this.listUsersPort
         .listUsers()
-        .map(users -> users.filter(user -> user.email().equals(command.email())))
+        .map(users -> users.filter(user -> user.email().equals(email)))
         .flatMapTry(
             users ->
                 users.isEmpty()

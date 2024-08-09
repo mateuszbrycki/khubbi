@@ -6,7 +6,6 @@ import static org.mockito.Mockito.*;
 
 import com.bookkeeper.app.application.domain.model.User;
 import com.bookkeeper.app.application.port.in.AddNoteUseCase;
-import com.bookkeeper.app.application.port.in.AddUserUseCase;
 import com.bookkeeper.app.application.port.out.AddUserPort;
 import com.bookkeeper.app.application.port.out.ListUsersPort;
 import io.vavr.collection.List;
@@ -47,8 +46,7 @@ class UserServiceTest {
                     Date.from(Instant.now()))));
 
     // when
-    Try<User> user =
-        underTest.addUser(new AddUserUseCase.AddUserCommand("email", "password", "fullName"));
+    Try<User> user = underTest.addUser("email", "password", "fullName");
 
     // then
     assertTrue(user.isSuccess());
@@ -65,8 +63,7 @@ class UserServiceTest {
         .thenReturn(Try.failure(new RuntimeException("Cannot add a user")));
 
     // when
-    Try<User> user =
-        underTest.addUser(new AddUserUseCase.AddUserCommand("email", "password", "fullName"));
+    Try<User> user = underTest.addUser("email", "password", "fullName");
 
     // then
     assertTrue(user.isFailure());
@@ -88,9 +85,7 @@ class UserServiceTest {
     when(listUsersPort.listUsers()).thenReturn(Try.success(List.of(existingUser)));
 
     // when
-    Try<User> user =
-        underTest.addUser(
-            new AddUserUseCase.AddUserCommand(existingUser.email(), "password", "fullName"));
+    Try<User> user = underTest.addUser(existingUser.email(), "password", "fullName");
 
     // then
     assertTrue(user.isFailure());
@@ -105,8 +100,7 @@ class UserServiceTest {
         .thenReturn(Try.failure(new RuntimeException("Some random exception")));
 
     // when
-    Try<User> user =
-        underTest.addUser(new AddUserUseCase.AddUserCommand("email", "password", "fullName"));
+    Try<User> user = underTest.addUser("email", "password", "fullName");
 
     // then
     assertTrue(user.isFailure());

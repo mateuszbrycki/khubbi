@@ -54,7 +54,7 @@ class AuthenticationControllerTest {
   @Test
   public void shouldReturnConflictWhenAddingUserFailed() throws Exception {
     // given
-    when(addUserUseCase.addUser(any()))
+    when(addUserUseCase.addUser(any(), any(), any()))
         .thenReturn(
             Try.failure(
                 new UserWithEmailExistsException("User with a given email already exists")));
@@ -79,7 +79,7 @@ class AuthenticationControllerTest {
   @Test
   public void shouldReturnInternalServerErrorWhenAddingUserFailed() throws Exception {
     // given
-    when(addUserUseCase.addUser(any()))
+    when(addUserUseCase.addUser(any(), any(), any()))
         .thenReturn(Try.failure(new RuntimeException("Any exception when adding a user")));
 
     AuthenticationController.RegisterUserDto registerUserDto =
@@ -110,7 +110,7 @@ class AuthenticationControllerTest {
             "password",
             Date.from(Instant.now()),
             Date.from(Instant.now()));
-    when(addUserUseCase.addUser(any())).thenReturn(Try.success(user));
+    when(addUserUseCase.addUser(any(), any(), any())).thenReturn(Try.success(user));
 
     AuthenticationController.RegisterUserDto registerUserDto =
         new AuthenticationController.RegisterUserDto();
@@ -129,7 +129,6 @@ class AuthenticationControllerTest {
         .andExpect(content().string(containsString(user.id().toString())))
         .andExpect(content().string(containsString(user.email())));
   }
-
 
   @Test
   public void shouldReturnUnauthorizedWhenUserNoAuthenticated() throws Exception {
