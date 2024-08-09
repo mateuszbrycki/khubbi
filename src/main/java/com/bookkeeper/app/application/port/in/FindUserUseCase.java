@@ -1,14 +1,10 @@
 package com.bookkeeper.app.application.port.in;
 
 import com.bookkeeper.app.application.domain.model.User;
+import com.bookkeeper.app.application.domain.model.UserEmail;
 import io.vavr.control.Try;
-import lombok.Builder;
 import lombok.NonNull;
 
 public interface FindUserUseCase {
-  Try<User> findUser(FindUserQuery command);
-
-  // TODO mateusz.brycki consider UserEmail here
-  @Builder
-  record FindUserQuery(@NonNull String email) {}
+  Try<User> findUser(@NonNull UserEmail command);
 }

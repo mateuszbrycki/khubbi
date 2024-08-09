@@ -5,6 +5,7 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 import com.bookkeeper.app.application.domain.model.User;
+import com.bookkeeper.app.application.domain.model.UserEmail;
 import io.vavr.Tuple;
 import io.vavr.collection.HashMap;
 import io.vavr.collection.Map;
@@ -53,7 +54,7 @@ class UserInMemoryRepositoryTest {
     when(users.get(USER.email())).thenThrow(findingByEmailException);
 
     // when
-    Try<User> result = underTest.findByEmail(USER.email());
+    Try<User> result = underTest.findByEmail(UserEmail.of(USER.email()));
 
     // then
     assertTrue(result.isFailure());
@@ -67,7 +68,7 @@ class UserInMemoryRepositoryTest {
     UserInMemoryRepository underTest = new UserInMemoryRepository(users);
 
     // when
-    Try<User> result = underTest.findByEmail(USER.email());
+    Try<User> result = underTest.findByEmail(UserEmail.of(USER.email()));
 
     // then
     assertTrue(result.isFailure());
@@ -81,7 +82,7 @@ class UserInMemoryRepositoryTest {
     UserInMemoryRepository underTest = new UserInMemoryRepository(users);
 
     // when
-    Try<User> result = underTest.findByEmail(USER.email());
+    Try<User> result = underTest.findByEmail(UserEmail.of(USER.email()));
 
     // then
     assertTrue(result.isSuccess());

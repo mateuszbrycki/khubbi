@@ -1,5 +1,6 @@
 package com.bookkeeper.app.adapter.in.web;
 
+import com.bookkeeper.app.application.domain.model.UserEmail;
 import com.bookkeeper.app.application.port.in.FindUserUseCase;
 import com.bookkeeper.app.application.port.in.ListPhotosUseCase;
 import lombok.AllArgsConstructor;
@@ -25,7 +26,7 @@ public class PhotosController {
     log.info("Received list photos request from {}", authentication.getName());
 
     return findUserUseCase
-        .findUser(FindUserUseCase.FindUserQuery.builder().email(authentication.getName()).build())
+        .findUser(UserEmail.of(authentication.getName()))
         .flatMapTry(
             user ->
                 this.listPhotosUseCase.listPhotos(

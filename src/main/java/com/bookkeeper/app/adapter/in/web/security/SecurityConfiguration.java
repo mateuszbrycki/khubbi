@@ -6,6 +6,7 @@ import com.bookkeeper.app.adapter.in.web.security.refresh.RefreshTokenService;
 import com.bookkeeper.app.adapter.out.persistance.RefreshTokenRepository;
 import com.bookkeeper.app.adapter.out.persistance.UserInMemoryRepository;
 import com.bookkeeper.app.adapter.out.persistance.UserTokenRepository;
+import com.bookkeeper.app.application.domain.model.UserEmail;
 import com.bookkeeper.app.application.port.out.ListUsersPort;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Value;
@@ -86,7 +87,7 @@ public class SecurityConfiguration {
   UserDetailsService userDetailsService(UserInMemoryRepository userInMemoryRepository) {
     return username ->
         userInMemoryRepository
-            .findByEmail(username)
+            .findByEmail(UserEmail.of(username))
             .map(this::toUserDetails)
             .getOrElseThrow(() -> new UsernameNotFoundException("User not found"));
   }

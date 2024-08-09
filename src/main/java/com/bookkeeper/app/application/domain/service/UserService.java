@@ -1,6 +1,7 @@
 package com.bookkeeper.app.application.domain.service;
 
 import com.bookkeeper.app.application.domain.model.User;
+import com.bookkeeper.app.application.domain.model.UserEmail;
 import com.bookkeeper.app.application.port.in.AddUserUseCase;
 import com.bookkeeper.app.application.port.in.FindUserUseCase;
 import com.bookkeeper.app.application.port.out.AddUserPort;
@@ -11,6 +12,7 @@ import java.time.Instant;
 import java.util.Date;
 import java.util.UUID;
 import lombok.AllArgsConstructor;
+import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
@@ -42,9 +44,9 @@ class UserService implements AddUserUseCase, FindUserUseCase {
   }
 
   @Override
-  public Try<User> findUser(FindUserQuery command) {
-    log.info("Looking for user {}", command.email());
+  public Try<User> findUser(@NonNull UserEmail userEmail) {
+    log.info("Looking for user {}", userEmail);
 
-    return this.listUsersPort.findByEmail(command.email()).toTry();
+    return this.listUsersPort.findByEmail(userEmail).toTry();
   }
 }

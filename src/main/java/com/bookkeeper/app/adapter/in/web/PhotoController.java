@@ -3,6 +3,7 @@ package com.bookkeeper.app.adapter.in.web;
 import static io.vavr.API.*;
 import static io.vavr.Predicates.instanceOf;
 
+import com.bookkeeper.app.application.domain.model.UserEmail;
 import com.bookkeeper.app.application.port.in.AddPhotoUseCase;
 import com.bookkeeper.app.application.port.in.FindUserUseCase;
 import java.io.File;
@@ -38,7 +39,7 @@ public class PhotoController {
     log.info("Received add photo request {}", addPhotoRequest);
 
     return findUserUseCase
-        .findUser(FindUserUseCase.FindUserQuery.builder().email(authentication.getName()).build())
+        .findUser(UserEmail.of(authentication.getName()))
         .mapTry(
             user ->
                 AddPhotoUseCase.AddPhotoCommand.builder()

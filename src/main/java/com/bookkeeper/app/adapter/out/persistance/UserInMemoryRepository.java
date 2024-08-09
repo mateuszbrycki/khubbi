@@ -1,6 +1,7 @@
 package com.bookkeeper.app.adapter.out.persistance;
 
 import com.bookkeeper.app.application.domain.model.User;
+import com.bookkeeper.app.application.domain.model.UserEmail;
 import com.bookkeeper.app.application.port.out.AddUserPort;
 import com.bookkeeper.app.application.port.out.ListUsersPort;
 import io.vavr.Value;
@@ -14,8 +15,8 @@ public class UserInMemoryRepository implements AddUserPort, ListUsersPort {
 
   private Map<String, User> users;
 
-  public Try<User> findByEmail(String email) {
-    return Try.of(() -> users.get(email)).flatMapTry(Value::toTry);
+  public Try<User> findByEmail(UserEmail email) {
+    return Try.of(() -> users.get(email.value())).flatMapTry(Value::toTry);
   }
 
   // TODO mateusz.brycki welll...might be better

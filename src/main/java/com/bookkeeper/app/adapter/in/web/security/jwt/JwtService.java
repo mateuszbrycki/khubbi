@@ -2,6 +2,7 @@ package com.bookkeeper.app.adapter.in.web.security.jwt;
 
 import com.bookkeeper.app.adapter.in.web.security.User;
 import com.bookkeeper.app.adapter.out.persistance.UserTokenRepository;
+import com.bookkeeper.app.application.domain.model.UserEmail;
 import com.bookkeeper.app.application.port.out.ListUsersPort;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.ExpiredJwtException;
@@ -119,7 +120,7 @@ public class JwtService {
   private void markTokenAsActive(String email, JwtToken token) {
     log.info("Marking JWT Token as active for {}", email);
     this.listUsersPort
-        .findByEmail(email)
+        .findByEmail(UserEmail.of(email))
         .mapTry(this::toUserDetails)
         .andThen(
             userDetails -> this.userTokenRepository.refreshToken(userDetails, token.getToken()));

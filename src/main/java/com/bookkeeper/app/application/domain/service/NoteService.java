@@ -4,7 +4,6 @@ import com.bookkeeper.app.application.domain.model.EventCreator;
 import com.bookkeeper.app.application.domain.model.EventDate;
 import com.bookkeeper.app.application.domain.model.UserEmail;
 import com.bookkeeper.app.application.port.in.AddNoteUseCase;
-import com.bookkeeper.app.application.port.in.FindUserUseCase;
 import com.bookkeeper.app.application.port.in.ListNotesUseCase;
 import com.bookkeeper.app.application.port.out.AddNotePort;
 import com.bookkeeper.app.application.port.out.ListNotesPort;
@@ -29,7 +28,7 @@ class NoteService implements AddNoteUseCase, ListNotesUseCase {
     log.info("Adding Note '{}' ({}) for {}", note, date, creator);
 
     return userService
-        .findUser(FindUserUseCase.FindUserQuery.builder().email(creator.value()).build())
+        .findUser(UserEmail.of(creator.value()))
         .map(
             user ->
                 new com.bookkeeper.app.application.domain.model.Note(
@@ -50,7 +49,7 @@ class NoteService implements AddNoteUseCase, ListNotesUseCase {
     log.info("Listing notes for {}", creator.value());
 
     return userService
-        .findUser(FindUserUseCase.FindUserQuery.builder().email(creator.value()).build())
+        .findUser(UserEmail.of(creator.value()))
         .flatMap(
             user ->
                 listNotesPort
