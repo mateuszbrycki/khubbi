@@ -3,6 +3,7 @@ package com.bookkeeper.app.adapter.in.web;
 import static io.vavr.API.*;
 import static io.vavr.Predicates.instanceOf;
 
+import com.bookkeeper.app.application.domain.model.EventDate;
 import com.bookkeeper.app.application.domain.model.UserEmail;
 import com.bookkeeper.app.application.port.in.AddPhotoUseCase;
 import com.bookkeeper.app.application.port.in.FindUserUseCase;
@@ -35,20 +36,16 @@ public class PhotoController {
       consumes = MediaType.MULTIPART_FORM_DATA_VALUE,
       produces = MediaType.APPLICATION_JSON_VALUE)
   public ResponseEntity<?> addPhoto(
-      @ModelAttribute AddPhotoRequest addPhotoRequest, Authentication authentication) {
+      @ModelAttribute AddPhotoRequest addPhotoRequest, Authentication authentication)
+      throws IOException {
     log.info("Received add photo request {}", addPhotoRequest);
 
-    return findUserUseCase
-        .findUser(UserEmail.of(authentication.getName()))
-        .mapTry(
-            user ->
-                AddPhotoUseCase.AddPhotoCommand.builder()
-                    .description(addPhotoRequest.payload().description())
-                    .photo(toFile(addPhotoRequest))
-                    .date(addPhotoRequest.date())
-                    .owner(user)
-                    .build())
-        .flatMap(this.addPhotoUseCase::addPhoto)
+    return this.addPhotoUseCase
+        .addPhoto(
+            UserEmail.of(authentication.getName()),
+            EventDate.of(addPhotoRequest.date()),
+            toFile(addPhotoRequest),
+            addPhotoRequest.payload().description())
         .fold(
             failure -> {
               HttpStatus status =

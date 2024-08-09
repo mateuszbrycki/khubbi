@@ -9,7 +9,9 @@ import static org.mockito.Mockito.when;
 import com.bookkeeper.app.application.domain.model.EventDate;
 import com.bookkeeper.app.application.domain.model.EventId;
 import com.bookkeeper.app.application.domain.model.Photo;
+import com.bookkeeper.app.application.domain.model.UserEmail;
 import com.bookkeeper.app.application.port.in.AddPhotoUseCase;
+import com.bookkeeper.app.application.port.in.FindUserUseCase;
 import com.bookkeeper.app.application.port.in.ListPhotosUseCase;
 import com.bookkeeper.app.application.port.out.AddPhotoPort;
 import com.bookkeeper.app.application.port.out.ListPhotosPort;
@@ -31,14 +33,33 @@ public class PhotoServiceTest {
 
   @Mock private AddPhotoPort addPhotoPort;
   @Mock private ListPhotosPort listPhotosPort;
+  @Mock private FindUserUseCase findUserUseCase;
 
   @InjectMocks private PhotoService underTest;
+
+  @Test
+  public void testAddingPhotoFailedDueToUserNotFOund() {
+
+    // given
+    when(findUserUseCase.findUser(UserEmail.of(ANY_EMAIL)))
+        .thenReturn(Try.failure(new RuntimeException("User not found")));
+
+    // when
+    Try<AddPhotoUseCase.Photo> result =
+        this.underTest.addPhoto(
+            UserEmail.of(ANY_EMAIL), EventDate.of(ZonedDateTime.now()), ANY_FILE, "new-photo");
+
+    // then
+    assertTrue(result.isFailure());
+    assertInstanceOf(RuntimeException.class, result.getCause());
+  }
 
   @Test
   public void testPhotoSuccessfullyAdded() {
 
     // given
     UUID id = UUID.randomUUID();
+    when(findUserUseCase.findUser(UserEmail.of(ANY_EMAIL))).thenReturn(Try.success(ANY_USER));
     when(addPhotoPort.addPhoto(any()))
         .thenReturn(
             Try.success(
@@ -48,8 +69,7 @@ public class PhotoServiceTest {
     // when
     Try<AddPhotoUseCase.Photo> result =
         this.underTest.addPhoto(
-            new AddPhotoUseCase.AddPhotoCommand(
-                "new-photo", ANY_FILE, ZonedDateTime.now(), Anys.ANY_USER));
+            UserEmail.of(ANY_EMAIL), EventDate.of(ZonedDateTime.now()), ANY_FILE, "new-photo");
 
     // then
     assertTrue(result.isSuccess());
@@ -60,14 +80,14 @@ public class PhotoServiceTest {
   public void testAddingPhotoFailedDueToExceptionWhenAddingThePhoto() {
 
     // given
+    when(findUserUseCase.findUser(UserEmail.of(ANY_EMAIL))).thenReturn(Try.success(ANY_USER));
     when(addPhotoPort.addPhoto(any()))
         .thenReturn(Try.failure(new RuntimeException("Any random failure")));
 
     // when
     Try<AddPhotoUseCase.Photo> result =
         this.underTest.addPhoto(
-            new AddPhotoUseCase.AddPhotoCommand(
-                "new-photo", ANY_FILE, ZonedDateTime.now(), Anys.ANY_USER));
+            UserEmail.of(ANY_EMAIL), EventDate.of(ZonedDateTime.now()), ANY_FILE, "new-photo");
 
     // then
     assertTrue(result.isFailure());

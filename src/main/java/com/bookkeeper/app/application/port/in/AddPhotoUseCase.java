@@ -1,6 +1,7 @@
 package com.bookkeeper.app.application.port.in;
 
-import com.bookkeeper.app.application.domain.model.User;
+import com.bookkeeper.app.application.domain.model.EventDate;
+import com.bookkeeper.app.application.domain.model.UserEmail;
 import io.vavr.control.Try;
 import java.io.File;
 import java.time.ZonedDateTime;
@@ -10,14 +11,11 @@ import lombok.NonNull;
 
 public interface AddPhotoUseCase {
 
-  Try<Photo> addPhoto(AddPhotoCommand command);
-
-  @Builder
-  record AddPhotoCommand(
-      @NonNull String description,
+  Try<Photo> addPhoto(
+      @NonNull UserEmail creator,
+      @NonNull EventDate date,
       @NonNull File photo,
-      @NonNull ZonedDateTime date,
-      @NonNull User owner) {}
+      @NonNull String description);
 
   @Builder
   record Photo(@NonNull UUID id, @NonNull String url, @NonNull ZonedDateTime date) {}

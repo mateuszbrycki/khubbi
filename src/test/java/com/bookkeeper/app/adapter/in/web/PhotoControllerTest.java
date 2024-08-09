@@ -38,28 +38,10 @@ public class PhotoControllerTest {
   private MockMultipartFile FILE = new MockMultipartFile("test-file.png", "test-file".getBytes());
 
   @Test
-  public void shouldReturnRequestErrorWhenOwnerIsNotFound() throws Exception {
-    // given
-    when(findUserUseCase.findUser(any()))
-        .thenReturn(Try.failure(new Exception("Cannot find the creator")));
-
-    // when & then
-    this.mockMvc
-        .perform(
-            multipart("/photo")
-                .file("payload.photo", FILE.getBytes())
-                .param("payload.description", "any-description")
-                .param("date", ZonedDateTime.now().toString()))
-        .andDo(print())
-        .andExpect(status().isInternalServerError())
-        .andExpect(content().string(containsString("Cannot find the creator")));
-  }
-
-  @Test
   public void shouldReturnRequestErrorWhenPhotoAdditionFailedDueToAnyError() throws Exception {
     // given
     when(findUserUseCase.findUser(any())).thenReturn(Try.success(Anys.ANY_USER));
-    when(addPhotoUseCase.addPhoto(any()))
+    when(addPhotoUseCase.addPhoto(any(), any(), any(), any()))
         .thenReturn(Try.failure(new Exception("An error occurred")));
 
     // when & then
@@ -80,7 +62,7 @@ public class PhotoControllerTest {
     when(findUserUseCase.findUser(any())).thenReturn(Try.success(Anys.ANY_USER));
     UUID id = UUID.randomUUID();
     ZonedDateTime date = ZonedDateTime.now();
-    when(addPhotoUseCase.addPhoto(any()))
+    when(addPhotoUseCase.addPhoto(any(), any(), any(), any()))
         .thenReturn(Try.success(new AddPhotoUseCase.Photo(id, "https://any-url", date)));
 
     // when & then
