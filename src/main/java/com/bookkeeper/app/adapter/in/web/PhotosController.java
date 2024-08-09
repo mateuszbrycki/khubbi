@@ -1,7 +1,6 @@
 package com.bookkeeper.app.adapter.in.web;
 
 import com.bookkeeper.app.application.domain.model.UserEmail;
-import com.bookkeeper.app.application.port.in.FindUserUseCase;
 import com.bookkeeper.app.application.port.in.ListPhotosUseCase;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -19,18 +18,13 @@ import org.springframework.web.bind.annotation.RestController;
 public class PhotosController {
 
   private final ListPhotosUseCase listPhotosUseCase;
-  private final FindUserUseCase findUserUseCase;
 
   @GetMapping
   public ResponseEntity<?> listPhotos(Authentication authentication) {
     log.info("Received list photos request from {}", authentication.getName());
 
-    return findUserUseCase
-        .findUser(UserEmail.of(authentication.getName()))
-        .flatMapTry(
-            user ->
-                this.listPhotosUseCase.listPhotos(
-                    ListPhotosUseCase.ListPhotosQuery.builder().owner(user).build()))
+    return this.listPhotosUseCase
+        .listPhotos(UserEmail.of(authentication.getName()))
         .fold(
             failure ->
                 new ResponseEntity<>(

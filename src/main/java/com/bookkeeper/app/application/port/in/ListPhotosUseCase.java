@@ -1,6 +1,6 @@
 package com.bookkeeper.app.application.port.in;
 
-import com.bookkeeper.app.application.domain.model.User;
+import com.bookkeeper.app.application.domain.model.UserEmail;
 import io.vavr.collection.List;
 import io.vavr.control.Try;
 import java.time.ZonedDateTime;
@@ -10,10 +10,7 @@ import lombok.NonNull;
 
 public interface ListPhotosUseCase {
 
-  Try<List<Photo>> listPhotos(ListPhotosQuery command);
-
-  @Builder
-  record ListPhotosQuery(@NonNull User owner) {}
+  Try<List<Photo>> listPhotos(@NonNull UserEmail owner);
 
   @Builder
   record Photo(

@@ -54,11 +54,12 @@ class PhotoService implements AddPhotoUseCase, ListPhotosUseCase {
   }
 
   @Override
-  public Try<List<ListPhotosUseCase.Photo>> listPhotos(ListPhotosQuery command) {
+  public Try<List<ListPhotosUseCase.Photo>> listPhotos(@NonNull UserEmail owner) {
 
-    log.info("Listing photos for {}", command.owner().id());
-    return listPhotosPort
-        .listPhotos(command.owner())
+    log.info("Listing photos for {}", owner);
+    return findUserUseCase
+        .findUser(owner)
+        .flatMap(this.listPhotosPort::listPhotos)
         .map(photos -> photos.sortBy(com.bookkeeper.app.application.domain.model.Photo::date))
         .map(
             photos ->

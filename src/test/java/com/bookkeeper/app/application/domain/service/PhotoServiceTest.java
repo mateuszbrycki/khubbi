@@ -38,7 +38,7 @@ public class PhotoServiceTest {
   @InjectMocks private PhotoService underTest;
 
   @Test
-  public void testAddingPhotoFailedDueToUserNotFOund() {
+  public void testAddingPhotoFailedDueToUserNotFound() {
 
     // given
     when(findUserUseCase.findUser(UserEmail.of(ANY_EMAIL)))
@@ -95,9 +95,26 @@ public class PhotoServiceTest {
   }
 
   @Test
+  public void testListingPhotosFailedDueToUserNotFound() {
+
+    // given
+    when(findUserUseCase.findUser(UserEmail.of(ANY_EMAIL)))
+        .thenReturn(Try.failure(new RuntimeException("User not found")));
+
+    // when
+    Try<List<ListPhotosUseCase.Photo>> result = this.underTest.listPhotos(UserEmail.of(ANY_EMAIL));
+
+    // then
+    assertTrue(result.isFailure());
+    assertInstanceOf(RuntimeException.class, result.getCause());
+  }
+
+  @Test
   public void testListPhotosSortedByDate() {
 
     // given
+    when(findUserUseCase.findUser(UserEmail.of(ANY_EMAIL))).thenReturn(Try.success(ANY_USER));
+
     EventDate firstDate =
         EventDate.of(LocalDateTime.parse("2009-12-03T10:15:30").atZone(ZoneId.systemDefault()));
     EventDate secondDate =
@@ -112,7 +129,7 @@ public class PhotoServiceTest {
 
     // when
     Try<List<ListPhotosUseCase.Photo>> result =
-        this.underTest.listPhotos(new ListPhotosUseCase.ListPhotosQuery(Anys.ANY_USER));
+        this.underTest.listPhotos(UserEmail.of(Anys.ANY_USER.email()));
 
     // then
     assertTrue(result.isSuccess());

@@ -1,12 +1,12 @@
 package com.bookkeeper.app.adapter.in.web;
 
-import static org.hamcrest.Matchers.containsString;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
+import com.bookkeeper.app.application.domain.model.UserEmail;
 import com.bookkeeper.app.application.port.in.FindUserUseCase;
 import com.bookkeeper.app.application.port.in.ListPhotosUseCase;
 import com.bookkeeper.app.common.Anys;
@@ -36,27 +36,11 @@ class PhotosControllerTest {
   @MockBean private FindUserUseCase findUserUseCase;
 
   @Test
-  public void shouldReturnRequestErrorWhenOwnerIsNotFound() throws Exception {
-
-    // given
-    when(findUserUseCase.findUser(any()))
-        .thenReturn(Try.failure(new Exception("Cannot find the creator")));
-
-    // when & then
-    this.mockMvc
-        .perform(get("/photos"))
-        .andDo(print())
-        .andExpect(status().isInternalServerError())
-        .andExpect(content().string(containsString("Cannot find the creator")));
-  }
-
-  @Test
   public void shouldReturnEmptyListWhenNoPhotosArePresent() throws Exception {
 
     // given
     when(findUserUseCase.findUser(any())).thenReturn(Try.success(Anys.ANY_USER));
-    when(listPhotosUseCase.listPhotos(any(ListPhotosUseCase.ListPhotosQuery.class)))
-        .thenReturn(Try.success(List.empty()));
+    when(listPhotosUseCase.listPhotos(any(UserEmail.class))).thenReturn(Try.success(List.empty()));
 
     // when & then
     this.mockMvc
@@ -84,7 +68,7 @@ class PhotosControllerTest {
             "photo-2",
             "https://localhost:8080/photo-2.png",
             ZonedDateTime.now());
-    when(listPhotosUseCase.listPhotos(any(ListPhotosUseCase.ListPhotosQuery.class)))
+    when(listPhotosUseCase.listPhotos(any(UserEmail.class)))
         .thenReturn(Try.success(List.of(photo1, photo2)));
 
     // when & then
@@ -111,7 +95,7 @@ class PhotosControllerTest {
 
     // given
     when(findUserUseCase.findUser(any())).thenReturn(Try.success(Anys.ANY_USER));
-    when(listPhotosUseCase.listPhotos(any(ListPhotosUseCase.ListPhotosQuery.class)))
+    when(listPhotosUseCase.listPhotos(any(UserEmail.class)))
         .thenReturn(Try.failure(new RuntimeException("Cannot retrieve photos")));
 
     // when & then
