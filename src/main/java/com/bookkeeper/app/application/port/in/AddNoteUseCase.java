@@ -10,11 +10,7 @@ import lombok.NonNull;
 
 public interface AddNoteUseCase {
 
-  Try<Note> addNote(AddNoteCommand command);
-
-  @Builder
-  record AddNoteCommand(
-      @NonNull UserEmail creator, @NonNull EventDate date, @NonNull String note) {}
+  Try<Note> addNote(@NonNull UserEmail creator, @NonNull EventDate date, @NonNull String note);
 
   @Builder
   record Note(@NonNull UUID id, @NonNull String note, @NonNull ZonedDateTime date) {}

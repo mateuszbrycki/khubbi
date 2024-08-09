@@ -32,11 +32,9 @@ public class NoteController {
 
     return addNoteUseCase
         .addNote(
-            AddNoteUseCase.AddNoteCommand.builder()
-                .creator(UserEmail.of(authentication.getName()))
-                .date(EventDate.of(addNoteRequest.date()))
-                .note(addNoteRequest.payload().note())
-                .build())
+            UserEmail.of(authentication.getName()),
+            EventDate.of(addNoteRequest.date()),
+            addNoteRequest.payload().note())
         .fold(
             failure -> {
               HttpStatus status = Match(failure).of(Case($(), HttpStatus.INTERNAL_SERVER_ERROR));

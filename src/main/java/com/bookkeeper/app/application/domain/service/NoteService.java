@@ -1,6 +1,8 @@
 package com.bookkeeper.app.application.domain.service;
 
 import com.bookkeeper.app.application.domain.model.EventCreator;
+import com.bookkeeper.app.application.domain.model.EventDate;
+import com.bookkeeper.app.application.domain.model.UserEmail;
 import com.bookkeeper.app.application.port.in.AddNoteUseCase;
 import com.bookkeeper.app.application.port.in.FindUserUseCase;
 import com.bookkeeper.app.application.port.in.ListNotesUseCase;
@@ -9,6 +11,7 @@ import com.bookkeeper.app.application.port.out.ListNotesPort;
 import io.vavr.collection.List;
 import io.vavr.control.Try;
 import lombok.AllArgsConstructor;
+import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
@@ -20,24 +23,24 @@ class NoteService implements AddNoteUseCase, ListNotesUseCase {
   private final ListNotesPort listNotesPort;
 
   @Override
-  public Try<AddNoteUseCase.Note> addNote(AddNoteCommand command) {
+  public Try<AddNoteUseCase.Note> addNote(
+      @NonNull UserEmail creator, @NonNull EventDate date, @NonNull String note) {
 
-    log.info(
-        "Adding Note '{}' ({}) for {}", command.note(), command.date(), command.creator().value());
+    log.info("Adding Note '{}' ({}) for {}", note, date, creator);
 
     return userService
-        .findUser(FindUserUseCase.FindUserQuery.builder().email(command.creator().value()).build())
+        .findUser(FindUserUseCase.FindUserQuery.builder().email(creator.value()).build())
         .map(
             user ->
                 new com.bookkeeper.app.application.domain.model.Note(
-                    command.note(), command.date(), EventCreator.of(user)))
+                    note, date, EventCreator.of(user)))
         .flatMapTry(this.addNotePort::addNote)
         .mapTry(
-            note ->
+            savedDone ->
                 AddNoteUseCase.Note.builder()
-                    .id(note.id().value())
-                    .note(note.note())
-                    .date(note.date().value())
+                    .id(savedDone.id().value())
+                    .note(savedDone.note())
+                    .date(savedDone.date().value())
                     .build());
   }
 

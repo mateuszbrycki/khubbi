@@ -38,12 +38,7 @@ class NoteControllerTest {
 
     // given
     ZonedDateTime date = ZonedDateTime.now();
-    when(addNoteUseCase.addNote(
-            AddNoteUseCase.AddNoteCommand.builder()
-                .note("any-name")
-                .date(EventDate.of(date))
-                .creator(UserEmail.of(Anys.ANY_EMAIL))
-                .build()))
+    when(addNoteUseCase.addNote(UserEmail.of(Anys.ANY_EMAIL), EventDate.of(date), "any-name"))
         .thenReturn(Try.failure(new Exception("Cannot add a note")));
 
     // when & then
@@ -67,12 +62,7 @@ class NoteControllerTest {
     ZonedDateTime date = ZonedDateTime.now();
     UUID id = UUID.randomUUID();
     AddNoteUseCase.Note note = new AddNoteUseCase.Note(id, "note-name", date);
-    when(addNoteUseCase.addNote(
-            AddNoteUseCase.AddNoteCommand.builder()
-                .note(note.note())
-                .date(EventDate.of(date))
-                .creator(UserEmail.of(Anys.ANY_EMAIL))
-                .build()))
+    when(addNoteUseCase.addNote(UserEmail.of(Anys.ANY_EMAIL), EventDate.of(date), note.note()))
         .thenReturn(Try.success(note));
 
     // when & then

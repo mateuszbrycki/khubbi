@@ -14,7 +14,7 @@ public class ServicesConfiguration {
   }
 
   @Bean
-  public PhotoService photoService(AddPhotoPort addPhotoPort, ListPhotosPort listPhotosPort) {
+  PhotoService photoService(AddPhotoPort addPhotoPort, ListPhotosPort listPhotosPort) {
     return new PhotoService(addPhotoPort, listPhotosPort);
   }
 

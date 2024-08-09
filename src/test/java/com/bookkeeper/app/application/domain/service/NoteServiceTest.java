@@ -43,12 +43,7 @@ class NoteServiceTest {
 
     // when
     Try<AddNoteUseCase.Note> result =
-        this.underTest.addNote(
-            AddNoteUseCase.AddNoteCommand.builder()
-                .note("new-note")
-                .date(EventDate.now())
-                .creator(UserEmail.of(Anys.ANY_EMAIL))
-                .build());
+        this.underTest.addNote(UserEmail.of(Anys.ANY_EMAIL), EventDate.now(), "new-note");
 
     // then
     assertTrue(result.isSuccess());
@@ -64,12 +59,7 @@ class NoteServiceTest {
 
     // when
     Try<AddNoteUseCase.Note> result =
-        this.underTest.addNote(
-            AddNoteUseCase.AddNoteCommand.builder()
-                .note("new-note")
-                .date(EventDate.now())
-                .creator(UserEmail.of(Anys.ANY_EMAIL))
-                .build());
+        this.underTest.addNote(UserEmail.of(Anys.ANY_EMAIL), EventDate.now(), "new-note");
 
     // then
     assertTrue(result.isFailure());
@@ -85,12 +75,7 @@ class NoteServiceTest {
 
     // when
     Try<AddNoteUseCase.Note> result =
-        this.underTest.addNote(
-            AddNoteUseCase.AddNoteCommand.builder()
-                .note("new-note")
-                .date(EventDate.now())
-                .creator(UserEmail.of(Anys.ANY_EMAIL))
-                .build());
+        this.underTest.addNote(UserEmail.of(Anys.ANY_EMAIL), EventDate.now(), "new-note");
 
     // then
     assertTrue(result.isFailure());
