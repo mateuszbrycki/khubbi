@@ -57,51 +57,51 @@ class EventsControllerTest {
     // given
     when(findUserUseCase.findUser(any())).thenReturn(Try.success(Anys.ANY_USER));
 
-    ListEventsUseCase.Event event1 =
-        new ListEventsUseCase.Event(
+    ListEventsUseCase.TimelineEvent timelineEvent1 =
+        new ListEventsUseCase.TimelineEvent(
             UUID.randomUUID(), ZonedDateTime.now(), HashMap.of("note", "note-1"));
-    ListEventsUseCase.Event event2 =
-        new ListEventsUseCase.Event(
+    ListEventsUseCase.TimelineEvent timelineEvent2 =
+        new ListEventsUseCase.TimelineEvent(
             UUID.randomUUID(),
             ZonedDateTime.now(),
             HashMap.of("description", "description-1", "photo", "photo-1"));
     when(listEventsUseCase.listEvents(any(UserEmail.class)))
-        .thenReturn(Try.success(List.of(event1, event2)));
+        .thenReturn(Try.success(List.of(timelineEvent1, timelineEvent2)));
 
     // when & then
     this.mockMvc
         .perform(get("/events"))
         .andDo(print())
         .andExpect(status().is2xxSuccessful())
-        .andExpect(jsonPath("$[0].id").value(event1.id().toString()))
+        .andExpect(jsonPath("$[0].id").value(timelineEvent1.id().toString()))
         .andExpect(
             jsonPath("$[0].properties.note")
                 .value(
-                    event1
+                    timelineEvent1
                         .properties()
                         .get("note")
                         .getOrElse("no note property in the event object")))
         .andExpect(
             jsonPath("$[0].date")
-                .value(event1.date().format(DateTimeFormatter.ISO_OFFSET_DATE_TIME)))
-        .andExpect(jsonPath("$[1].id").value(event2.id().toString()))
+                .value(timelineEvent1.date().format(DateTimeFormatter.ISO_OFFSET_DATE_TIME)))
+        .andExpect(jsonPath("$[1].id").value(timelineEvent2.id().toString()))
         .andExpect(
             jsonPath("$[1].properties.description")
                 .value(
-                    event2
+                    timelineEvent2
                         .properties()
                         .get("description")
                         .getOrElse("no description property in the event object")))
         .andExpect(
             jsonPath("$[1].properties.photo")
                 .value(
-                    event2
+                    timelineEvent2
                         .properties()
                         .get("photo")
                         .getOrElse("no photo property in the event object")))
         .andExpect(
             jsonPath("$[1].date")
-                .value(event2.date().format(DateTimeFormatter.ISO_OFFSET_DATE_TIME)));
+                .value(timelineEvent2.date().format(DateTimeFormatter.ISO_OFFSET_DATE_TIME)));
   }
 
   @Test

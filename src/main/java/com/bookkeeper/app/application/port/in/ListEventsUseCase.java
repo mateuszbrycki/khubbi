@@ -11,9 +11,9 @@ import lombok.NonNull;
 
 public interface ListEventsUseCase {
 
-  Try<List<Event>> listEvents(@NonNull UserEmail owner);
+  Try<List<TimelineEvent>> listEvents(@NonNull UserEmail owner);
 
   @Builder
-  record Event(
+  record TimelineEvent(
       @NonNull UUID id, @NonNull ZonedDateTime date, @NonNull Map<String, Object> properties) {}
 }

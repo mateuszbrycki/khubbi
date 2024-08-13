@@ -21,7 +21,7 @@ class EventsService implements ListEventsUseCase {
   private final ListEventsPort listEventsPort;
 
   @Override
-  public Try<List<Event>> listEvents(UserEmail email) {
+  public Try<List<TimelineEvent>> listEvents(UserEmail email) {
     log.info("Listing events for {}", email);
 
     return this.findUserUseCase
@@ -32,12 +32,12 @@ class EventsService implements ListEventsUseCase {
                 events
                     .map(
                         event ->
-                            Event.builder()
+                            TimelineEvent.builder()
                                 .id(event.id().value())
                                 .date(event.date().value())
                                 .properties(getProperties(event))
                                 .build())
-                    .sortBy(Event::date));
+                    .sortBy(TimelineEvent::date));
   }
 
   private Map<String, Object> getProperties(

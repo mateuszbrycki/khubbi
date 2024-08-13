@@ -3,7 +3,6 @@ package com.bookkeeper.app.application.domain.service;
 import static com.bookkeeper.app.common.Anys.*;
 import static com.bookkeeper.app.common.Anys.ANY_EVENT_CREATOR;
 import static org.assertj.vavr.api.VavrAssertions.assertThat;
-import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
@@ -36,7 +35,7 @@ class EventsServiceTest {
     when(findUserUseCase.findUser(any()))
         .thenReturn(Try.failure(new RuntimeException("User not found")));
     // when
-    Try<List<ListEventsUseCase.Event>> events =
+    Try<List<ListEventsUseCase.TimelineEvent>> events =
         underTest.listEvents(UserEmail.of(ANY_USER.email()));
 
     // then
@@ -52,7 +51,7 @@ class EventsServiceTest {
         .thenReturn(Try.failure(new RuntimeException("An error occurred")));
 
     // when
-    Try<List<ListEventsUseCase.Event>> events =
+    Try<List<ListEventsUseCase.TimelineEvent>> events =
         underTest.listEvents(UserEmail.of(ANY_USER.email()));
 
     // then
@@ -67,7 +66,7 @@ class EventsServiceTest {
     when(listEventsPort.listEvents(ANY_USER)).thenReturn(Try.success(List.empty()));
 
     // when
-    Try<List<ListEventsUseCase.Event>> events =
+    Try<List<ListEventsUseCase.TimelineEvent>> events =
         underTest.listEvents(UserEmail.of(ANY_USER.email()));
 
     // then
@@ -89,7 +88,7 @@ class EventsServiceTest {
     when(listEventsPort.listEvents(ANY_USER)).thenReturn(Try.success(List.of(photo, note)));
 
     // when
-    Try<List<ListEventsUseCase.Event>> events =
+    Try<List<ListEventsUseCase.TimelineEvent>> events =
         underTest.listEvents(UserEmail.of(ANY_USER.email()));
 
     // then
@@ -97,9 +96,9 @@ class EventsServiceTest {
     assertThat(events.get()).hasSize(2);
     assertThat(events.get()) // order matters!
         .containsExactly(
-            new ListEventsUseCase.Event(
+            new ListEventsUseCase.TimelineEvent(
                 note.id().value(), note.date().value(), HashMap.of("note", note.note())),
-            new ListEventsUseCase.Event(
+            new ListEventsUseCase.TimelineEvent(
                 photo.id().value(),
                 photo.date().value(),
                 HashMap.of(
@@ -116,7 +115,7 @@ class EventsServiceTest {
     when(listEventsPort.listEvents(ANY_USER)).thenReturn(Try.success(List.of(testEvent)));
 
     // when
-    Try<List<ListEventsUseCase.Event>> events =
+    Try<List<ListEventsUseCase.TimelineEvent>> events =
         underTest.listEvents(UserEmail.of(ANY_USER.email()));
 
     // then
@@ -124,7 +123,7 @@ class EventsServiceTest {
     assertThat(events.get()).hasSize(2);
     assertThat(events.get()) // order matters!
         .containsExactly(
-            new ListEventsUseCase.Event(
+            new ListEventsUseCase.TimelineEvent(
                 testEvent.id().value(),
                 testEvent.date().value(),
                 HashMap.of("testEvent", testEvent.getTestValue())));
