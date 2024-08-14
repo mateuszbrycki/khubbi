@@ -1,5 +1,6 @@
 package com.bookkeeper.app.application.domain.service;
 
+import com.bookkeeper.app.application.domain.model.EventAttachment;
 import com.bookkeeper.app.application.domain.model.EventCreator;
 import com.bookkeeper.app.application.domain.model.EventDate;
 import com.bookkeeper.app.application.domain.model.UserEmail;
@@ -37,7 +38,10 @@ class PhotoService implements AddPhotoUseCase, ListPhotosUseCase {
         .map(
             user ->
                 com.bookkeeper.app.application.domain.model.Photo.create(
-                    description, photo, date, EventCreator.of(user)))
+                    description,
+                    EventAttachment.PhotoAttachment.create(photo),
+                    date,
+                    EventCreator.of(user)))
         .flatMapTry(this.addPhotoPort::addPhoto)
         .mapTry(
             savedPhoto ->

@@ -2,6 +2,7 @@ package com.bookkeeper.app.common;
 
 import static org.mockito.Mockito.mock;
 
+import com.bookkeeper.app.application.domain.model.EventAttachment;
 import com.bookkeeper.app.application.domain.model.EventCreator;
 import com.bookkeeper.app.application.domain.model.EventDate;
 import com.bookkeeper.app.application.domain.model.User;
@@ -48,4 +49,7 @@ public class Anys {
 
   public static final File ANY_FILE = mock(File.class);
   public static final String ANY_FILE_PATH = "any-file-path";
+
+  public static final EventAttachment.PhotoAttachment ANY_PHOTO_ATTACHMENT =
+      EventAttachment.PhotoAttachment.create(ANY_FILE);
 }

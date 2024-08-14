@@ -80,8 +80,8 @@ class EventsServiceTest {
     when(findUserUseCase.findUser(any())).thenReturn(Try.success(ANY_USER));
 
     Photo photo =
-        Photo.create("test-photo-description", ANY_FILE, ANY_EVENT_DATE, ANY_EVENT_CREATOR);
-    when(photo.photo().getAbsolutePath()).thenReturn(ANY_FILE_PATH);
+        Photo.create(
+            "test-photo-description", ANY_PHOTO_ATTACHMENT, ANY_EVENT_DATE, ANY_EVENT_CREATOR);
     Note note =
         Note.create("test-note", EventDate.of(ZonedDateTime.now().minusDays(2)), ANY_EVENT_CREATOR);
 
@@ -102,7 +102,7 @@ class EventsServiceTest {
                 photo.id().value(),
                 photo.date().value(),
                 HashMap.of(
-                    "description", photo.description(), "photo", photo.photo().getAbsolutePath())));
+                    "description", photo.description(), "photo", photo.photo().id().value())));
   }
 
   @Test

@@ -57,7 +57,8 @@ public class PhotoServiceTest {
 
     // given
     when(findUserUseCase.findUser(UserEmail.of(ANY_EMAIL))).thenReturn(Try.success(ANY_USER));
-    Photo photo = Photo.create("new-photo", ANY_FILE, ANY_EVENT_DATE, ANY_EVENT_CREATOR);
+    Photo photo =
+        Photo.create("new-photo", ANY_PHOTO_ATTACHMENT, ANY_EVENT_DATE, ANY_EVENT_CREATOR);
     when(addPhotoPort.addPhoto(any())).thenReturn(Try.success(photo));
 
     // when
@@ -118,8 +119,9 @@ public class PhotoServiceTest {
         .thenReturn(
             Try.success(
                 List.of(
-                    Photo.create("first-photo", ANY_FILE, firstDate, ANY_EVENT_CREATOR),
-                    Photo.create("second-photo", ANY_FILE, secondDate, ANY_EVENT_CREATOR))));
+                    Photo.create("first-photo", ANY_PHOTO_ATTACHMENT, firstDate, ANY_EVENT_CREATOR),
+                    Photo.create(
+                        "second-photo", ANY_PHOTO_ATTACHMENT, secondDate, ANY_EVENT_CREATOR))));
 
     // when
     Try<List<ListPhotosUseCase.Photo>> result =

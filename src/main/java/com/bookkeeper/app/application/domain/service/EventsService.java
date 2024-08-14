@@ -44,7 +44,7 @@ class EventsService implements ListEventsUseCase {
       com.bookkeeper.app.application.domain.model.Event event) {
     return switch (event) {
       case Photo photo ->
-          HashMap.of("description", photo.description(), "photo", photo.photo().getAbsolutePath());
+          HashMap.of("description", photo.description(), "photo", photo.photo().id().value());
       case Note note -> HashMap.of("note", note.note());
       default -> HashMap.empty();
     };

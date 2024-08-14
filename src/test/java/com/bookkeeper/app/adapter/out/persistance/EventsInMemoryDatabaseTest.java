@@ -98,7 +98,8 @@ class EventsInMemoryDatabaseTest {
     EventsInMemoryDatabase underTest = new EventsInMemoryDatabase(mapMock);
 
     Photo photo =
-        Photo.create("test-photo-description", ANY_FILE, ANY_EVENT_DATE, ANY_EVENT_CREATOR);
+        Photo.create(
+            "test-photo-description", ANY_PHOTO_ATTACHMENT, ANY_EVENT_DATE, ANY_EVENT_CREATOR);
 
     // when
     Try<Photo> result = underTest.addPhoto(photo);
@@ -135,7 +136,8 @@ class EventsInMemoryDatabaseTest {
     // given
     EventsInMemoryDatabase underTest = new EventsInMemoryDatabase(HashMap.empty());
     Photo photo =
-        Photo.create("test-photo-description", ANY_FILE, ANY_EVENT_DATE, ANY_EVENT_CREATOR);
+        Photo.create(
+            "test-photo-description", ANY_PHOTO_ATTACHMENT, ANY_EVENT_DATE, ANY_EVENT_CREATOR);
 
     underTest.addPhoto(photo);
 
@@ -153,11 +155,14 @@ class EventsInMemoryDatabaseTest {
     // given
     EventsInMemoryDatabase underTest = new EventsInMemoryDatabase(HashMap.empty());
     Photo photo1 =
-        Photo.create("test-photo-description-1", ANY_FILE, ANY_EVENT_DATE, ANY_EVENT_CREATOR);
+        Photo.create(
+            "test-photo-description-1", ANY_PHOTO_ATTACHMENT, ANY_EVENT_DATE, ANY_EVENT_CREATOR);
     Photo photo2 =
-        Photo.create("test-photo-description-2", ANY_FILE, ANY_EVENT_DATE, ANY_EVENT_CREATOR);
+        Photo.create(
+            "test-photo-description-2", ANY_PHOTO_ATTACHMENT, ANY_EVENT_DATE, ANY_EVENT_CREATOR);
     Photo photo3 =
-        Photo.create("test-photo-description-3", ANY_FILE, ANY_EVENT_DATE, ANY_EVENT_CREATOR);
+        Photo.create(
+            "test-photo-description-3", ANY_PHOTO_ATTACHMENT, ANY_EVENT_DATE, ANY_EVENT_CREATOR);
 
     underTest.addPhoto(photo1);
     underTest.addPhoto(photo2);
@@ -193,7 +198,8 @@ class EventsInMemoryDatabaseTest {
     // given
     EventsInMemoryDatabase underTest = new EventsInMemoryDatabase(HashMap.empty());
     Photo photo =
-        Photo.create("test-photo-description", ANY_FILE, ANY_EVENT_DATE, ANY_EVENT_CREATOR);
+        Photo.create(
+            "test-photo-description", ANY_PHOTO_ATTACHMENT, ANY_EVENT_DATE, ANY_EVENT_CREATOR);
     Note note = Note.create("test-note", ANY_EVENT_DATE, ANY_EVENT_CREATOR);
 
     underTest.addPhoto(photo);
@@ -214,11 +220,16 @@ class EventsInMemoryDatabaseTest {
     // given
     EventsInMemoryDatabase underTest = new EventsInMemoryDatabase(HashMap.empty());
     Photo photo1 =
-        Photo.create("test-photo-description", ANY_FILE, ANY_EVENT_DATE, ANY_EVENT_CREATOR);
+        Photo.create(
+            "test-photo-description", ANY_PHOTO_ATTACHMENT, ANY_EVENT_DATE, ANY_EVENT_CREATOR);
     Note note1 = Note.create("test-note", ANY_EVENT_DATE, ANY_EVENT_CREATOR);
 
     Photo photo2 =
-        Photo.create("test-photo-description", ANY_FILE, ANY_EVENT_DATE, ANY_ANOTHER_EVENT_CREATOR);
+        Photo.create(
+            "test-photo-description",
+            ANY_PHOTO_ATTACHMENT,
+            ANY_EVENT_DATE,
+            ANY_ANOTHER_EVENT_CREATOR);
     Note note2 = Note.create("test-note", ANY_EVENT_DATE, ANY_ANOTHER_EVENT_CREATOR);
 
     underTest.addPhoto(photo1);
