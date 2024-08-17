@@ -7,7 +7,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 import com.bookkeeper.app.application.domain.model.UserEmail;
-import com.bookkeeper.app.application.port.in.FindUserUseCase;
 import com.bookkeeper.app.application.port.in.ListPhotosUseCase;
 import com.bookkeeper.app.common.Anys;
 import com.bookkeeper.app.common.TestSecurityConfiguration;
@@ -33,13 +32,10 @@ class PhotosControllerTest {
 
   @MockBean private ListPhotosUseCase listPhotosUseCase;
 
-  @MockBean private FindUserUseCase findUserUseCase;
-
   @Test
   public void shouldReturnEmptyListWhenNoPhotosArePresent() throws Exception {
 
     // given
-    when(findUserUseCase.findUser(any())).thenReturn(Try.success(Anys.ANY_USER));
     when(listPhotosUseCase.listPhotos(any(UserEmail.class))).thenReturn(Try.success(List.empty()));
 
     // when & then
@@ -54,7 +50,6 @@ class PhotosControllerTest {
   public void shouldReturnListWithTwoElementsWhenTwoPhotosArePresent() throws Exception {
 
     // given
-    when(findUserUseCase.findUser(any())).thenReturn(Try.success(Anys.ANY_USER));
 
     ListPhotosUseCase.Photo photo1 =
         new ListPhotosUseCase.Photo(
@@ -94,7 +89,6 @@ class PhotosControllerTest {
   public void shouldReturnInternalServerErrorWhenRetrivalFailed() throws Exception {
 
     // given
-    when(findUserUseCase.findUser(any())).thenReturn(Try.success(Anys.ANY_USER));
     when(listPhotosUseCase.listPhotos(any(UserEmail.class)))
         .thenReturn(Try.failure(new RuntimeException("Cannot retrieve photos")));
 

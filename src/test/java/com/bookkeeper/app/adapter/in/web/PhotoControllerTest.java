@@ -9,7 +9,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import com.bookkeeper.app.application.port.in.AddPhotoUseCase;
-import com.bookkeeper.app.application.port.in.FindUserUseCase;
 import com.bookkeeper.app.common.Anys;
 import com.bookkeeper.app.common.TestSecurityConfiguration;
 import io.vavr.control.Try;
@@ -32,7 +31,6 @@ public class PhotoControllerTest {
 
   @Autowired private MockMvc mockMvc;
 
-  @MockBean private FindUserUseCase findUserUseCase;
   @MockBean private AddPhotoUseCase addPhotoUseCase;
 
   private MockMultipartFile FILE = new MockMultipartFile("test-file.png", "test-file".getBytes());
@@ -40,7 +38,6 @@ public class PhotoControllerTest {
   @Test
   public void shouldReturnRequestErrorWhenPhotoAdditionFailedDueToAnyError() throws Exception {
     // given
-    when(findUserUseCase.findUser(any())).thenReturn(Try.success(Anys.ANY_USER));
     when(addPhotoUseCase.addPhoto(any(), any(), any(), any()))
         .thenReturn(Try.failure(new Exception("An error occurred")));
 
@@ -59,7 +56,6 @@ public class PhotoControllerTest {
   @Test
   public void shouldReturnCreatedWhenPhotoAdditionSucceeded() throws Exception {
     // given
-    when(findUserUseCase.findUser(any())).thenReturn(Try.success(Anys.ANY_USER));
     UUID id = UUID.randomUUID();
     ZonedDateTime date = ZonedDateTime.now();
     when(addPhotoUseCase.addPhoto(any(), any(), any(), any()))
