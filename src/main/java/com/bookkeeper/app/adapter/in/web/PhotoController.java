@@ -6,7 +6,6 @@ import static io.vavr.Predicates.instanceOf;
 import com.bookkeeper.app.application.domain.model.EventDate;
 import com.bookkeeper.app.application.domain.model.UserEmail;
 import com.bookkeeper.app.application.port.in.AddPhotoUseCase;
-import com.bookkeeper.app.application.port.in.FindUserUseCase;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -29,7 +28,6 @@ import org.springframework.web.multipart.MultipartFile;
 @AllArgsConstructor
 public class PhotoController {
 
-  private final FindUserUseCase findUserUseCase;
   private final AddPhotoUseCase addPhotoUseCase;
 
   @PostMapping(
