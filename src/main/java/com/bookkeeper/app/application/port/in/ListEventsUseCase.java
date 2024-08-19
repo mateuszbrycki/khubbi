@@ -13,7 +13,7 @@ public interface ListEventsUseCase {
 
   Try<List<TimelineEvent>> listEvents(@NonNull UserEmail owner);
 
-  @Builder
+  @Builder(toBuilder = true)
   record TimelineEvent(
       @NonNull UUID id, @NonNull ZonedDateTime date, @NonNull Map<String, Object> properties) {}
 }

@@ -12,7 +12,7 @@ public interface ListPhotosUseCase {
 
   Try<List<Photo>> listPhotos(@NonNull UserEmail owner);
 
-  @Builder
+  @Builder(toBuilder = true)
   record Photo(
       @NonNull UUID id,
       @NonNull String description,

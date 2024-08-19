@@ -25,6 +25,21 @@ public class EventsController {
 
     return this.listEventsUseCase
         .listEvents(UserEmail.of(authentication.getName()))
+        .map(
+            events ->
+                events.map(
+                    event ->
+                        event.toBuilder()
+                            .properties(
+                                event.properties().get("photo").isDefined()
+                                    ? event
+                                        .properties()
+                                        .put(
+                                            "photo",
+                                            "http://localhost:8080/attachment/"
+                                                + event.properties().get("photo").get())
+                                    : event.properties())
+                            .build()))
         .fold(
             failure ->
                 new ResponseEntity<>(

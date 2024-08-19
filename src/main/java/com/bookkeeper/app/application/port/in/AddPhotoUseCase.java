@@ -18,5 +18,5 @@ public interface AddPhotoUseCase {
       @NonNull String description);
 
   @Builder
-  record Photo(@NonNull UUID id, @NonNull String url, @NonNull ZonedDateTime date) {}
+  record Photo(@NonNull UUID id, @NonNull UUID attachmentId, @NonNull ZonedDateTime date) {}
 }

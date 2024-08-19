@@ -6,6 +6,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
+import com.bookkeeper.app.application.domain.model.EventAttachmentId;
 import com.bookkeeper.app.application.domain.model.UserEmail;
 import com.bookkeeper.app.application.port.in.ListPhotosUseCase;
 import com.bookkeeper.app.common.Anys;
@@ -55,13 +56,13 @@ class PhotosControllerTest {
         new ListPhotosUseCase.Photo(
             UUID.randomUUID(),
             "photo-1",
-            "https://localhost:8080/photo-1.png",
+            EventAttachmentId.random().value().toString(),
             ZonedDateTime.now());
     ListPhotosUseCase.Photo photo2 =
         new ListPhotosUseCase.Photo(
             UUID.randomUUID(),
             "photo-2",
-            "https://localhost:8080/photo-2.png",
+            EventAttachmentId.random().value().toString(),
             ZonedDateTime.now());
     when(listPhotosUseCase.listPhotos(any(UserEmail.class)))
         .thenReturn(Try.success(List.of(photo1, photo2)));
@@ -73,13 +74,13 @@ class PhotosControllerTest {
         .andExpect(status().is2xxSuccessful())
         .andExpect(jsonPath("$[0].id").value(photo1.id().toString()))
         .andExpect(jsonPath("$[0].description").value(photo1.description()))
-        .andExpect(jsonPath("$[0].url").value(photo1.url()))
+        .andExpect(jsonPath("$[0].url").value("http://localhost:8080/attachment/" + photo1.url()))
         .andExpect(
             jsonPath("$[0].date")
                 .value(photo1.date().format(DateTimeFormatter.ISO_OFFSET_DATE_TIME)))
         .andExpect(jsonPath("$[1].id").value(photo2.id().toString()))
         .andExpect(jsonPath("$[1].description").value(photo2.description()))
-        .andExpect(jsonPath("$[1].url").value(photo2.url()))
+        .andExpect(jsonPath("$[1].url").value("http://localhost:8080/attachment/" + photo2.url()))
         .andExpect(
             jsonPath("$[1].date")
                 .value(photo2.date().format(DateTimeFormatter.ISO_OFFSET_DATE_TIME)));

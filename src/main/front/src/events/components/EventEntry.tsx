@@ -2,6 +2,7 @@ import React from "react";
 import {Event, Note, Photo} from "../../types";
 import Card from 'react-bootstrap/Card';
 import * as Icon from "react-bootstrap-icons";
+import ImageWithAuth from "../../common/ImageWithAuth";
 
 export interface EventEntryProps {
     readonly event: Event
@@ -28,6 +29,7 @@ const EventEntry: React.FC<EventEntryProps & EventEntryActionProps> = (props) =>
     const toPhoto = (photo: Photo) => <Card className="p-0 mb-3">
         <Card.Header><Icon.ImageFill className="me-2"/> {photo.photo}</Card.Header>
         <Card.Body>
+            <ImageWithAuth url={photo.photo}></ImageWithAuth>
             <Card.Text>
                 {photo.description}
             </Card.Text>

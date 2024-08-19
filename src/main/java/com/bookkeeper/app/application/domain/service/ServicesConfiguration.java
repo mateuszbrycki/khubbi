@@ -16,8 +16,11 @@ public class ServicesConfiguration {
 
   @Bean
   PhotoService photoService(
-      FindUserUseCase findUserUseCase, AddPhotoPort addPhotoPort, ListPhotosPort listPhotosPort) {
-    return new PhotoService(findUserUseCase, addPhotoPort, listPhotosPort);
+      FindUserUseCase findUserUseCase,
+      AddPhotoPort addPhotoPort,
+      ListPhotosPort listPhotosPort,
+      AddAttachmentPort addAttachmentPort) {
+    return new PhotoService(findUserUseCase, addPhotoPort, listPhotosPort, addAttachmentPort);
   }
 
   @Bean
@@ -28,5 +31,11 @@ public class ServicesConfiguration {
   @Bean
   EventsService eventsService(FindUserUseCase findUserUseCase, ListEventsPort listEventsPort) {
     return new EventsService(findUserUseCase, listEventsPort);
+  }
+
+  @Bean
+  AttachmentService attachmentService(
+      FindUserUseCase findUserUseCase, FindAttachmentPort findAttachmentPort) {
+    return new AttachmentService(findUserUseCase, findAttachmentPort);
   }
 }

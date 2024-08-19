@@ -8,6 +8,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+import com.bookkeeper.app.application.domain.model.EventAttachmentId;
 import com.bookkeeper.app.application.port.in.AddPhotoUseCase;
 import com.bookkeeper.app.common.Anys;
 import com.bookkeeper.app.common.TestSecurityConfiguration;
@@ -59,7 +60,8 @@ public class PhotoControllerTest {
     UUID id = UUID.randomUUID();
     ZonedDateTime date = ZonedDateTime.now();
     when(addPhotoUseCase.addPhoto(any(), any(), any(), any()))
-        .thenReturn(Try.success(new AddPhotoUseCase.Photo(id, "https://any-url", date)));
+        .thenReturn(
+            Try.success(new AddPhotoUseCase.Photo(id, EventAttachmentId.random().value(), date)));
 
     // when & then
     this.mockMvc

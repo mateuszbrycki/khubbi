@@ -95,10 +95,11 @@ class EventsControllerTest {
         .andExpect(
             jsonPath("$[1].properties.photo")
                 .value(
-                    timelineEvent2
-                        .properties()
-                        .get("photo")
-                        .getOrElse("no photo property in the event object")))
+                    "http://localhost:8080/attachment/"
+                        + timelineEvent2
+                            .properties()
+                            .get("photo")
+                            .getOrElse("no photo property in the event object")))
         .andExpect(
             jsonPath("$[1].date")
                 .value(timelineEvent2.date().format(DateTimeFormatter.ISO_OFFSET_DATE_TIME)));

@@ -25,3 +25,8 @@ Content-Type: application/json
 {
     "refreshToken": "70fbcb20-3e40-4a5c-ac6f-2d9170a69f07"
 }
+
+### get attachment
+GET http://localhost:8080/attachment/a3b679fd-62ef-4235-9ba9-0295cad397fd
+Authorization: Bearer {{jwt_token}}
+

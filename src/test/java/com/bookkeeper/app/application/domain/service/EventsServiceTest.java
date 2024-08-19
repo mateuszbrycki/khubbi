@@ -30,7 +30,7 @@ class EventsServiceTest {
   @InjectMocks private EventsService underTest;
 
   @Test
-  public void shouldReturnFailureWhenUserNotFOund() {
+  public void shouldReturnFailureWhenUserNotFound() {
     // given
     when(findUserUseCase.findUser(any()))
         .thenReturn(Try.failure(new RuntimeException("User not found")));
@@ -102,7 +102,10 @@ class EventsServiceTest {
                 photo.id().value(),
                 photo.date().value(),
                 HashMap.of(
-                    "description", photo.description(), "photo", photo.photo().id().value())));
+                    "description",
+                    photo.description(),
+                    "photo",
+                    photo.photo().id().value().toString())));
   }
 
   @Test

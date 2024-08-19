@@ -25,6 +25,13 @@ public class PhotosController {
 
     return this.listPhotosUseCase
         .listPhotos(UserEmail.of(authentication.getName()))
+        .map(
+            events ->
+                events.map(
+                    event ->
+                        event.toBuilder()
+                            .url("http://localhost:8080/attachment/" + event.url())
+                            .build()))
         .fold(
             failure ->
                 new ResponseEntity<>(

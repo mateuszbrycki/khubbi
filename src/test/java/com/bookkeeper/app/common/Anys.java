@@ -2,10 +2,7 @@ package com.bookkeeper.app.common;
 
 import static org.mockito.Mockito.mock;
 
-import com.bookkeeper.app.application.domain.model.EventAttachment;
-import com.bookkeeper.app.application.domain.model.EventCreator;
-import com.bookkeeper.app.application.domain.model.EventDate;
-import com.bookkeeper.app.application.domain.model.User;
+import com.bookkeeper.app.application.domain.model.*;
 import java.io.File;
 import java.time.Instant;
 import java.util.Date;
@@ -14,6 +11,7 @@ import java.util.UUID;
 public class Anys {
 
   public static final String ANY_EMAIL = "any-email";
+  public static final UserEmail ANY_USER_EMAIL = UserEmail.of("any-email");
 
   public static final User ANY_USER =
       User.builder()

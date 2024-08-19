@@ -12,6 +12,7 @@ import com.bookkeeper.app.application.domain.model.UserEmail;
 import com.bookkeeper.app.application.port.in.AddPhotoUseCase;
 import com.bookkeeper.app.application.port.in.FindUserUseCase;
 import com.bookkeeper.app.application.port.in.ListPhotosUseCase;
+import com.bookkeeper.app.application.port.out.AddAttachmentPort;
 import com.bookkeeper.app.application.port.out.AddPhotoPort;
 import com.bookkeeper.app.application.port.out.ListPhotosPort;
 import com.bookkeeper.app.common.Anys;
@@ -20,6 +21,7 @@ import io.vavr.control.Try;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
+import org.assertj.vavr.api.VavrAssertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -32,6 +34,7 @@ public class PhotoServiceTest {
   @Mock private AddPhotoPort addPhotoPort;
   @Mock private ListPhotosPort listPhotosPort;
   @Mock private FindUserUseCase findUserUseCase;
+  @Mock private AddAttachmentPort addAttachmentPort;
 
   @InjectMocks private PhotoService underTest;
 
@@ -39,8 +42,9 @@ public class PhotoServiceTest {
   public void testAddingPhotoFailedDueToUserNotFound() {
 
     // given
+    RuntimeException userNotFoundException = new RuntimeException("User not found");
     when(findUserUseCase.findUser(UserEmail.of(ANY_EMAIL)))
-        .thenReturn(Try.failure(new RuntimeException("User not found")));
+        .thenReturn(Try.failure(userNotFoundException));
 
     // when
     Try<AddPhotoUseCase.Photo> result =
@@ -50,6 +54,29 @@ public class PhotoServiceTest {
     // then
     assertTrue(result.isFailure());
     assertInstanceOf(RuntimeException.class, result.getCause());
+    VavrAssertions.assertThat(result).failReasonHasMessage(userNotFoundException.getMessage());
+  }
+
+  @Test
+  public void testAddingPhotoFailedDueToExceptionWhenAddingAttachment() {
+
+    // given
+    when(findUserUseCase.findUser(UserEmail.of(ANY_EMAIL))).thenReturn(Try.success(ANY_USER));
+    RuntimeException addingAttachmentFailedException =
+        new RuntimeException("Adding attachment failed");
+    when(addAttachmentPort.addAttachment(any(), any()))
+        .thenReturn(Try.failure(addingAttachmentFailedException));
+
+    // when
+    Try<AddPhotoUseCase.Photo> result =
+        this.underTest.addPhoto(
+            UserEmail.of(ANY_EMAIL), EventDate.of(ZonedDateTime.now()), ANY_FILE, "new-photo");
+
+    // then
+    assertTrue(result.isFailure());
+    assertInstanceOf(RuntimeException.class, result.getCause());
+    VavrAssertions.assertThat(result)
+        .failReasonHasMessage(addingAttachmentFailedException.getMessage());
   }
 
   @Test
@@ -57,6 +84,8 @@ public class PhotoServiceTest {
 
     // given
     when(findUserUseCase.findUser(UserEmail.of(ANY_EMAIL))).thenReturn(Try.success(ANY_USER));
+    when(addAttachmentPort.addAttachment(any(), any()))
+        .thenReturn(Try.success(ANY_PHOTO_ATTACHMENT));
     Photo photo =
         Photo.create("new-photo", ANY_PHOTO_ATTACHMENT, ANY_EVENT_DATE, ANY_EVENT_CREATOR);
     when(addPhotoPort.addPhoto(any())).thenReturn(Try.success(photo));
@@ -72,12 +101,14 @@ public class PhotoServiceTest {
   }
 
   @Test
-  public void testAddingPhotoFailedDueToExceptionWhenAddingThePhoto() {
+  public void testAddingPhotoFailedDueToExceptionWhenAddingPhoto() {
 
     // given
     when(findUserUseCase.findUser(UserEmail.of(ANY_EMAIL))).thenReturn(Try.success(ANY_USER));
-    when(addPhotoPort.addPhoto(any()))
-        .thenReturn(Try.failure(new RuntimeException("Any random failure")));
+    when(addAttachmentPort.addAttachment(any(), any()))
+        .thenReturn(Try.success(ANY_PHOTO_ATTACHMENT));
+    RuntimeException anyRandomFailureException = new RuntimeException("Any random failure");
+    when(addPhotoPort.addPhoto(any())).thenReturn(Try.failure(anyRandomFailureException));
 
     // when
     Try<AddPhotoUseCase.Photo> result =
@@ -87,6 +118,7 @@ public class PhotoServiceTest {
     // then
     assertTrue(result.isFailure());
     assertInstanceOf(RuntimeException.class, result.getCause());
+    VavrAssertions.assertThat(result).failReasonHasMessage(anyRandomFailureException.getMessage());
   }
 
   @Test

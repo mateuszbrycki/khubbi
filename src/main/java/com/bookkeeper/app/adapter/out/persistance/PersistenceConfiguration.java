@@ -38,4 +38,9 @@ public class PersistenceConfiguration {
   PhotoInMemoryDatabase photoInMemoryDatabase() {
     return new PhotoInMemoryDatabase(HashMap.empty());
   }
+
+  @Bean
+  AttachmentsInMemoryDatabase attachmentsInMemoryDatabase() {
+    return new AttachmentsInMemoryDatabase(HashMap.empty());
+  }
 }
