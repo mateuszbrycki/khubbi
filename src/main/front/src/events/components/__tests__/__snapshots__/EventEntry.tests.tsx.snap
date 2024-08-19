@@ -47,6 +47,9 @@ exports[`renders event entry with photo  1`] = `
       event-1-photo-url
     </CardHeader>
     <CardBody>
+      <ImageWithAuth
+        url="event-1-photo-url"
+      />
       <CardText>
         event-1-description
       </CardText>

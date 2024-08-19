@@ -36,7 +36,7 @@ export const ImageWithAuth: React.FC<ImageWithAuthProps> = ({url}) => {
         }
     }, [fetchedImage])
 
-    return <img src={''} alt={'Loading...'} ref={img}/>
+    return <img src={''} alt={'Loading...'} ref={img} className="img-fluid"/>
 }
 
 export default ImageWithAuth
