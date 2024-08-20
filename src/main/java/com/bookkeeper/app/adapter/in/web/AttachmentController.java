@@ -36,6 +36,8 @@ public class AttachmentController {
         .map(
             attachment -> {
               try {
+                // FIXME mateusz.brycki this cast might not always be true, especially that
+                // EventAttachment is parameterized. Moreover, it might not always be a file.
                 return Files.readAllBytes(((File) attachment.content()).toPath());
               } catch (IOException e) {
                 throw new RuntimeException(e);

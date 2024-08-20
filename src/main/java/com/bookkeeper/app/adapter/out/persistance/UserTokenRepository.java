@@ -20,7 +20,7 @@ public class UserTokenRepository {
   public Boolean refreshToken(UserDetails user, String token) {
     log.info("Refreshing token for {}", user.getUsername());
     this.activeUserTokens = this.activeUserTokens.put(user, token);
-    // TODO mateusz.brycki fix that
+    // FIXME mateusz.brycki fix that
     return true;
   }
 
@@ -29,7 +29,7 @@ public class UserTokenRepository {
         this.activeUserTokens.filter(
             (UserDetails key, String value) -> !key.getUsername().equals(email));
 
-    // TODO mateusz.brycki fix that
+    // FIXME mateusz.brycki fix that
     return true;
   }
 }

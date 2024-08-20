@@ -124,6 +124,6 @@ public class ArchitectureTest {
           .ignoreDependency(UserAutoRegistration.class, AddUserUseCase.class)
           .whereLayer(DOMAIN_SERVICES)
           .mayOnlyBeAccessedByLayers(INPUT_PORTS, INPUT_ADAPTERS);
-  // TODO mateusz.brycki fix below
+  // FIXME mateusz.brycki fix below
   //              .whereLayer(MODEL).mayOnlyBeAccessedByLayers(OUTPUT_ADAPTERS);
 }

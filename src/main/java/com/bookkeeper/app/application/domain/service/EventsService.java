@@ -40,6 +40,8 @@ class EventsService implements ListEventsUseCase {
                     .sortBy(TimelineEvent::date));
   }
 
+  // FIXME mateusz.brycki this method will need to be updated any time any change in model objects
+  // is introduced
   private Map<String, Object> getProperties(
       com.bookkeeper.app.application.domain.model.Event event) {
     return switch (event) {

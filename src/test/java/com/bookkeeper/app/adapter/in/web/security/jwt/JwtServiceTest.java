@@ -143,7 +143,7 @@ class JwtServiceTest {
     JwtToken token = underTest.generateToken(TEST_EMAIL);
 
     // then
-    // TODO mateusz.brycki think of a better way of testing the token expiration time
+    // FIXME mateusz.brycki think of a better way of testing the token expiration time
     // the token should be valid between test start time and check date (generation time + some
     // random time) + expiration time
     assertTrue(token.getExpirationTime().after(startDate));
