@@ -14,30 +14,37 @@ import io.vavr.Tuple;
 import io.vavr.collection.List;
 import io.vavr.control.Try;
 import java.io.File;
-import lombok.AllArgsConstructor;
 import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
-@AllArgsConstructor
-class PhotoService implements AddPhotoUseCase, ListPhotosUseCase {
+class PhotoService extends UserAwareService implements AddPhotoUseCase, ListPhotosUseCase {
 
-  private final FindUserUseCase findUserUseCase;
   private final AddPhotoPort addPhotoPort;
   private final ListPhotosPort listPhotosPort;
   private final AddAttachmentPort addAttachmentPort;
 
+  PhotoService(
+      FindUserUseCase findUserUseCase,
+      AddPhotoPort addPhotoPort,
+      ListPhotosPort listPhotosPort,
+      AddAttachmentPort addAttachmentPort) {
+    super(findUserUseCase);
+    this.addPhotoPort = addPhotoPort;
+    this.listPhotosPort = listPhotosPort;
+    this.addAttachmentPort = addAttachmentPort;
+  }
+
   @Override
   public Try<AddPhotoUseCase.Photo> addPhoto(
-      @NonNull UserEmail creator,
+      @NonNull UserEmail creatorEmail,
       @NonNull EventDate date,
       @NonNull File photo,
       @NonNull String description) {
 
-    log.info("Adding photo '{}' ({}) for {}", description, date, creator);
+    log.info("Adding photo '{}' ({}) for {}", description, date, creatorEmail);
 
-    return findUserUseCase
-        .findUser(creator)
+    return findUser(creatorEmail)
         .flatMapTry(
             user -> {
               EventCreator eventCreator = EventCreator.of(user);
@@ -63,12 +70,11 @@ class PhotoService implements AddPhotoUseCase, ListPhotosUseCase {
   }
 
   @Override
-  public Try<List<ListPhotosUseCase.Photo>> listPhotos(@NonNull UserEmail owner) {
+  public Try<List<ListPhotosUseCase.Photo>> listPhotos(@NonNull UserEmail ownerEmail) {
 
-    log.info("Listing photos for {}", owner);
+    log.info("Listing photos for {}", ownerEmail);
 
-    return findUserUseCase
-        .findUser(owner)
+    return findUser(ownerEmail)
         .flatMap(this.listPhotosPort::listPhotos)
         .map(photos -> photos.sortBy(com.bookkeeper.app.application.domain.model.Photo::date))
         .map(

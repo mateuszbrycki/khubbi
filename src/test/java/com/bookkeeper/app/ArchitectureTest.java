@@ -1,5 +1,6 @@
 package com.bookkeeper.app;
 
+import static com.tngtech.archunit.base.DescribedPredicate.describe;
 import static com.tngtech.archunit.core.domain.JavaClass.Predicates.resideInAPackage;
 import static com.tngtech.archunit.lang.conditions.ArchConditions.*;
 import static com.tngtech.archunit.lang.syntax.ArchRuleDefinition.*;
@@ -8,9 +9,11 @@ import static com.tngtech.archunit.library.Architectures.layeredArchitecture;
 import com.bookkeeper.app.adapter.in.memory.UserAutoRegistration;
 import com.bookkeeper.app.adapter.in.web.security.SecurityConfiguration;
 import com.bookkeeper.app.adapter.in.web.security.jwt.JwtService;
+import com.bookkeeper.app.application.domain.model.UserEmail;
 import com.bookkeeper.app.application.port.in.AddUserUseCase;
 import com.bookkeeper.app.application.port.out.ListUsersPort;
 import com.tngtech.archunit.core.domain.JavaClass;
+import com.tngtech.archunit.core.domain.JavaModifier;
 import com.tngtech.archunit.core.importer.ImportOption;
 import com.tngtech.archunit.junit.AnalyzeClasses;
 import com.tngtech.archunit.junit.ArchTest;
@@ -37,6 +40,8 @@ public class ArchitectureTest {
           .resideInAPackage("..domain.service..")
           .and()
           .haveSimpleNameEndingWith("Service")
+          .and()
+          .doNotHaveModifier(JavaModifier.ABSTRACT)
           .should()
           .bePackagePrivate()
           .andShould(implement(resideInAPackage("..port.in..")));
@@ -74,6 +79,22 @@ public class ArchitectureTest {
           .areNotNestedClasses()
           .should()
           .haveRawReturnType(Try.class);
+
+  @ArchTest
+  static final ArchRule user_aware_services_should_have_user_email_parameter =
+      methods()
+          .that()
+          .areDeclaredInClassesThat()
+          .areAssignableTo("com.bookkeeper.app.application.domain.service.UserAwareService")
+          .and()
+          .arePublic()
+          .should(
+              have(
+                  describe(
+                      "at least one UserEmail parameter",
+                      method ->
+                          method.getRawParameterTypes().stream()
+                              .anyMatch(parameter -> parameter.isEquivalentTo(UserEmail.class)))));
 
   @ArchTest
   static final ArchRule domain_services_should_only_have_port_fields =
@@ -126,4 +147,5 @@ public class ArchitectureTest {
           .mayOnlyBeAccessedByLayers(INPUT_PORTS, INPUT_ADAPTERS);
   // FIXME mateusz.brycki fix below
   //              .whereLayer(MODEL).mayOnlyBeAccessedByLayers(OUTPUT_ADAPTERS);
+
 }

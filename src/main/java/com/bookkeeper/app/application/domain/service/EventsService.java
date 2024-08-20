@@ -10,22 +10,24 @@ import io.vavr.collection.HashMap;
 import io.vavr.collection.List;
 import io.vavr.collection.Map;
 import io.vavr.control.Try;
-import lombok.AllArgsConstructor;
+import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
-@AllArgsConstructor
-class EventsService implements ListEventsUseCase {
+class EventsService extends UserAwareService implements ListEventsUseCase {
 
-  private final FindUserUseCase findUserUseCase;
   private final ListEventsPort listEventsPort;
 
-  @Override
-  public Try<List<TimelineEvent>> listEvents(UserEmail email) {
-    log.info("Listing events for {}", email);
+  public EventsService(FindUserUseCase findUserUseCase, ListEventsPort listEventsPort) {
+    super(findUserUseCase);
+    this.listEventsPort = listEventsPort;
+  }
 
-    return this.findUserUseCase
-        .findUser(email)
+  @Override
+  public Try<List<TimelineEvent>> listEvents(@NonNull UserEmail userEmail) {
+    log.info("Listing events for {}", userEmail);
+
+    return findUser(userEmail)
         .flatMap(listEventsPort::listEvents)
         .mapTry(
             events ->
