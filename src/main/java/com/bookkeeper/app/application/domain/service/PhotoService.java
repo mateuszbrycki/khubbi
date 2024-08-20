@@ -77,7 +77,7 @@ class PhotoService implements AddPhotoUseCase, ListPhotosUseCase {
                     photo ->
                         ListPhotosUseCase.Photo.builder()
                             .id(photo.id().value())
-                            .url(photo.photo().id().value().toString())
+                            .attachmentId(photo.photo().id().value())
                             .description(photo.description())
                             .date(photo.date().value())
                             .build()));

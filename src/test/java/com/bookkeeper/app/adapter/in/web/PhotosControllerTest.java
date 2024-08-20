@@ -54,16 +54,10 @@ class PhotosControllerTest {
 
     ListPhotosUseCase.Photo photo1 =
         new ListPhotosUseCase.Photo(
-            UUID.randomUUID(),
-            "photo-1",
-            EventAttachmentId.random().value().toString(),
-            ZonedDateTime.now());
+            UUID.randomUUID(), "photo-1", EventAttachmentId.random().value(), ZonedDateTime.now());
     ListPhotosUseCase.Photo photo2 =
         new ListPhotosUseCase.Photo(
-            UUID.randomUUID(),
-            "photo-2",
-            EventAttachmentId.random().value().toString(),
-            ZonedDateTime.now());
+            UUID.randomUUID(), "photo-2", EventAttachmentId.random().value(), ZonedDateTime.now());
     when(listPhotosUseCase.listPhotos(any(UserEmail.class)))
         .thenReturn(Try.success(List.of(photo1, photo2)));
 
@@ -74,13 +68,15 @@ class PhotosControllerTest {
         .andExpect(status().is2xxSuccessful())
         .andExpect(jsonPath("$[0].id").value(photo1.id().toString()))
         .andExpect(jsonPath("$[0].description").value(photo1.description()))
-        .andExpect(jsonPath("$[0].url").value("http://localhost:8080/attachment/" + photo1.url()))
+        .andExpect(
+            jsonPath("$[0].url").value("http://localhost:8080/attachment/" + photo1.attachmentId()))
         .andExpect(
             jsonPath("$[0].date")
                 .value(photo1.date().format(DateTimeFormatter.ISO_OFFSET_DATE_TIME)))
         .andExpect(jsonPath("$[1].id").value(photo2.id().toString()))
         .andExpect(jsonPath("$[1].description").value(photo2.description()))
-        .andExpect(jsonPath("$[1].url").value("http://localhost:8080/attachment/" + photo2.url()))
+        .andExpect(
+            jsonPath("$[1].url").value("http://localhost:8080/attachment/" + photo2.attachmentId()))
         .andExpect(
             jsonPath("$[1].date")
                 .value(photo2.date().format(DateTimeFormatter.ISO_OFFSET_DATE_TIME)));

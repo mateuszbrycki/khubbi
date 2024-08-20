@@ -16,6 +16,6 @@ public interface ListPhotosUseCase {
   record Photo(
       @NonNull UUID id,
       @NonNull String description,
-      @NonNull String url,
+      @NonNull UUID attachmentId,
       @NonNull ZonedDateTime date) {}
 }

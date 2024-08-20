@@ -2,7 +2,11 @@ package com.bookkeeper.app.adapter.in.web;
 
 import com.bookkeeper.app.application.domain.model.UserEmail;
 import com.bookkeeper.app.application.port.in.ListPhotosUseCase;
+import java.time.ZonedDateTime;
+import java.util.UUID;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -29,8 +33,11 @@ public class PhotosController {
             events ->
                 events.map(
                     event ->
-                        event.toBuilder()
-                            .url("http://localhost:8080/attachment/" + event.url())
+                        PhotoResponse.builder()
+                            .id(event.id())
+                            .description(event.description())
+                            .url("http://localhost:8080/attachment/" + event.attachmentId())
+                            .date(event.date())
                             .build()))
         .fold(
             failure ->
@@ -39,4 +46,11 @@ public class PhotosController {
                     HttpStatus.INTERNAL_SERVER_ERROR),
             result -> new ResponseEntity<>(result.toJavaList(), HttpStatus.OK));
   }
+
+  @Builder
+  record PhotoResponse(
+      @NonNull UUID id,
+      @NonNull String description,
+      @NonNull String url,
+      @NonNull ZonedDateTime date) {}
 }
