@@ -12,6 +12,7 @@ import com.bookkeeper.app.application.port.in.ListEventsUseCase;
 import com.bookkeeper.app.application.port.out.ListEventsPort;
 import io.vavr.collection.HashMap;
 import io.vavr.collection.List;
+import io.vavr.control.Option;
 import io.vavr.control.Try;
 import java.time.ZonedDateTime;
 import org.junit.jupiter.api.Disabled;
@@ -30,7 +31,7 @@ class EventsServiceTest {
   @InjectMocks private EventsService underTest;
 
   @Test
-  public void shouldReturnFailureWhenUserNotFound() {
+  public void shouldReturnExceptionWhenRetrievingUserFailedWhenListingEvents() {
     // given
     when(findUserUseCase.findUser(any()))
         .thenReturn(Try.failure(new RuntimeException("User not found")));
@@ -41,6 +42,19 @@ class EventsServiceTest {
     // then
     assertThat(events).isFailure();
     assertThat(events).failReasonHasMessage("User not found");
+  }
+
+  @Test
+  public void shouldReturnExceptionWhenUserNotFound() {
+    // given
+    when(findUserUseCase.findUser(any())).thenReturn(Option.<User>none().toTry());
+
+    // when
+    Try<List<ListEventsUseCase.TimelineEvent>> result =
+        underTest.listEvents(UserEmail.of(ANY_USER.email()));
+
+    // then
+    assertThat(result).isFailure();
   }
 
   @Test

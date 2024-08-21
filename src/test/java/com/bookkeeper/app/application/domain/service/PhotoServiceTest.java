@@ -1,6 +1,7 @@
 package com.bookkeeper.app.application.domain.service;
 
 import static com.bookkeeper.app.common.Anys.*;
+import static org.assertj.vavr.api.VavrAssertions.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
@@ -8,6 +9,7 @@ import static org.mockito.Mockito.when;
 
 import com.bookkeeper.app.application.domain.model.EventDate;
 import com.bookkeeper.app.application.domain.model.Photo;
+import com.bookkeeper.app.application.domain.model.User;
 import com.bookkeeper.app.application.domain.model.UserEmail;
 import com.bookkeeper.app.application.port.in.AddPhotoUseCase;
 import com.bookkeeper.app.application.port.in.FindUserUseCase;
@@ -17,6 +19,7 @@ import com.bookkeeper.app.application.port.out.AddPhotoPort;
 import com.bookkeeper.app.application.port.out.ListPhotosPort;
 import com.bookkeeper.app.common.Anys;
 import io.vavr.collection.List;
+import io.vavr.control.Option;
 import io.vavr.control.Try;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
@@ -39,7 +42,7 @@ public class PhotoServiceTest {
   @InjectMocks private PhotoService underTest;
 
   @Test
-  public void testAddingPhotoFailedDueToUserNotFound() {
+  public void shouldReturnExceptionWhenRetrievingUserFailedWhenAddingPhoto() {
 
     // given
     RuntimeException userNotFoundException = new RuntimeException("User not found");
@@ -55,6 +58,20 @@ public class PhotoServiceTest {
     assertTrue(result.isFailure());
     assertInstanceOf(RuntimeException.class, result.getCause());
     VavrAssertions.assertThat(result).failReasonHasMessage(userNotFoundException.getMessage());
+  }
+
+  @Test
+  public void shouldReturnExceptionWhenUserNotFoundWhenAddingPhoto() {
+    // given
+    when(findUserUseCase.findUser(any())).thenReturn(Option.<User>none().toTry());
+
+    // when
+    Try<AddPhotoUseCase.Photo> result =
+        this.underTest.addPhoto(
+            UserEmail.of(ANY_EMAIL), EventDate.of(ZonedDateTime.now()), ANY_FILE, "new-photo");
+
+    // then
+    assertThat(result).isFailure();
   }
 
   @Test
@@ -122,7 +139,7 @@ public class PhotoServiceTest {
   }
 
   @Test
-  public void testListingPhotosFailedDueToUserNotFound() {
+  public void shouldReturnExceptionWhenRetrievingUserFailedWhenListingPhotos() {
 
     // given
     when(findUserUseCase.findUser(UserEmail.of(ANY_EMAIL)))
@@ -134,6 +151,18 @@ public class PhotoServiceTest {
     // then
     assertTrue(result.isFailure());
     assertInstanceOf(RuntimeException.class, result.getCause());
+  }
+
+  @Test
+  public void shouldReturnExceptionWhenUserNotFoundWhenListingPhotos() {
+    // given
+    when(findUserUseCase.findUser(any())).thenReturn(Option.<User>none().toTry());
+
+    // when
+    Try<List<ListPhotosUseCase.Photo>> result = this.underTest.listPhotos(UserEmail.of(ANY_EMAIL));
+
+    // then
+    assertThat(result).isFailure();
   }
 
   @Test

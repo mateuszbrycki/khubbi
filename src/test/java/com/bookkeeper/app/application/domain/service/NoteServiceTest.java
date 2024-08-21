@@ -1,12 +1,14 @@
 package com.bookkeeper.app.application.domain.service;
 
 import static com.bookkeeper.app.common.Anys.*;
+import static org.assertj.vavr.api.VavrAssertions.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
 import com.bookkeeper.app.application.domain.model.EventDate;
 import com.bookkeeper.app.application.domain.model.Note;
+import com.bookkeeper.app.application.domain.model.User;
 import com.bookkeeper.app.application.domain.model.UserEmail;
 import com.bookkeeper.app.application.port.in.AddNoteUseCase;
 import com.bookkeeper.app.application.port.in.ListNotesUseCase;
@@ -14,6 +16,7 @@ import com.bookkeeper.app.application.port.out.AddNotePort;
 import com.bookkeeper.app.application.port.out.ListNotesPort;
 import com.bookkeeper.app.common.Anys;
 import io.vavr.collection.List;
+import io.vavr.control.Option;
 import io.vavr.control.Try;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
@@ -51,7 +54,7 @@ class NoteServiceTest {
   }
 
   @Test
-  public void testAddingNoteFailedDueToUserNotFound() {
+  public void shouldReturnExceptionWhenRetrievingUserFailedWhenAddingNote() {
 
     // given
     when(userService.findUser(any()))
@@ -64,6 +67,19 @@ class NoteServiceTest {
     // then
     assertTrue(result.isFailure());
     assertInstanceOf(RuntimeException.class, result.getCause());
+  }
+
+  @Test
+  public void shouldReturnExceptionWhenUserNotFoundWhenAddingNote() {
+    // given
+    when(userService.findUser(any())).thenReturn(Option.<User>none().toTry());
+
+    // when
+    Try<AddNoteUseCase.Note> result =
+        this.underTest.addNote(UserEmail.of(Anys.ANY_EMAIL), EventDate.now(), "new-note");
+
+    // then
+    assertThat(result).isFailure();
   }
 
   @Test
@@ -83,7 +99,7 @@ class NoteServiceTest {
   }
 
   @Test
-  public void testListNotesShouldFailDueToUserNotFound() {
+  public void shouldReturnExceptionWhenRetrievingUserFailedWhenListingNotes() {
 
     // given
     when(userService.findUser(any()))
@@ -95,6 +111,18 @@ class NoteServiceTest {
     // then
     assertTrue(result.isFailure());
     assertInstanceOf(RuntimeException.class, result.getCause());
+  }
+
+  @Test
+  public void shouldReturnExceptionWhenUserNotFoundWhenListingNotes() {
+    // given
+    when(userService.findUser(any())).thenReturn(Option.<User>none().toTry());
+
+    // when
+    Try<List<ListNotesUseCase.Note>> result = this.underTest.listNotes(UserEmail.of(ANY_EMAIL));
+
+    // then
+    assertThat(result).isFailure();
   }
 
   @Test
