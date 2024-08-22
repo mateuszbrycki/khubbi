@@ -7,7 +7,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 import com.bookkeeper.app.application.domain.model.UserEmail;
-import com.bookkeeper.app.application.port.in.FindUserUseCase;
 import com.bookkeeper.app.application.port.in.ListEventsUseCase;
 import com.bookkeeper.app.common.Anys;
 import com.bookkeeper.app.common.TestSecurityConfiguration;
@@ -34,13 +33,11 @@ class EventsControllerTest {
 
   @MockBean private ListEventsUseCase listEventsUseCase;
 
-  @MockBean private FindUserUseCase findUserUseCase;
 
   @Test
   public void shouldReturnEmptyListWhenNoNotesArePresent() throws Exception {
 
     // given
-    when(findUserUseCase.findUser(any())).thenReturn(Try.success(Anys.ANY_USER));
     when(listEventsUseCase.listEvents(any(UserEmail.class))).thenReturn(Try.success(List.empty()));
 
     // when & then
@@ -55,8 +52,6 @@ class EventsControllerTest {
   public void shouldReturnListWithTwoElementsWhenTwoEventsArePresent() throws Exception {
 
     // given
-    when(findUserUseCase.findUser(any())).thenReturn(Try.success(Anys.ANY_USER));
-
     ListEventsUseCase.TimelineEvent timelineEvent1 =
         new ListEventsUseCase.TimelineEvent(
             UUID.randomUUID(), ZonedDateTime.now(), HashMap.of("note", "note-1"));
@@ -109,7 +104,6 @@ class EventsControllerTest {
   public void shouldReturnInternalServerErrorWhenRetrievalFailed() throws Exception {
 
     // given
-    when(findUserUseCase.findUser(any())).thenReturn(Try.success(Anys.ANY_USER));
     when(listEventsUseCase.listEvents(any(UserEmail.class)))
         .thenReturn(Try.failure(new RuntimeException("Cannot retrieve notes")));
 
