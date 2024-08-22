@@ -11,6 +11,7 @@ import com.bookkeeper.app.application.domain.model.Note;
 import com.bookkeeper.app.application.domain.model.User;
 import com.bookkeeper.app.application.domain.model.UserEmail;
 import com.bookkeeper.app.application.port.in.AddNoteUseCase;
+import com.bookkeeper.app.application.port.in.FindUserUseCase;
 import com.bookkeeper.app.application.port.in.ListNotesUseCase;
 import com.bookkeeper.app.application.port.out.AddNotePort;
 import com.bookkeeper.app.application.port.out.ListNotesPort;
@@ -28,7 +29,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 @ExtendWith(MockitoExtension.class)
 class NoteServiceTest {
-  @Mock private UserService userService;
+  @Mock private FindUserUseCase findUserUseCase;
 
   @Mock private AddNotePort addNotePort;
 
@@ -40,7 +41,7 @@ class NoteServiceTest {
   public void testNoteSuccessfullyAdded() {
 
     // given
-    when(userService.findUser(any())).thenReturn(Try.success(ANY_USER));
+    when(findUserUseCase.findUser(any())).thenReturn(Try.success(ANY_USER));
     when(addNotePort.addNote(any()))
         .thenReturn(Try.success(Note.create("new-note", ANY_EVENT_DATE, ANY_EVENT_CREATOR)));
 
@@ -57,7 +58,7 @@ class NoteServiceTest {
   public void shouldReturnExceptionWhenRetrievingUserFailedWhenAddingNote() {
 
     // given
-    when(userService.findUser(any()))
+    when(findUserUseCase.findUser(any()))
         .thenReturn(Try.failure(new RuntimeException("Cannot Find User")));
 
     // when
@@ -72,7 +73,7 @@ class NoteServiceTest {
   @Test
   public void shouldReturnExceptionWhenUserNotFoundWhenAddingNote() {
     // given
-    when(userService.findUser(any())).thenReturn(Option.<User>none().toTry());
+    when(findUserUseCase.findUser(any())).thenReturn(Option.<User>none().toTry());
 
     // when
     Try<AddNoteUseCase.Note> result =
@@ -86,7 +87,7 @@ class NoteServiceTest {
   public void testAddingNoteFailedDueToExceptionWhenAddingTheNote() {
 
     // given
-    when(userService.findUser(any())).thenReturn(Try.success(ANY_USER));
+    when(findUserUseCase.findUser(any())).thenReturn(Try.success(ANY_USER));
     when(addNotePort.addNote(any())).thenThrow(new RuntimeException("Any random failure"));
 
     // when
@@ -102,7 +103,7 @@ class NoteServiceTest {
   public void shouldReturnExceptionWhenRetrievingUserFailedWhenListingNotes() {
 
     // given
-    when(userService.findUser(any()))
+    when(findUserUseCase.findUser(any()))
         .thenReturn(Try.failure(new RuntimeException("Cannot Find User")));
 
     // when
@@ -116,7 +117,7 @@ class NoteServiceTest {
   @Test
   public void shouldReturnExceptionWhenUserNotFoundWhenListingNotes() {
     // given
-    when(userService.findUser(any())).thenReturn(Option.<User>none().toTry());
+    when(findUserUseCase.findUser(any())).thenReturn(Option.<User>none().toTry());
 
     // when
     Try<List<ListNotesUseCase.Note>> result = this.underTest.listNotes(UserEmail.of(ANY_EMAIL));
@@ -134,7 +135,7 @@ class NoteServiceTest {
     EventDate secondDate =
         EventDate.of(LocalDateTime.parse("2024-12-04T10:16:30").atZone(ZoneId.systemDefault()));
 
-    when(userService.findUser(any())).thenReturn(Try.success(Anys.ANY_USER));
+    when(findUserUseCase.findUser(any())).thenReturn(Try.success(Anys.ANY_USER));
     when(listNotesPort.listNotes(Anys.ANY_USER))
         .thenReturn(
             Try.success(

@@ -5,7 +5,6 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
 import com.bookkeeper.app.application.domain.model.User;
-import com.bookkeeper.app.application.port.in.AddNoteUseCase;
 import com.bookkeeper.app.application.port.out.AddUserPort;
 import com.bookkeeper.app.application.port.out.ListUsersPort;
 import io.vavr.collection.List;
@@ -25,7 +24,6 @@ class UserServiceTest {
   @Mock private AddUserPort addUserPort;
 
   @Mock private ListUsersPort listUsersPort;
-  @Mock private AddNoteUseCase addNoteUseCase;
 
   @InjectMocks private UserService underTest;
 
