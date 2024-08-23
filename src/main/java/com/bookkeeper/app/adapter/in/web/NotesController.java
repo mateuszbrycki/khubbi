@@ -23,8 +23,9 @@ public class NotesController {
   public ResponseEntity<?> listNotes(Authentication authentication) {
     log.info("Received list notes request from {}", authentication.getName());
 
-    return this.listNotesUseCase
-        .listNotes(UserEmail.of(authentication.getName()))
+    return UserEmail.of(authentication.getName())
+        .toTry()
+        .flatMapTry(userEmail -> this.listNotesUseCase.listNotes(userEmail))
         .fold(
             failure ->
                 new ResponseEntity<>(

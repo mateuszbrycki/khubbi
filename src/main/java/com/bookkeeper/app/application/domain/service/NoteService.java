@@ -32,7 +32,9 @@ class NoteService extends UserAwareService implements AddNoteUseCase, ListNotesU
 
     log.info("Adding Note '{}' ({}) for {}", note, date, creatorEmail);
 
-    return findUser(UserEmail.of(creatorEmail.value()))
+    return UserEmail.of(creatorEmail.value())
+        .toTry()
+        .flatMapTry(this::findUser)
         .map(
             user ->
                 com.bookkeeper.app.application.domain.model.Note.create(
@@ -52,7 +54,9 @@ class NoteService extends UserAwareService implements AddNoteUseCase, ListNotesU
 
     log.info("Listing notes for {}", creatorEmail.value());
 
-    return findUser(UserEmail.of(creatorEmail.value()))
+    return UserEmail.of(creatorEmail.value())
+        .toTry()
+        .flatMapTry(this::findUser)
         .flatMap(
             user ->
                 listNotesPort

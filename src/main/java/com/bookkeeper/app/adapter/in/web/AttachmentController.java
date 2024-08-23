@@ -30,9 +30,12 @@ public class AttachmentController {
       Authentication authentication, @PathVariable("id") String id) {
     log.info("Received list events request from {}", authentication.getName());
 
-    return this.findAttachmentUseCase
-        .findAttachment(
-            UserEmail.of(authentication.getName()), EventAttachmentId.of(UUID.fromString(id)))
+    return UserEmail.of(authentication.getName())
+        .toTry()
+        .flatMapTry(
+            userEmail ->
+                this.findAttachmentUseCase.findAttachment(
+                    userEmail, EventAttachmentId.of(UUID.fromString(id))))
         .map(
             attachment -> {
               try {

@@ -9,7 +9,6 @@ import static org.mockito.Mockito.*;
 import com.bookkeeper.app.application.domain.model.EventDate;
 import com.bookkeeper.app.application.domain.model.Note;
 import com.bookkeeper.app.application.domain.model.User;
-import com.bookkeeper.app.application.domain.model.UserEmail;
 import com.bookkeeper.app.application.port.in.AddNoteUseCase;
 import com.bookkeeper.app.application.port.in.FindUserUseCase;
 import com.bookkeeper.app.application.port.in.ListNotesUseCase;
@@ -47,7 +46,7 @@ class NoteServiceTest {
 
     // when
     Try<AddNoteUseCase.Note> result =
-        this.underTest.addNote(UserEmail.of(Anys.ANY_EMAIL), EventDate.now(), "new-note");
+        this.underTest.addNote(ANY_USER_EMAIL, EventDate.now(), "new-note");
 
     // then
     assertTrue(result.isSuccess());
@@ -63,7 +62,7 @@ class NoteServiceTest {
 
     // when
     Try<AddNoteUseCase.Note> result =
-        this.underTest.addNote(UserEmail.of(Anys.ANY_EMAIL), EventDate.now(), "new-note");
+        this.underTest.addNote(ANY_USER_EMAIL, EventDate.now(), "new-note");
 
     // then
     assertTrue(result.isFailure());
@@ -77,7 +76,7 @@ class NoteServiceTest {
 
     // when
     Try<AddNoteUseCase.Note> result =
-        this.underTest.addNote(UserEmail.of(Anys.ANY_EMAIL), EventDate.now(), "new-note");
+        this.underTest.addNote(ANY_USER_EMAIL, EventDate.now(), "new-note");
 
     // then
     assertThat(result).isFailure();
@@ -92,7 +91,7 @@ class NoteServiceTest {
 
     // when
     Try<AddNoteUseCase.Note> result =
-        this.underTest.addNote(UserEmail.of(Anys.ANY_EMAIL), EventDate.now(), "new-note");
+        this.underTest.addNote(ANY_USER_EMAIL, EventDate.now(), "new-note");
 
     // then
     assertTrue(result.isFailure());
@@ -107,7 +106,7 @@ class NoteServiceTest {
         .thenReturn(Try.failure(new RuntimeException("Cannot Find User")));
 
     // when
-    Try<List<ListNotesUseCase.Note>> result = this.underTest.listNotes(UserEmail.of(ANY_EMAIL));
+    Try<List<ListNotesUseCase.Note>> result = this.underTest.listNotes(ANY_USER_EMAIL);
 
     // then
     assertTrue(result.isFailure());
@@ -120,7 +119,7 @@ class NoteServiceTest {
     when(findUserUseCase.findUser(any())).thenReturn(Option.<User>none().toTry());
 
     // when
-    Try<List<ListNotesUseCase.Note>> result = this.underTest.listNotes(UserEmail.of(ANY_EMAIL));
+    Try<List<ListNotesUseCase.Note>> result = this.underTest.listNotes(ANY_USER_EMAIL);
 
     // then
     assertThat(result).isFailure();
@@ -144,7 +143,7 @@ class NoteServiceTest {
                     Note.create("second-note", secondDate, ANY_EVENT_CREATOR))));
 
     // when
-    Try<List<ListNotesUseCase.Note>> result = this.underTest.listNotes(UserEmail.of(ANY_EMAIL));
+    Try<List<ListNotesUseCase.Note>> result = this.underTest.listNotes(ANY_USER_EMAIL);
 
     // then
     assertTrue(result.isSuccess());

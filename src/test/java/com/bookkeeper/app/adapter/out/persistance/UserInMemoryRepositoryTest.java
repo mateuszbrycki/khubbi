@@ -1,31 +1,21 @@
 package com.bookkeeper.app.adapter.out.persistance;
 
+import static com.bookkeeper.app.common.Anys.ANY_USER;
+import static com.bookkeeper.app.common.Anys.ANY_USER_EMAIL;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 import com.bookkeeper.app.application.domain.model.User;
-import com.bookkeeper.app.application.domain.model.UserEmail;
 import io.vavr.Tuple;
 import io.vavr.collection.HashMap;
 import io.vavr.collection.Map;
 import io.vavr.control.Try;
-import java.time.Instant;
-import java.util.Date;
 import java.util.NoSuchElementException;
-import java.util.UUID;
 import org.junit.jupiter.api.Test;
 
 class UserInMemoryRepositoryTest {
-
-  private static final User USER =
-      new User(
-          UUID.randomUUID(),
-          "any-fullname",
-          "test-user@bookkeeper.io",
-          "any-password",
-          Date.from(Instant.now()),
-          Date.from(Instant.now()));
+  
 
   @Test
   public void shouldThrowErrorWhenAddingUser() {
@@ -34,10 +24,10 @@ class UserInMemoryRepositoryTest {
     UserInMemoryRepository underTest = new UserInMemoryRepository(users);
 
     Exception addingException = new RuntimeException("Error when adding a user");
-    when(users.put(USER.email(), USER)).thenThrow(addingException);
+    when(users.put(ANY_USER.email(), ANY_USER)).thenThrow(addingException);
 
     // when
-    Try<User> result = underTest.addUser(USER);
+    Try<User> result = underTest.addUser(ANY_USER);
 
     // then
     assertTrue(result.isFailure());
@@ -51,10 +41,10 @@ class UserInMemoryRepositoryTest {
     UserInMemoryRepository underTest = new UserInMemoryRepository(users);
 
     Exception findingByEmailException = new RuntimeException("Error when looking for a user");
-    when(users.get(USER.email())).thenThrow(findingByEmailException);
+    when(users.get(ANY_USER.email())).thenThrow(findingByEmailException);
 
     // when
-    Try<User> result = underTest.findByEmail(UserEmail.of(USER.email()));
+    Try<User> result = underTest.findByEmail(ANY_USER_EMAIL);
 
     // then
     assertTrue(result.isFailure());
@@ -68,7 +58,7 @@ class UserInMemoryRepositoryTest {
     UserInMemoryRepository underTest = new UserInMemoryRepository(users);
 
     // when
-    Try<User> result = underTest.findByEmail(UserEmail.of(USER.email()));
+    Try<User> result = underTest.findByEmail(ANY_USER_EMAIL);
 
     // then
     assertTrue(result.isFailure());
@@ -78,14 +68,14 @@ class UserInMemoryRepositoryTest {
   @Test
   public void shouldFindUserIfAdded() {
     // given
-    Map<String, User> users = HashMap.of(Tuple.of(USER.email(), USER));
+    Map<String, User> users = HashMap.of(Tuple.of(ANY_USER.email(), ANY_USER));
     UserInMemoryRepository underTest = new UserInMemoryRepository(users);
 
     // when
-    Try<User> result = underTest.findByEmail(UserEmail.of(USER.email()));
+    Try<User> result = underTest.findByEmail(ANY_USER_EMAIL);
 
     // then
     assertTrue(result.isSuccess());
-    assertEquals(USER, result.get());
+    assertEquals(ANY_USER, result.get());
   }
 }

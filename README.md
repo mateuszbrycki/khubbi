@@ -34,18 +34,3 @@ To run tests for the backend application execute the following command:
 cd src/main/front;
 npm test --
 ```
-
-# Name Ideas
-
-1. Famatic (Family + Automatic)
-2. Klan (eng. clan)
-3. Domino
-4. Harmonia
-5. Komuno
-6. Organika
-7. Chor
-8. Checa - (chores + clan) lub Cheka
-9. Cozy Clan
-10. Clean Klan
-11. Clikla (clin + clan) -> clika - bez L
-12. 

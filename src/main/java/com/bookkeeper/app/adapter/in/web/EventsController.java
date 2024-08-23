@@ -23,8 +23,9 @@ public class EventsController {
   public ResponseEntity<?> listNotes(Authentication authentication) {
     log.info("Received list events request from {}", authentication.getName());
 
-    return this.listEventsUseCase
-        .listEvents(UserEmail.of(authentication.getName()))
+    return UserEmail.of(authentication.getName())
+        .toTry()
+        .flatMapTry(this.listEventsUseCase::listEvents)
         .map(
             events ->
                 events.map(

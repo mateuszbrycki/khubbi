@@ -119,11 +119,16 @@ public class JwtService {
 
   private void markTokenAsActive(String email, JwtToken token) {
     log.info("Marking JWT Token as active for {}", email);
-    this.listUsersPort
-        .findByEmail(UserEmail.of(email))
-        .mapTry(this::toUserDetails)
-        .andThen(
-            userDetails -> this.userTokenRepository.refreshToken(userDetails, token.getToken()));
+    UserEmail.of(email)
+        .toTry()
+        .map(
+            userEmail ->
+                this.listUsersPort
+                    .findByEmail(userEmail)
+                    .mapTry(this::toUserDetails)
+                    .andThen(
+                        userDetails ->
+                            this.userTokenRepository.refreshToken(userDetails, token.getToken())));
   }
 
   public Try<Boolean> invalidateUserTokens(String email) {

@@ -27,8 +27,9 @@ public class PhotosController {
   public ResponseEntity<?> listPhotos(Authentication authentication) {
     log.info("Received list photos request from {}", authentication.getName());
 
-    return this.listPhotosUseCase
-        .listPhotos(UserEmail.of(authentication.getName()))
+    return UserEmail.of(authentication.getName())
+        .toTry()
+        .flatMapTry(userEmail -> this.listPhotosUseCase.listPhotos(userEmail))
         .map(
             events ->
                 events.map(

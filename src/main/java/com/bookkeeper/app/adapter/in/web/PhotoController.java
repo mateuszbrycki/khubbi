@@ -37,13 +37,15 @@ public class PhotoController {
       @ModelAttribute AddPhotoRequest addPhotoRequest, Authentication authentication)
       throws IOException {
     log.info("Received add photo request {}", addPhotoRequest);
-
-    return this.addPhotoUseCase
-        .addPhoto(
-            UserEmail.of(authentication.getName()),
-            EventDate.of(addPhotoRequest.date()),
-            toFile(addPhotoRequest),
-            addPhotoRequest.payload().description())
+    return UserEmail.of(authentication.getName())
+        .toTry()
+        .flatMapTry(
+            userEmail ->
+                this.addPhotoUseCase.addPhoto(
+                    userEmail,
+                    EventDate.of(addPhotoRequest.date()),
+                    toFile(addPhotoRequest),
+                    addPhotoRequest.payload().description()))
         .fold(
             failure -> {
               HttpStatus status =

@@ -10,7 +10,6 @@ import static org.mockito.Mockito.when;
 import com.bookkeeper.app.application.domain.model.EventDate;
 import com.bookkeeper.app.application.domain.model.Photo;
 import com.bookkeeper.app.application.domain.model.User;
-import com.bookkeeper.app.application.domain.model.UserEmail;
 import com.bookkeeper.app.application.port.in.AddPhotoUseCase;
 import com.bookkeeper.app.application.port.in.FindUserUseCase;
 import com.bookkeeper.app.application.port.in.ListPhotosUseCase;
@@ -46,13 +45,12 @@ public class PhotoServiceTest {
 
     // given
     RuntimeException userNotFoundException = new RuntimeException("User not found");
-    when(findUserUseCase.findUser(UserEmail.of(ANY_EMAIL)))
-        .thenReturn(Try.failure(userNotFoundException));
+    when(findUserUseCase.findUser(ANY_USER_EMAIL)).thenReturn(Try.failure(userNotFoundException));
 
     // when
     Try<AddPhotoUseCase.Photo> result =
         this.underTest.addPhoto(
-            UserEmail.of(ANY_EMAIL), EventDate.of(ZonedDateTime.now()), ANY_FILE, "new-photo");
+            ANY_USER_EMAIL, EventDate.of(ZonedDateTime.now()), ANY_FILE, "new-photo");
 
     // then
     assertTrue(result.isFailure());
@@ -68,7 +66,7 @@ public class PhotoServiceTest {
     // when
     Try<AddPhotoUseCase.Photo> result =
         this.underTest.addPhoto(
-            UserEmail.of(ANY_EMAIL), EventDate.of(ZonedDateTime.now()), ANY_FILE, "new-photo");
+            ANY_USER_EMAIL, EventDate.of(ZonedDateTime.now()), ANY_FILE, "new-photo");
 
     // then
     assertThat(result).isFailure();
@@ -78,7 +76,7 @@ public class PhotoServiceTest {
   public void testAddingPhotoFailedDueToExceptionWhenAddingAttachment() {
 
     // given
-    when(findUserUseCase.findUser(UserEmail.of(ANY_EMAIL))).thenReturn(Try.success(ANY_USER));
+    when(findUserUseCase.findUser(ANY_USER_EMAIL)).thenReturn(Try.success(ANY_USER));
     RuntimeException addingAttachmentFailedException =
         new RuntimeException("Adding attachment failed");
     when(addAttachmentPort.addAttachment(any(), any()))
@@ -87,7 +85,7 @@ public class PhotoServiceTest {
     // when
     Try<AddPhotoUseCase.Photo> result =
         this.underTest.addPhoto(
-            UserEmail.of(ANY_EMAIL), EventDate.of(ZonedDateTime.now()), ANY_FILE, "new-photo");
+            ANY_USER_EMAIL, EventDate.of(ZonedDateTime.now()), ANY_FILE, "new-photo");
 
     // then
     assertTrue(result.isFailure());
@@ -100,7 +98,7 @@ public class PhotoServiceTest {
   public void testPhotoSuccessfullyAdded() {
 
     // given
-    when(findUserUseCase.findUser(UserEmail.of(ANY_EMAIL))).thenReturn(Try.success(ANY_USER));
+    when(findUserUseCase.findUser(ANY_USER_EMAIL)).thenReturn(Try.success(ANY_USER));
     when(addAttachmentPort.addAttachment(any(), any()))
         .thenReturn(Try.success(ANY_PHOTO_ATTACHMENT));
     Photo photo =
@@ -110,7 +108,7 @@ public class PhotoServiceTest {
     // when
     Try<AddPhotoUseCase.Photo> result =
         this.underTest.addPhoto(
-            UserEmail.of(ANY_EMAIL), EventDate.of(ZonedDateTime.now()), ANY_FILE, "new-photo");
+            ANY_USER_EMAIL, EventDate.of(ZonedDateTime.now()), ANY_FILE, "new-photo");
 
     // then
     assertTrue(result.isSuccess());
@@ -121,7 +119,7 @@ public class PhotoServiceTest {
   public void testAddingPhotoFailedDueToExceptionWhenAddingPhoto() {
 
     // given
-    when(findUserUseCase.findUser(UserEmail.of(ANY_EMAIL))).thenReturn(Try.success(ANY_USER));
+    when(findUserUseCase.findUser(ANY_USER_EMAIL)).thenReturn(Try.success(ANY_USER));
     when(addAttachmentPort.addAttachment(any(), any()))
         .thenReturn(Try.success(ANY_PHOTO_ATTACHMENT));
     RuntimeException anyRandomFailureException = new RuntimeException("Any random failure");
@@ -130,7 +128,7 @@ public class PhotoServiceTest {
     // when
     Try<AddPhotoUseCase.Photo> result =
         this.underTest.addPhoto(
-            UserEmail.of(ANY_EMAIL), EventDate.of(ZonedDateTime.now()), ANY_FILE, "new-photo");
+            ANY_USER_EMAIL, EventDate.of(ZonedDateTime.now()), ANY_FILE, "new-photo");
 
     // then
     assertTrue(result.isFailure());
@@ -142,11 +140,11 @@ public class PhotoServiceTest {
   public void shouldReturnExceptionWhenRetrievingUserFailedWhenListingPhotos() {
 
     // given
-    when(findUserUseCase.findUser(UserEmail.of(ANY_EMAIL)))
+    when(findUserUseCase.findUser(ANY_USER_EMAIL))
         .thenReturn(Try.failure(new RuntimeException("User not found")));
 
     // when
-    Try<List<ListPhotosUseCase.Photo>> result = this.underTest.listPhotos(UserEmail.of(ANY_EMAIL));
+    Try<List<ListPhotosUseCase.Photo>> result = this.underTest.listPhotos(ANY_USER_EMAIL);
 
     // then
     assertTrue(result.isFailure());
@@ -159,7 +157,7 @@ public class PhotoServiceTest {
     when(findUserUseCase.findUser(any())).thenReturn(Option.<User>none().toTry());
 
     // when
-    Try<List<ListPhotosUseCase.Photo>> result = this.underTest.listPhotos(UserEmail.of(ANY_EMAIL));
+    Try<List<ListPhotosUseCase.Photo>> result = this.underTest.listPhotos(ANY_USER_EMAIL);
 
     // then
     assertThat(result).isFailure();
@@ -169,7 +167,7 @@ public class PhotoServiceTest {
   public void testListPhotosSortedByDate() {
 
     // given
-    when(findUserUseCase.findUser(UserEmail.of(ANY_EMAIL))).thenReturn(Try.success(ANY_USER));
+    when(findUserUseCase.findUser(ANY_USER_EMAIL)).thenReturn(Try.success(ANY_USER));
 
     EventDate firstDate =
         EventDate.of(LocalDateTime.parse("2009-12-03T10:15:30").atZone(ZoneId.systemDefault()));
@@ -185,8 +183,7 @@ public class PhotoServiceTest {
                         "second-photo", ANY_PHOTO_ATTACHMENT, secondDate, ANY_EVENT_CREATOR))));
 
     // when
-    Try<List<ListPhotosUseCase.Photo>> result =
-        this.underTest.listPhotos(UserEmail.of(Anys.ANY_USER.email()));
+    Try<List<ListPhotosUseCase.Photo>> result = this.underTest.listPhotos(ANY_USER_EMAIL);
 
     // then
     assertTrue(result.isSuccess());

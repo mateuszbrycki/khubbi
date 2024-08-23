@@ -36,8 +36,7 @@ class EventsServiceTest {
     when(findUserUseCase.findUser(any()))
         .thenReturn(Try.failure(new RuntimeException("User not found")));
     // when
-    Try<List<ListEventsUseCase.TimelineEvent>> events =
-        underTest.listEvents(UserEmail.of(ANY_USER.email()));
+    Try<List<ListEventsUseCase.TimelineEvent>> events = underTest.listEvents(ANY_USER_EMAIL);
 
     // then
     assertThat(events).isFailure();
@@ -50,8 +49,7 @@ class EventsServiceTest {
     when(findUserUseCase.findUser(any())).thenReturn(Option.<User>none().toTry());
 
     // when
-    Try<List<ListEventsUseCase.TimelineEvent>> result =
-        underTest.listEvents(UserEmail.of(ANY_USER.email()));
+    Try<List<ListEventsUseCase.TimelineEvent>> result = underTest.listEvents(ANY_USER_EMAIL);
 
     // then
     assertThat(result).isFailure();
@@ -65,8 +63,7 @@ class EventsServiceTest {
         .thenReturn(Try.failure(new RuntimeException("An error occurred")));
 
     // when
-    Try<List<ListEventsUseCase.TimelineEvent>> events =
-        underTest.listEvents(UserEmail.of(ANY_USER.email()));
+    Try<List<ListEventsUseCase.TimelineEvent>> events = underTest.listEvents(ANY_USER_EMAIL);
 
     // then
     assertThat(events).isFailure();
@@ -80,8 +77,7 @@ class EventsServiceTest {
     when(listEventsPort.listEvents(ANY_USER)).thenReturn(Try.success(List.empty()));
 
     // when
-    Try<List<ListEventsUseCase.TimelineEvent>> events =
-        underTest.listEvents(UserEmail.of(ANY_USER.email()));
+    Try<List<ListEventsUseCase.TimelineEvent>> events = underTest.listEvents(ANY_USER_EMAIL);
 
     // then
     assertThat(events).isSuccess();
@@ -102,8 +98,7 @@ class EventsServiceTest {
     when(listEventsPort.listEvents(ANY_USER)).thenReturn(Try.success(List.of(photo, note)));
 
     // when
-    Try<List<ListEventsUseCase.TimelineEvent>> events =
-        underTest.listEvents(UserEmail.of(ANY_USER.email()));
+    Try<List<ListEventsUseCase.TimelineEvent>> events = underTest.listEvents(ANY_USER_EMAIL);
 
     // then
     assertThat(events).isSuccess();
@@ -132,8 +127,7 @@ class EventsServiceTest {
     when(listEventsPort.listEvents(ANY_USER)).thenReturn(Try.success(List.of(testEvent)));
 
     // when
-    Try<List<ListEventsUseCase.TimelineEvent>> events =
-        underTest.listEvents(UserEmail.of(ANY_USER.email()));
+    Try<List<ListEventsUseCase.TimelineEvent>> events = underTest.listEvents(ANY_USER_EMAIL);
 
     // then
     assertThat(events).isSuccess();

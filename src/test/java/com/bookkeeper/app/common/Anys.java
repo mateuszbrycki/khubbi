@@ -10,8 +10,8 @@ import java.util.UUID;
 
 public class Anys {
 
-  public static final String ANY_EMAIL = "any-email";
-  public static final UserEmail ANY_USER_EMAIL = UserEmail.of("any-email");
+  public static final String ANY_EMAIL = "any-email@any-email.com";
+  public static final UserEmail ANY_USER_EMAIL = UserEmail.of(ANY_EMAIL).get();
 
   public static final User ANY_USER =
       User.builder()

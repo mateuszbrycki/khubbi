@@ -1,5 +1,6 @@
 package com.bookkeeper.app.adapter.in.web;
 
+import static com.bookkeeper.app.common.Anys.ANY_USER_EMAIL;
 import static com.bookkeeper.app.common.JsonUtils.asJsonString;
 import static org.hamcrest.Matchers.containsString;
 import static org.mockito.Mockito.when;
@@ -9,7 +10,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import com.bookkeeper.app.application.domain.model.EventDate;
-import com.bookkeeper.app.application.domain.model.UserEmail;
 import com.bookkeeper.app.application.port.in.AddNoteUseCase;
 import com.bookkeeper.app.common.Anys;
 import com.bookkeeper.app.common.TestSecurityConfiguration;
@@ -38,7 +38,7 @@ class NoteControllerTest {
 
     // given
     ZonedDateTime date = ZonedDateTime.now();
-    when(addNoteUseCase.addNote(UserEmail.of(Anys.ANY_EMAIL), EventDate.of(date), "any-name"))
+    when(addNoteUseCase.addNote(ANY_USER_EMAIL, EventDate.of(date), "any-name"))
         .thenReturn(Try.failure(new Exception("Cannot add a note")));
 
     // when & then
@@ -62,7 +62,7 @@ class NoteControllerTest {
     ZonedDateTime date = ZonedDateTime.now();
     UUID id = UUID.randomUUID();
     AddNoteUseCase.Note note = new AddNoteUseCase.Note(id, "note-name", date);
-    when(addNoteUseCase.addNote(UserEmail.of(Anys.ANY_EMAIL), EventDate.of(date), note.note()))
+    when(addNoteUseCase.addNote(ANY_USER_EMAIL, EventDate.of(date), note.note()))
         .thenReturn(Try.success(note));
 
     // when & then

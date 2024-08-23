@@ -86,10 +86,15 @@ public class SecurityConfiguration {
   @Bean
   UserDetailsService userDetailsService(UserInMemoryRepository userInMemoryRepository) {
     return username ->
-        userInMemoryRepository
-            .findByEmail(UserEmail.of(username))
-            .map(this::toUserDetails)
-            .getOrElseThrow(() -> new UsernameNotFoundException("User not found"));
+        UserEmail.of(username)
+            .toTry()
+            .mapTry(
+                userEmail ->
+                    userInMemoryRepository
+                        .findByEmail(userEmail)
+                        .map(this::toUserDetails)
+                        .getOrElseThrow(() -> new UsernameNotFoundException("User not found")))
+            .get();
   }
 
   private UserDetails toUserDetails(com.bookkeeper.app.application.domain.model.User user) {

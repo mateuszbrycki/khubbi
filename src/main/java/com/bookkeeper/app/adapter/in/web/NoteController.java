@@ -30,11 +30,14 @@ public class NoteController {
       @RequestBody AddNoteRequest addNoteRequest, Authentication authentication) {
     log.info("Received add note request {}", addNoteRequest);
 
-    return addNoteUseCase
-        .addNote(
-            UserEmail.of(authentication.getName()),
-            EventDate.of(addNoteRequest.date()),
-            addNoteRequest.payload().note())
+    return UserEmail.of(authentication.getName())
+        .toTry()
+        .flatMapTry(
+            userEmail ->
+                addNoteUseCase.addNote(
+                    userEmail,
+                    EventDate.of(addNoteRequest.date()),
+                    addNoteRequest.payload().note()))
         .fold(
             failure -> {
               HttpStatus status = Match(failure).of(Case($(), HttpStatus.INTERNAL_SERVER_ERROR));
