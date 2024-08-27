@@ -25,7 +25,8 @@ Cons:
 
 * the domain has to *believe* that the adapter validated the data,
 * validation within adapters might be inconsistent,
-* validation logic might be duplicated.
+* validation logic might be duplicated
+  * it will be tested multiple times within different components.
 
 ### Validation at the port level
 
@@ -44,7 +45,8 @@ Cons:
 
 * a service is messed with validation that might not always be business critical,
 * it is possible to create invalid Value Objects,
-* validation logic might be duplicated.
+* validation logic might be duplicated
+  * it will be tested multiple times within different components.
 
 ### Validation during Value Object creation
 
@@ -59,7 +61,8 @@ Pros:
     * object in an improper state might be used outside the model,
 * there is no single layer that performs the validation,
 * validation is local to the object,
-* when validation rules change, there is only one place to update.
+* when validation rules change, there is only one place to update
+  * it's tested once.
 
 Cons:
 
