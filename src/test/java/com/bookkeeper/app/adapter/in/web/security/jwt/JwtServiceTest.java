@@ -26,7 +26,6 @@ class JwtServiceTest {
 
   private static final String TEST_SECRET_KEY =
       "d70ab8aa537f1489e74ad7b1d9f29a826eed255b5a39d043d2e4f47a0479487c";
-  private static final String TEST_EMAIL = "test-email";
   private static final int TEST_JWT_EXPIRATION = 3600000;
   private final Map<String, Object> TEST_CLAIMS = Map.of("claim1", "claim1-value");
 
@@ -87,13 +86,13 @@ class JwtServiceTest {
 
     JwtService underTest =
         new JwtService(userTokenRepository, listUsersPort, TEST_SECRET_KEY, TEST_JWT_EXPIRATION);
-    JwtToken token = underTest.generateToken(TEST_EMAIL);
+    JwtToken token = underTest.generateToken(ANY_EMAIL);
 
     // when
     String email = underTest.extractEmail(token.getToken());
 
     // then
-    assertEquals(TEST_EMAIL, email);
+    assertEquals(ANY_EMAIL, email);
   }
 
   @Test
@@ -104,13 +103,13 @@ class JwtServiceTest {
     when(userTokenRepository.refreshToken(any(), any())).thenReturn(true);
     JwtService underTest =
         new JwtService(userTokenRepository, listUsersPort, TEST_SECRET_KEY, TEST_JWT_EXPIRATION);
-    JwtToken token = underTest.generateToken(TEST_CLAIMS, TEST_EMAIL);
+    JwtToken token = underTest.generateToken(TEST_CLAIMS, ANY_EMAIL);
 
     // when
     String email = underTest.extractEmail(token.getToken());
 
     // then
-    assertEquals(TEST_EMAIL, email);
+    assertEquals(ANY_EMAIL, email);
   }
 
   @Test
@@ -140,7 +139,7 @@ class JwtServiceTest {
         new JwtService(userTokenRepository, listUsersPort, TEST_SECRET_KEY, 1000);
 
     // when
-    JwtToken token = underTest.generateToken(TEST_EMAIL);
+    JwtToken token = underTest.generateToken(ANY_EMAIL);
 
     // then
     // FIXME mateusz.brycki think of a better way of testing the token expiration time
@@ -159,12 +158,12 @@ class JwtServiceTest {
 
     JwtService underTest =
         new JwtService(userTokenRepository, listUsersPort, TEST_SECRET_KEY, 1000);
-    JwtToken token = underTest.generateToken(TEST_EMAIL);
+    JwtToken token = underTest.generateToken(ANY_EMAIL);
     UserDetails userDetails =
         new User(
             UUID.randomUUID(),
             "full-name",
-            TEST_EMAIL,
+            ANY_EMAIL,
             "password",
             Date.from(Instant.now()),
             Date.from(Instant.now()));
@@ -184,7 +183,7 @@ class JwtServiceTest {
 
     JwtService underTest =
         new JwtService(userTokenRepository, listUsersPort, TEST_SECRET_KEY, TEST_JWT_EXPIRATION);
-    JwtToken token = underTest.generateToken(TEST_CLAIMS, TEST_EMAIL);
+    JwtToken token = underTest.generateToken(TEST_CLAIMS, ANY_EMAIL);
 
     // when
     String claim =
@@ -204,7 +203,7 @@ class JwtServiceTest {
 
     JwtService underTest =
         new JwtService(userTokenRepository, listUsersPort, TEST_SECRET_KEY, TEST_JWT_EXPIRATION);
-    JwtToken token = underTest.generateToken(TEST_CLAIMS, TEST_EMAIL);
+    JwtToken token = underTest.generateToken(TEST_CLAIMS, ANY_EMAIL);
 
     // when
     String claim =
@@ -224,7 +223,7 @@ class JwtServiceTest {
 
     JwtService underTest =
         new JwtService(userTokenRepository, listUsersPort, TEST_SECRET_KEY, TEST_JWT_EXPIRATION);
-    JwtToken token = underTest.generateToken(TEST_EMAIL);
+    JwtToken token = underTest.generateToken(ANY_EMAIL);
 
     // when
     String claim =
@@ -245,7 +244,7 @@ class JwtServiceTest {
         new JwtService(userTokenRepository, listUsersPort, TEST_SECRET_KEY, TEST_JWT_EXPIRATION);
 
     // when
-    JwtToken token = underTest.generateToken(TEST_EMAIL);
+    JwtToken token = underTest.generateToken(ANY_EMAIL);
 
     // then
     verify(userTokenRepository, times(1))

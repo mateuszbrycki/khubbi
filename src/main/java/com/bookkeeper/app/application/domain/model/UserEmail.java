@@ -1,27 +1,37 @@
 package com.bookkeeper.app.application.domain.model;
 
+import io.vavr.collection.Seq;
 import io.vavr.control.Validation;
 import java.util.Objects;
+import java.util.regex.Pattern;
 import lombok.Getter;
 
 @Getter
 @ValueObject
 public class UserEmail {
+
+  private static final Pattern EMAIL_PATTERN =
+      Pattern.compile("^[\\w-\\.]+@([\\w-]+\\.)+[\\w-]{2,4}$");
+
+  private static final Pattern NOT_EMPTY_VALUE = Pattern.compile("^[^\\s]*\\S[^\\s]*$");
+
   private final String value;
 
   private UserEmail(String value) {
     this.value = value;
   }
 
-  public static Validation<String, UserEmail> of(String value) {
-    return validateField(value, "^[A-Z0-9._%+-]+@[A-Z0-9.-]+\\.[A-Z]{2,6}$", "Invalid email")
-        .map(result -> new UserEmail(value));
+  public static Validation<Seq<String>, UserEmail> of(String value) {
+    return Validation.combine(
+            validateField(value, NOT_EMPTY_VALUE, "Value is empty"),
+            validateField(value, EMAIL_PATTERN, "Invalid email"))
+        .ap((String value1, String value2) -> new UserEmail(value));
   }
 
   private static Validation<String, String> validateField(
-      String field, String pattern, String error) {
+      String field, Pattern pattern, String error) {
 
-    return Validation.valid(field);
+    return pattern.matcher(field).matches() ? Validation.valid(field) : Validation.invalid(error);
   }
 
   @Override
