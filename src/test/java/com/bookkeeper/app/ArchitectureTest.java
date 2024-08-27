@@ -10,6 +10,7 @@ import com.bookkeeper.app.adapter.in.memory.UserAutoRegistration;
 import com.bookkeeper.app.adapter.in.web.security.SecurityConfiguration;
 import com.bookkeeper.app.adapter.in.web.security.jwt.JwtService;
 import com.bookkeeper.app.application.domain.model.UserEmail;
+import com.bookkeeper.app.application.domain.model.ValueObject;
 import com.bookkeeper.app.application.port.in.AddUserUseCase;
 import com.bookkeeper.app.application.port.out.ListUsersPort;
 import com.tngtech.archunit.core.domain.JavaClass;
@@ -19,6 +20,7 @@ import com.tngtech.archunit.junit.AnalyzeClasses;
 import com.tngtech.archunit.junit.ArchTest;
 import com.tngtech.archunit.lang.ArchRule;
 import io.vavr.control.Try;
+import io.vavr.control.Validation;
 import org.springframework.web.bind.annotation.RestController;
 
 @AnalyzeClasses(
@@ -117,6 +119,29 @@ public class ArchitectureTest {
   @ArchTest
   static final ArchRule output_ports_are_named_ports =
       classes().that().resideInAPackage("..port.out..").should().haveSimpleNameEndingWith("Port");
+
+  @ArchTest
+  static final ArchRule value_objects_have_private_constructors_and_factory_method =
+      classes()
+          .that()
+          .areAnnotatedWith(ValueObject.class)
+          .should()
+          .haveOnlyPrivateConstructors()
+          .andShould(
+              have(
+                  describe(
+                      "static method of that returns Validation",
+                      cls ->
+                          cls.getAllMethods().stream()
+                              .filter(method -> method.getName().equals("of"))
+                              .anyMatch(
+                                  method ->
+                                      method
+                                          .getRawReturnType()
+                                          .isEquivalentTo(Validation.class)))));
+
+  //
+  // .andShould(have(JavaMethod.Predicates.method().na.areStatic().and().haveRawReturnType(Validation.class)));
 
   @ArchTest
   static final ArchRule dependencies_are_respected =

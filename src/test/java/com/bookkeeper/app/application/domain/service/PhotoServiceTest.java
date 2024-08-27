@@ -50,7 +50,7 @@ public class PhotoServiceTest {
     // when
     Try<AddPhotoUseCase.Photo> result =
         this.underTest.addPhoto(
-            ANY_USER_EMAIL, EventDate.of(ZonedDateTime.now()), ANY_FILE, "new-photo");
+            ANY_USER_EMAIL, EventDate.of(ZonedDateTime.now()).get(), ANY_FILE, "new-photo");
 
     // then
     assertTrue(result.isFailure());
@@ -66,7 +66,7 @@ public class PhotoServiceTest {
     // when
     Try<AddPhotoUseCase.Photo> result =
         this.underTest.addPhoto(
-            ANY_USER_EMAIL, EventDate.of(ZonedDateTime.now()), ANY_FILE, "new-photo");
+            ANY_USER_EMAIL, EventDate.of(ZonedDateTime.now()).get(), ANY_FILE, "new-photo");
 
     // then
     assertThat(result).isFailure();
@@ -85,7 +85,7 @@ public class PhotoServiceTest {
     // when
     Try<AddPhotoUseCase.Photo> result =
         this.underTest.addPhoto(
-            ANY_USER_EMAIL, EventDate.of(ZonedDateTime.now()), ANY_FILE, "new-photo");
+            ANY_USER_EMAIL, EventDate.of(ZonedDateTime.now()).get(), ANY_FILE, "new-photo");
 
     // then
     assertTrue(result.isFailure());
@@ -108,7 +108,7 @@ public class PhotoServiceTest {
     // when
     Try<AddPhotoUseCase.Photo> result =
         this.underTest.addPhoto(
-            ANY_USER_EMAIL, EventDate.of(ZonedDateTime.now()), ANY_FILE, "new-photo");
+            ANY_USER_EMAIL, EventDate.of(ZonedDateTime.now()).get(), ANY_FILE, "new-photo");
 
     // then
     assertTrue(result.isSuccess());
@@ -128,7 +128,7 @@ public class PhotoServiceTest {
     // when
     Try<AddPhotoUseCase.Photo> result =
         this.underTest.addPhoto(
-            ANY_USER_EMAIL, EventDate.of(ZonedDateTime.now()), ANY_FILE, "new-photo");
+            ANY_USER_EMAIL, EventDate.of(ZonedDateTime.now()).get(), ANY_FILE, "new-photo");
 
     // then
     assertTrue(result.isFailure());
@@ -170,9 +170,11 @@ public class PhotoServiceTest {
     when(findUserUseCase.findUser(ANY_USER_EMAIL)).thenReturn(Try.success(ANY_USER));
 
     EventDate firstDate =
-        EventDate.of(LocalDateTime.parse("2009-12-03T10:15:30").atZone(ZoneId.systemDefault()));
+        EventDate.of(LocalDateTime.parse("2009-12-03T10:15:30").atZone(ZoneId.systemDefault()))
+            .get();
     EventDate secondDate =
-        EventDate.of(LocalDateTime.parse("2024-12-04T10:16:30").atZone(ZoneId.systemDefault()));
+        EventDate.of(LocalDateTime.parse("2024-12-04T10:16:30").atZone(ZoneId.systemDefault()))
+            .get();
 
     when(listPhotosPort.listPhotos(Anys.ANY_USER))
         .thenReturn(

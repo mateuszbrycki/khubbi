@@ -1,12 +1,22 @@
 package com.bookkeeper.app.application.domain.model;
 
+import com.bookkeeper.app.validation.Errors;
+import io.vavr.control.Validation;
 import java.util.UUID;
+import lombok.Getter;
 
 @ValueObject
-public record EventId(UUID value) {
+@Getter
+public class EventId {
 
-  public static EventId of(UUID value) {
-    return new EventId(value);
+  private final UUID value;
+
+  private EventId(UUID value) {
+    this.value = value;
+  }
+
+  public static Validation<Errors, EventId> of(UUID value) {
+    return Validation.valid(new EventId(value));
   }
 
   public static EventId random() {

@@ -1,6 +1,6 @@
 package com.bookkeeper.app.application.domain.model;
 
-import io.vavr.collection.Seq;
+import com.bookkeeper.app.validation.Errors;
 import io.vavr.control.Validation;
 import java.util.Objects;
 import java.util.regex.Pattern;
@@ -21,11 +21,12 @@ public class UserEmail {
     this.value = value;
   }
 
-  public static Validation<Seq<String>, UserEmail> of(String value) {
+  public static Validation<Errors, UserEmail> of(String value) {
     return Validation.combine(
             validateField(value, NOT_EMPTY_VALUE, "Value is empty"),
             validateField(value, EMAIL_PATTERN, "Invalid email"))
-        .ap((String value1, String value2) -> new UserEmail(value));
+        .ap((String value1, String value2) -> new UserEmail(value))
+        .mapError(Errors::new);
   }
 
   private static Validation<String, String> validateField(

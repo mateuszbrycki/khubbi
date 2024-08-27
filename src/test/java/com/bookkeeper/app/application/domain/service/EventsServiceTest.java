@@ -93,7 +93,8 @@ class EventsServiceTest {
         Photo.create(
             "test-photo-description", ANY_PHOTO_ATTACHMENT, ANY_EVENT_DATE, ANY_EVENT_CREATOR);
     Note note =
-        Note.create("test-note", EventDate.of(ZonedDateTime.now().minusDays(2)), ANY_EVENT_CREATOR);
+        Note.create(
+            "test-note", EventDate.of(ZonedDateTime.now().minusDays(2)).get(), ANY_EVENT_CREATOR);
 
     when(listEventsPort.listEvents(ANY_USER)).thenReturn(Try.success(List.of(photo, note)));
 

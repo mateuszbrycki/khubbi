@@ -38,7 +38,7 @@ class NoteControllerTest {
 
     // given
     ZonedDateTime date = ZonedDateTime.now();
-    when(addNoteUseCase.addNote(ANY_USER_EMAIL, EventDate.of(date), "any-name"))
+    when(addNoteUseCase.addNote(ANY_USER_EMAIL, EventDate.of(date).get(), "any-name"))
         .thenReturn(Try.failure(new Exception("Cannot add a note")));
 
     // when & then
@@ -62,7 +62,7 @@ class NoteControllerTest {
     ZonedDateTime date = ZonedDateTime.now();
     UUID id = UUID.randomUUID();
     AddNoteUseCase.Note note = new AddNoteUseCase.Note(id, "note-name", date);
-    when(addNoteUseCase.addNote(ANY_USER_EMAIL, EventDate.of(date), note.note()))
+    when(addNoteUseCase.addNote(ANY_USER_EMAIL, EventDate.of(date).get(), note.note()))
         .thenReturn(Try.success(note));
 
     // when & then

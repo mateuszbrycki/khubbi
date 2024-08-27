@@ -130,9 +130,11 @@ class NoteServiceTest {
 
     // given
     EventDate firstDate =
-        EventDate.of(LocalDateTime.parse("2009-12-03T10:15:30").atZone(ZoneId.systemDefault()));
+        EventDate.of(LocalDateTime.parse("2009-12-03T10:15:30").atZone(ZoneId.systemDefault()))
+            .get();
     EventDate secondDate =
-        EventDate.of(LocalDateTime.parse("2024-12-04T10:16:30").atZone(ZoneId.systemDefault()));
+        EventDate.of(LocalDateTime.parse("2024-12-04T10:16:30").atZone(ZoneId.systemDefault()))
+            .get();
 
     when(findUserUseCase.findUser(any())).thenReturn(Try.success(Anys.ANY_USER));
     when(listNotesPort.listNotes(Anys.ANY_USER))

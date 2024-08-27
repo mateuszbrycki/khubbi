@@ -6,6 +6,8 @@ import static io.vavr.Predicates.instanceOf;
 import com.bookkeeper.app.application.domain.model.EventDate;
 import com.bookkeeper.app.application.domain.model.UserEmail;
 import com.bookkeeper.app.application.port.in.AddPhotoUseCase;
+import io.vavr.API;
+import io.vavr.control.Validation;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -37,13 +39,15 @@ public class PhotoController {
       @ModelAttribute AddPhotoRequest addPhotoRequest, Authentication authentication)
       throws IOException {
     log.info("Received add photo request {}", addPhotoRequest);
-    return UserEmail.of(authentication.getName())
+    return Validation.combine(
+            UserEmail.of(authentication.getName()), EventDate.of(addPhotoRequest.date()))
+        .ap(API::Tuple)
         .toTry()
         .flatMapTry(
-            userEmail ->
+            userEmailAndEventDate ->
                 this.addPhotoUseCase.addPhoto(
-                    userEmail,
-                    EventDate.of(addPhotoRequest.date()),
+                    userEmailAndEventDate._1(),
+                    userEmailAndEventDate._2(),
                     toFile(addPhotoRequest),
                     addPhotoRequest.payload().description()))
         .fold(

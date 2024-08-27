@@ -3,6 +3,8 @@ package com.bookkeeper.app.adapter.in.web;
 import com.bookkeeper.app.application.domain.model.EventAttachmentId;
 import com.bookkeeper.app.application.domain.model.UserEmail;
 import com.bookkeeper.app.application.port.in.FindAttachmentUseCase;
+import io.vavr.API;
+import io.vavr.control.Validation;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -30,12 +32,14 @@ public class AttachmentController {
       Authentication authentication, @PathVariable("id") String id) {
     log.info("Received list events request from {}", authentication.getName());
 
-    return UserEmail.of(authentication.getName())
+    return Validation.combine(
+            UserEmail.of(authentication.getName()), EventAttachmentId.of(UUID.fromString(id)))
+        .ap(API::Tuple)
         .toTry()
         .flatMapTry(
-            userEmail ->
+            userEmailAndAttachmentId ->
                 this.findAttachmentUseCase.findAttachment(
-                    userEmail, EventAttachmentId.of(UUID.fromString(id))))
+                    userEmailAndAttachmentId._1(), userEmailAndAttachmentId._2()))
         .map(
             attachment -> {
               try {

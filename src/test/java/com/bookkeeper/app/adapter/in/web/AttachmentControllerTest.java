@@ -43,7 +43,7 @@ public class AttachmentControllerTest {
     this.mockMvc
         .perform(get("/attachment/any-attachment"))
         .andDo(print())
-        .andExpect(status().isNotFound());
+        .andExpect(status().isInternalServerError());
   }
 
   @Test

@@ -1,13 +1,23 @@
 package com.bookkeeper.app.application.domain.model;
 
+import com.bookkeeper.app.validation.Errors;
+import io.vavr.control.Validation;
 import java.time.ZonedDateTime;
 import java.util.Objects;
+import lombok.Getter;
 
 @ValueObject
-public record EventDate(ZonedDateTime value) implements Comparable<EventDate> {
+@Getter
+public class EventDate implements Comparable<EventDate> {
 
-  public static EventDate of(ZonedDateTime value) {
-    return new EventDate(value);
+  private final ZonedDateTime value;
+
+  private EventDate(ZonedDateTime value) {
+    this.value = value;
+  }
+
+  public static Validation<Errors, EventDate> of(ZonedDateTime value) {
+    return Validation.valid(new EventDate(value));
   }
 
   public static EventDate now() {

@@ -5,6 +5,8 @@ import static io.vavr.API.*;
 import com.bookkeeper.app.application.domain.model.EventDate;
 import com.bookkeeper.app.application.domain.model.UserEmail;
 import com.bookkeeper.app.application.port.in.AddNoteUseCase;
+import io.vavr.API;
+import io.vavr.control.Validation;
 import java.time.ZonedDateTime;
 import lombok.AllArgsConstructor;
 import lombok.NonNull;
@@ -30,13 +32,15 @@ public class NoteController {
       @RequestBody AddNoteRequest addNoteRequest, Authentication authentication) {
     log.info("Received add note request {}", addNoteRequest);
 
-    return UserEmail.of(authentication.getName())
+    return Validation.combine(
+            UserEmail.of(authentication.getName()), EventDate.of(addNoteRequest.date()))
+        .ap(API::Tuple)
         .toTry()
         .flatMapTry(
-            userEmail ->
+            userEmailAndEventDate ->
                 addNoteUseCase.addNote(
-                    userEmail,
-                    EventDate.of(addNoteRequest.date()),
+                    userEmailAndEventDate._1(),
+                    userEmailAndEventDate._2(),
                     addNoteRequest.payload().note()))
         .fold(
             failure -> {
