@@ -38,8 +38,7 @@ public class AttachmentController {
         .toTry()
         .flatMapTry(
             userEmailAndAttachmentId ->
-                this.findAttachmentUseCase.findAttachment(
-                    userEmailAndAttachmentId._1(), userEmailAndAttachmentId._2()))
+                userEmailAndAttachmentId.apply(this.findAttachmentUseCase::findAttachment))
         .map(
             attachment -> {
               try {

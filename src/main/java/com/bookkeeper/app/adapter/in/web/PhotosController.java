@@ -29,7 +29,7 @@ public class PhotosController {
 
     return UserEmail.of(authentication.getName())
         .toTry()
-        .flatMapTry(userEmail -> this.listPhotosUseCase.listPhotos(userEmail))
+        .flatMapTry(this.listPhotosUseCase::listPhotos)
         .map(
             events ->
                 events.map(

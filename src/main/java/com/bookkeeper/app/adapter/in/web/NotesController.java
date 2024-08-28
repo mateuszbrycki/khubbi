@@ -25,7 +25,7 @@ public class NotesController {
 
     return UserEmail.of(authentication.getName())
         .toTry()
-        .flatMapTry(userEmail -> this.listNotesUseCase.listNotes(userEmail))
+        .flatMapTry(this.listNotesUseCase::listNotes)
         .fold(
             failure ->
                 new ResponseEntity<>(

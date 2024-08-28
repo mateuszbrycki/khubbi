@@ -45,11 +45,10 @@ public class PhotoController {
         .toTry()
         .flatMapTry(
             userEmailAndEventDate ->
-                this.addPhotoUseCase.addPhoto(
-                    userEmailAndEventDate._1(),
-                    userEmailAndEventDate._2(),
-                    toFile(addPhotoRequest),
-                    addPhotoRequest.payload().description()))
+                userEmailAndEventDate
+                    .append(toFile(addPhotoRequest))
+                    .append(addPhotoRequest.payload().description())
+                    .apply(this.addPhotoUseCase::addPhoto))
         .fold(
             failure -> {
               HttpStatus status =

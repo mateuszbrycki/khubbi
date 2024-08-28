@@ -38,10 +38,9 @@ public class NoteController {
         .toTry()
         .flatMapTry(
             userEmailAndEventDate ->
-                addNoteUseCase.addNote(
-                    userEmailAndEventDate._1(),
-                    userEmailAndEventDate._2(),
-                    addNoteRequest.payload().note()))
+                userEmailAndEventDate
+                    .append(addNoteRequest.payload().note())
+                    .apply(addNoteUseCase::addNote))
         .fold(
             failure -> {
               HttpStatus status = Match(failure).of(Case($(), HttpStatus.INTERNAL_SERVER_ERROR));
