@@ -2,6 +2,7 @@ package com.bookkeeper.app.application.domain.service;
 
 import com.bookkeeper.app.application.domain.model.User;
 import com.bookkeeper.app.application.domain.model.UserEmail;
+import com.bookkeeper.app.application.domain.model.UserPassword;
 import com.bookkeeper.app.application.port.in.AddUserUseCase;
 import com.bookkeeper.app.application.port.in.FindUserUseCase;
 import com.bookkeeper.app.application.port.out.AddUserPort;
@@ -24,15 +25,18 @@ class UserService implements AddUserUseCase, FindUserUseCase {
 
   @Override
   public Try<User> addUser(
-      @NonNull String email, @NonNull String password, @NonNull String fullName) {
+      @NonNull UserEmail email,
+      @NonNull UserPassword password,
+      @NonNull UserPassword repeatedPassword) {
 
     Date now = Date.from(Instant.now());
-    User candidate = new User(UUID.randomUUID(), fullName, email, password, now, now);
+    User candidate =
+        new User(UUID.randomUUID(), email.value(), email.value(), password.value(), now, now);
 
     log.info("Adding user {} ({} - {})", candidate.id(), candidate.email(), candidate.fullName());
     return this.listUsersPort
         .listUsers()
-        .map(users -> users.filter(user -> user.email().equals(email)))
+        .map(users -> users.filter(user -> user.email().equals(email.value())))
         .flatMapTry(
             users ->
                 users.isEmpty()

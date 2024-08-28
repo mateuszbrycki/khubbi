@@ -7,10 +7,14 @@ import com.bookkeeper.app.adapter.in.web.security.jwt.JwtService;
 import com.bookkeeper.app.adapter.in.web.security.jwt.JwtToken;
 import com.bookkeeper.app.adapter.in.web.security.refresh.RefreshToken;
 import com.bookkeeper.app.adapter.in.web.security.refresh.RefreshTokenService;
+import com.bookkeeper.app.application.domain.model.UserEmail;
+import com.bookkeeper.app.application.domain.model.UserPassword;
 import com.bookkeeper.app.application.domain.service.UserWithEmailExistsException;
 import com.bookkeeper.app.application.port.in.AddUserUseCase;
+import io.vavr.API;
 import io.vavr.control.Option;
 import io.vavr.control.Try;
+import io.vavr.control.Validation;
 import java.util.Date;
 import java.util.UUID;
 import lombok.AllArgsConstructor;
@@ -38,12 +42,15 @@ public class AuthenticationController {
   @PostMapping("/signup")
   public ResponseEntity<?> register(@RequestBody RegisterUserDto registerUserDto) {
     log.info("Received registration request {}", registerUserDto);
+
     Try<RegisterResponse> user =
-        addUserUseCase
-            .addUser(
-                registerUserDto.getEmail(),
-                passwordEncoder.encode(registerUserDto.getPassword()),
-                registerUserDto.getFullName())
+        Validation.combine(
+                UserEmail.of(registerUserDto.getEmail()),
+                UserPassword.of(passwordEncoder.encode(registerUserDto.getPassword())),
+                UserPassword.of(passwordEncoder.encode(registerUserDto.getRepeatedPassword())))
+            .ap(API::Tuple)
+            .toTry()
+            .flatMapTry(tuple -> tuple.apply(addUserUseCase::addUser))
             .map(
                 addUserResult ->
                     new RegisterResponse()
@@ -266,7 +273,7 @@ public class AuthenticationController {
 
     private String password;
 
-    private String fullName;
+    private String repeatedPassword;
 
     public String getEmail() {
       return email;
@@ -284,17 +291,24 @@ public class AuthenticationController {
       this.password = password;
     }
 
-    public String getFullName() {
-      return fullName;
+    public String getRepeatedPassword() {
+      return repeatedPassword;
     }
 
-    public void setFullName(String fullName) {
-      this.fullName = fullName;
+    public void setRepeatedPassword(String fullName) {
+      this.repeatedPassword = fullName;
     }
 
     @Override
     public String toString() {
-      return "RegisterUserDto{" + "email='" + email + '\'' + ", fullName='" + fullName + '\'' + '}';
+      return "RegisterUserDto{"
+          + "email='"
+          + email
+          + '\''
+          + ", repeatedPassword='"
+          + repeatedPassword
+          + '\''
+          + '}';
     }
   }
 

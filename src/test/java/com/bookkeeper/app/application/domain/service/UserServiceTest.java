@@ -1,10 +1,13 @@
 package com.bookkeeper.app.application.domain.service;
 
+import static com.bookkeeper.app.common.Anys.ANY_EMAIL;
+import static com.bookkeeper.app.common.Anys.ANY_USER_EMAIL;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
 import com.bookkeeper.app.application.domain.model.User;
+import com.bookkeeper.app.application.domain.model.UserPassword;
 import com.bookkeeper.app.application.port.out.AddUserPort;
 import com.bookkeeper.app.application.port.out.ListUsersPort;
 import io.vavr.collection.List;
@@ -44,7 +47,9 @@ class UserServiceTest {
                     Date.from(Instant.now()))));
 
     // when
-    Try<User> user = underTest.addUser("email", "password", "fullName");
+    Try<User> user =
+        underTest.addUser(
+            ANY_USER_EMAIL, UserPassword.of("password").get(), UserPassword.of("password").get());
 
     // then
     assertTrue(user.isSuccess());
@@ -61,7 +66,9 @@ class UserServiceTest {
         .thenReturn(Try.failure(new RuntimeException("Cannot add a user")));
 
     // when
-    Try<User> user = underTest.addUser("email", "password", "fullName");
+    Try<User> user =
+        underTest.addUser(
+            ANY_USER_EMAIL, UserPassword.of("password").get(), UserPassword.of("password").get());
 
     // then
     assertTrue(user.isFailure());
@@ -75,7 +82,7 @@ class UserServiceTest {
         new User(
             UUID.randomUUID(),
             "fullName",
-            "email",
+            ANY_EMAIL,
             "password",
             Date.from(Instant.now()),
             Date.from(Instant.now()));
@@ -83,7 +90,9 @@ class UserServiceTest {
     when(listUsersPort.listUsers()).thenReturn(Try.success(List.of(existingUser)));
 
     // when
-    Try<User> user = underTest.addUser(existingUser.email(), "password", "fullName");
+    Try<User> user =
+        underTest.addUser(
+            ANY_USER_EMAIL, UserPassword.of("password").get(), UserPassword.of("password").get());
 
     // then
     assertTrue(user.isFailure());
@@ -98,7 +107,9 @@ class UserServiceTest {
         .thenReturn(Try.failure(new RuntimeException("Some random exception")));
 
     // when
-    Try<User> user = underTest.addUser("email", "password", "fullName");
+    Try<User> user =
+        underTest.addUser(
+            ANY_USER_EMAIL, UserPassword.of("password").get(), UserPassword.of("password").get());
 
     // then
     assertTrue(user.isFailure());

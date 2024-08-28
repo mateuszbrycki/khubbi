@@ -27,15 +27,19 @@ export interface RefreshTokenResponse {
 }
 
 export interface AuthorizationHttpApi {
-    readonly register: (email: string, password: string) => Promise<RegisterResponse>
+    readonly register: (email: string, password: string, repeatedPassword: string) => Promise<RegisterResponse>
     readonly login: (email: string, password: string) => Promise<LoginResponse>
     readonly logout: () => Promise<LogoutResponse>
     readonly refreshToken: (refreshToken: string) => Promise<RefreshTokenResponse>
 }
 
 const Api: AuthorizationHttpApi = {
-    register: (email: string, password: string) => {
-        return axios.post(`${AUTH_BASE_URL}/signup`, {"email": email, "password": password})
+    register: (email: string, password: string, repeatedPassword: string) => {
+        return axios.post(`${AUTH_BASE_URL}/signup`, {
+            "email": email,
+            "password": password,
+            "repeatedPassword": repeatedPassword
+        })
             .then(res => {
                 return res.data
             })

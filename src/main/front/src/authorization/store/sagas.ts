@@ -27,8 +27,8 @@ function* callLogin(api: AuthorizationHttpApi, email: string, password: string):
         .catch(error => ({error}))
 }
 
-function* callRegister(api: AuthorizationHttpApi, email: string, password: string): Generator<any, any, RegisterResponse> {
-    return yield api.register(email, password)
+function* callRegister(api: AuthorizationHttpApi, email: string, password: string, repeatedPassword: string): Generator<any, any, RegisterResponse> {
+    return yield api.register(email, password, repeatedPassword)
         .then(response => ({response}))
         .catch(error => ({error}))
 }
@@ -47,7 +47,10 @@ function* callRefreshToken(api: AuthorizationHttpApi, refreshToken: string): Gen
 
 function* registerUserSaga(api: AuthorizationHttpApi): IterableIterator<unknown> {
     yield takeEvery((a: Action): a is RegisterUser => a.type === Types.RegisterUser, function* (a: RegisterUser) {
-        const {error, response} = yield call(callRegister, api, a.payload.email, a.payload.password);
+        const {
+            error,
+            response
+        } = yield call(callRegister, api, a.payload.email, a.payload.password, a.payload.password);
 
         if (response) {
             yield put(UserRegisteredAction(response.id, response.email, response.createdAt))

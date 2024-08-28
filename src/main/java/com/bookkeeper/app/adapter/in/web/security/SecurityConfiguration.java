@@ -94,7 +94,7 @@ public class SecurityConfiguration {
                         .findByEmail(userEmail)
                         .map(this::toUserDetails)
                         .getOrElseThrow(() -> new UsernameNotFoundException("User not found")))
-            .get();
+            .getOrElseThrow(() -> new UsernameNotFoundException("User not found"));
   }
 
   private UserDetails toUserDetails(com.bookkeeper.app.application.domain.model.User user) {

@@ -1,5 +1,6 @@
 package com.bookkeeper.app.adapter.in.web;
 
+import static com.bookkeeper.app.common.Anys.ANY_EMAIL;
 import static com.bookkeeper.app.common.JsonUtils.asJsonString;
 import static org.hamcrest.Matchers.containsString;
 import static org.mockito.ArgumentMatchers.any;
@@ -17,7 +18,6 @@ import com.bookkeeper.app.adapter.in.web.security.refresh.RefreshTokenService;
 import com.bookkeeper.app.application.domain.model.User;
 import com.bookkeeper.app.application.domain.service.UserWithEmailExistsException;
 import com.bookkeeper.app.application.port.in.AddUserUseCase;
-import com.bookkeeper.app.common.Anys;
 import com.bookkeeper.app.common.TestSecurityConfiguration;
 import io.vavr.control.Try;
 import java.time.Instant;
@@ -61,9 +61,9 @@ class AuthenticationControllerTest {
 
     AuthenticationController.RegisterUserDto registerUserDto =
         new AuthenticationController.RegisterUserDto();
-    registerUserDto.setEmail("any-email");
-    registerUserDto.setFullName("any-fullname");
+    registerUserDto.setEmail(ANY_EMAIL);
     registerUserDto.setPassword("any-password");
+    registerUserDto.setRepeatedPassword("any-password");
 
     // when & then
     this.mockMvc
@@ -84,9 +84,9 @@ class AuthenticationControllerTest {
 
     AuthenticationController.RegisterUserDto registerUserDto =
         new AuthenticationController.RegisterUserDto();
-    registerUserDto.setEmail("any-email");
-    registerUserDto.setFullName("any-fullname");
+    registerUserDto.setEmail(ANY_EMAIL);
     registerUserDto.setPassword("any-password");
+    registerUserDto.setRepeatedPassword("any-password");
 
     // when & then
     this.mockMvc
@@ -106,7 +106,7 @@ class AuthenticationControllerTest {
         new User(
             UUID.randomUUID(),
             "fullname",
-            "email",
+            ANY_EMAIL,
             "password",
             Date.from(Instant.now()),
             Date.from(Instant.now()));
@@ -115,8 +115,8 @@ class AuthenticationControllerTest {
     AuthenticationController.RegisterUserDto registerUserDto =
         new AuthenticationController.RegisterUserDto();
     registerUserDto.setEmail(user.email());
-    registerUserDto.setFullName(user.fullName());
     registerUserDto.setPassword(user.password());
+    registerUserDto.setRepeatedPassword(user.password());
 
     // when & then
     this.mockMvc
@@ -138,7 +138,7 @@ class AuthenticationControllerTest {
 
     AuthenticationController.LoginUserDto loginUserDto =
         new AuthenticationController.LoginUserDto();
-    loginUserDto.setEmail("any-email");
+    loginUserDto.setEmail(ANY_EMAIL);
     loginUserDto.setPassword("any-password");
 
     // when & then
@@ -194,7 +194,7 @@ class AuthenticationControllerTest {
   }
 
   @Test
-  @WithUserDetails(Anys.ANY_EMAIL)
+  @WithUserDetails(ANY_EMAIL)
   public void shouldReturnBadRequestWhenJwtTokenDeletionFailedDuringLogout() throws Exception {
 
     // given
@@ -206,12 +206,12 @@ class AuthenticationControllerTest {
   }
 
   @Test
-  @WithUserDetails(Anys.ANY_EMAIL)
+  @WithUserDetails(ANY_EMAIL)
   public void shouldReturnBadRequestWhenRefreshTokenDeletionFailedDuringLogout() throws Exception {
 
     // given
     when(jwtService.invalidateUserTokens(any())).thenReturn(Try.success(true));
-    when(refreshTokenService.invalidateUserTokens(eq(Anys.ANY_EMAIL)))
+    when(refreshTokenService.invalidateUserTokens(eq(ANY_EMAIL)))
         .thenReturn(Try.failure(new RuntimeException("any deletion failure")));
 
     // when & then
@@ -219,13 +219,12 @@ class AuthenticationControllerTest {
   }
 
   @Test
-  @WithUserDetails(Anys.ANY_EMAIL)
+  @WithUserDetails(ANY_EMAIL)
   public void shouldOkWhenUserLoggedOutFailed() throws Exception {
 
     // given
-    when(jwtService.invalidateUserTokens(eq(Anys.ANY_EMAIL))).thenReturn(Try.success(true));
-    when(refreshTokenService.invalidateUserTokens(eq(Anys.ANY_EMAIL)))
-        .thenReturn(Try.success(true));
+    when(jwtService.invalidateUserTokens(eq(ANY_EMAIL))).thenReturn(Try.success(true));
+    when(refreshTokenService.invalidateUserTokens(eq(ANY_EMAIL))).thenReturn(Try.success(true));
 
     // when & then
     this.mockMvc.perform(get("/auth/logout")).andDo(print()).andExpect(status().isOk());

@@ -7,5 +7,5 @@ import lombok.With;
 
 @With
 @Builder
-public record User(
+public record User( // FIXME mateusz.brycki introduce ValueObjects
     UUID id, String fullName, String email, String password, Date createdAt, Date updatedAt) {}
