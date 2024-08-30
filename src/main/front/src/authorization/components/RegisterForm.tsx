@@ -1,5 +1,4 @@
-import React, {useEffect} from 'react'
-import {useState} from 'react';
+import React, {useEffect, useState} from 'react'
 import Button from 'react-bootstrap/Button';
 import Form from 'react-bootstrap/Form';
 
@@ -7,7 +6,7 @@ export interface RegisterFormProps {
 }
 
 export interface RegisterFormActionProps {
-    readonly registerUser: (email: string, password: string) => void
+    readonly registerUser: (email: string, password: string, repeatedPassword: string) => void
 }
 
 const RegisterForm: React.FC<RegisterFormProps & RegisterFormActionProps> = (props) => {
@@ -37,7 +36,7 @@ const RegisterForm: React.FC<RegisterFormProps & RegisterFormActionProps> = (pro
     return <>
         <h2>Register</h2>
         <Form onSubmit={event => {
-            registerUser(email, password);
+            registerUser(email, password, repeatPassword);
             event.preventDefault();
             resetFormValues();
         }}>

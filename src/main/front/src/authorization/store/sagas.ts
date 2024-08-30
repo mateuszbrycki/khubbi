@@ -50,7 +50,7 @@ function* registerUserSaga(api: AuthorizationHttpApi): IterableIterator<unknown>
         const {
             error,
             response
-        } = yield call(callRegister, api, a.payload.email, a.payload.password, a.payload.password);
+        } = yield call(callRegister, api, a.payload.email, a.payload.password, a.payload.repeatedPassword);
 
         if (response) {
             yield put(UserRegisteredAction(response.id, response.email, response.createdAt))

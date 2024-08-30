@@ -16,6 +16,7 @@ export interface RegisterUser {
     readonly payload: {
         email: string,
         password: string,
+        repeatedPassword: string
     }
 }
 
@@ -78,11 +79,12 @@ export interface RefreshUserJWT {
     readonly type: Types.RefreshUserJWT
 }
 
-const RegisterUserAction = (email: string, password: string): RegisterUser => ({
+const RegisterUserAction = (email: string, password: string, repeatedPassword: string): RegisterUser => ({
     type: Types.RegisterUser,
     payload: {
         email: email,
         password: password,
+        repeatedPassword: repeatedPassword,
     }
 })
 

@@ -40,12 +40,13 @@ describe('Register User Saga', () => {
                 type: Types.RegisterUser,
                 payload: {
                     email: "test-email",
-                    password: "test-password"
+                    password: "test-password",
+                    repeatedPassword: "test-repeated-password"
                 }
             })
             .run()
             .then(() => {
-                expect(registerMock).toHaveBeenCalledWith("test-email", "test-password")
+                expect(registerMock).toHaveBeenCalledWith("test-email", "test-password", "test-repeated-password")
             })
     })
 
@@ -73,12 +74,13 @@ describe('Register User Saga', () => {
                 type: Types.RegisterUser,
                 payload: {
                     email: "test-email",
-                    password: "test-password"
+                    password: "test-password",
+                    repeatedPassword: "test-repeated-password"
                 }
             })
             .run()
             .then(() => {
-                expect(registerMock).toHaveBeenCalledWith("test-email", "test-password")
+                expect(registerMock).toHaveBeenCalledWith("test-email", "test-password", "test-repeated-password")
             })
     })
 })
