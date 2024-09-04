@@ -36,7 +36,7 @@ exports[`application component renders alerts renders correctly 1`] = `
         <NavbarBrand
           href="#home"
         >
-          bookkeeper
+          khubbi
         </NavbarBrand>
         <NavbarToggle
           aria-controls="basic-navbar-nav"
@@ -77,7 +77,7 @@ exports[`application component renders alerts renders correctly 1`] = `
               redirectToIfLogged="/dashboard"
             >
               <h1>
-                Welcome in bookkeeper
+                Welcome in khubbi
               </h1>
             </AuthenticationAwareGate>
           }
@@ -182,7 +182,7 @@ exports[`application component user is authenticated renders correctly 1`] = `
         <NavbarBrand
           href="#home"
         >
-          bookkeeper
+          khubbi
         </NavbarBrand>
         <NavbarToggle
           aria-controls="basic-navbar-nav"
@@ -224,7 +224,7 @@ exports[`application component user is authenticated renders correctly 1`] = `
               redirectToIfLogged="/dashboard"
             >
               <h1>
-                Welcome in bookkeeper
+                Welcome in khubbi
               </h1>
             </AuthenticationAwareGate>
           }
@@ -299,7 +299,7 @@ exports[`application component user is not authenticated renders correctly 1`] =
         <NavbarBrand
           href="#home"
         >
-          bookkeeper
+          khubbi
         </NavbarBrand>
         <NavbarToggle
           aria-controls="basic-navbar-nav"
@@ -340,7 +340,7 @@ exports[`application component user is not authenticated renders correctly 1`] =
               redirectToIfLogged="/dashboard"
             >
               <h1>
-                Welcome in bookkeeper
+                Welcome in khubbi
               </h1>
             </AuthenticationAwareGate>
           }

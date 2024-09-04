@@ -21,7 +21,7 @@ record AddNoteCommand(User owner, ZonedDateTime date, String note) {
 Any external entities communicate with the application domain using ports. To perform any
 action ports need to take action's parameters.
 
-In the application, input ports (`com.bookkeeper.app.application.port.in`) accept either commands
+In the application, input ports (`com.khubbi.app.application.port.in`) accept either commands
 (action modifying state) or queries (no modification).
 
 ## Options
