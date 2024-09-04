@@ -6,7 +6,7 @@ plugins {
     id "io.freefair.lombok" version "8.6"
 }
 
-group = "com.bookkeeper"
+group = "com.khubbi"
 version = "0.0.1-SNAPSHOT"
 
 def jsonwebtokenVersion = "0.11.5"

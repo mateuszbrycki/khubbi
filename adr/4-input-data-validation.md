@@ -70,7 +70,7 @@ Cons:
 * validation error handling is performed by the clients code (e.g. REST controller),
 * all input parameters will need to be transformed to data objects.
 
-A [POC](https://github.com/mateuszbrycki/bookkeeper/commit/4698b0f3bc4391f74500c6f27b3b79196ffbd45c) of such an approach
+A [POC](https://github.com/mateuszbrycki/khubbi/commit/4698b0f3bc4391f74500c6f27b3b79196ffbd45c) of such an approach
 have been prepared.
 
 ## Decision

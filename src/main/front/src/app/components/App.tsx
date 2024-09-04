@@ -51,7 +51,7 @@ const App: React.FC<AppProps & AppActionProps> = (props) => {
         <Router history={history}>
             <Navbar expand="lg" className="bg-body-tertiary">
                 <Container>
-                    <Navbar.Brand href="#home">bookkeeper</Navbar.Brand>
+                    <Navbar.Brand href="#home">khubbi</Navbar.Brand>
                     <Navbar.Toggle aria-controls="basic-navbar-nav"/>
                     <Navbar.Collapse id="basic-navbar-nav">
                         <Nav className="me-auto">
@@ -73,7 +73,7 @@ const App: React.FC<AppProps & AppActionProps> = (props) => {
                     <Route path="/" element={
                         <AuthenticationAwareGate isAuthenticated={isAuthenticated}
                                                  redirectToIfLogged={"/dashboard"}>
-                            <h1>Welcome in bookkeeper</h1>
+                            <h1>Welcome in khubbi</h1>
                         </AuthenticationAwareGate>
                     }/>
                     <Route path="/login"

@@ -6,12 +6,12 @@ workflows:
 version: 2.1
 jobs:
   test-frontend:
-    working_directory: ~/bookkeeper/src/main/front/
+    working_directory: ~/khubbi/src/main/front/
     docker:
       - image: node:22.0.0-alpine
     steps:
       - checkout:
-          path:  ~/bookkeeper
+          path: ~/khubbi
       - restore_cache:
           keys:
             - v1-node-modules-cache-{{ arch }}-{{ .Branch }}-{{ checksum "package-lock.json" }}
@@ -30,15 +30,15 @@ jobs:
           path: ./results/
       - save_cache:
           paths:
-            - ~/bookkeeper/src/main/front/node_modules
+            - ~/khubbi/src/main/front/node_modules
           key: v1-node-modules-cache-{{ arch }}-{{ .Branch }}-{{ checksum "package-lock.json" }}
   test-backend:
-    working_directory: ~/bookkeeper
+    working_directory: ~/khubbi
     docker:
       - image: amazoncorretto:21
     steps:
       - checkout:
-          path:  ~/bookkeeper
+          path: ~/khubbi
       - run:
           name: "Build"
           command: ./gradlew clean build
