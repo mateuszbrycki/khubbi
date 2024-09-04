@@ -35,7 +35,10 @@ class NoteService extends UserAwareService implements AddNoteUseCase, ListNotesU
     return UserEmail.of(creatorEmail.value())
         .toTry()
         .flatMapTry(this::findUser)
-        .map(user -> Note.create(note, date, EventCreator.of(user)))
+        .map(
+            user ->
+                com.khubbi.app.application.domain.model.Note.create(
+                    note, date, EventCreator.of(user)))
         .flatMapTry(this.addNotePort::addNote)
         .mapTry(
             savedDone ->
@@ -58,7 +61,7 @@ class NoteService extends UserAwareService implements AddNoteUseCase, ListNotesU
             user ->
                 listNotesPort
                     .listNotes(user)
-                    .map(notes -> notes.sortBy(Note::date))
+                    .map(notes -> notes.sortBy(com.khubbi.app.application.domain.model.Note::date))
                     .map(
                         notes ->
                             notes.map(

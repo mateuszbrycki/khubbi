@@ -56,7 +56,7 @@ class PhotoService extends UserAwareService implements AddPhotoUseCase, ListPhot
             })
         .map(
             eventCreatorAndAttachment ->
-                Photo.create(
+                com.khubbi.app.application.domain.model.Photo.create(
                     description, eventCreatorAndAttachment._2,
                     date, eventCreatorAndAttachment._1))
         .flatMapTry(this.addPhotoPort::addPhoto)
@@ -76,7 +76,7 @@ class PhotoService extends UserAwareService implements AddPhotoUseCase, ListPhot
 
     return findUser(ownerEmail)
         .flatMap(this.listPhotosPort::listPhotos)
-        .map(photos -> photos.sortBy(Photo::date))
+        .map(photos -> photos.sortBy(com.khubbi.app.application.domain.model.Photo::date))
         .map(
             photos ->
                 photos.map(
