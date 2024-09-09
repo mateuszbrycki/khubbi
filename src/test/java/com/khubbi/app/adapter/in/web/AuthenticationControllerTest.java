@@ -8,8 +8,7 @@ import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 import com.khubbi.app.adapter.in.web.security.jwt.JwtService;
 import com.khubbi.app.adapter.in.web.security.jwt.JwtToken;
@@ -97,6 +96,27 @@ class AuthenticationControllerTest {
         .andDo(print())
         .andExpect(status().isInternalServerError())
         .andExpect(content().string(containsString("Any exception when adding a user")));
+  }
+
+  @Test
+  public void shouldReturnValidationErrorsWhenAddingAUser() throws Exception {
+    // given
+
+    AuthenticationController.RegisterUserDto registerUserDto =
+        new AuthenticationController.RegisterUserDto();
+    registerUserDto.setEmail("not-really-an-email");
+    registerUserDto.setPassword("any-password");
+    registerUserDto.setRepeatedPassword("any-password");
+
+    // when & then
+    this.mockMvc
+        .perform(
+            post("/auth/signup")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(asJsonString(registerUserDto)))
+        .andDo(print())
+        .andExpect(status().isBadRequest())
+        .andExpect(jsonPath("errors.email[0]").value("Invalid email"));
   }
 
   @Test

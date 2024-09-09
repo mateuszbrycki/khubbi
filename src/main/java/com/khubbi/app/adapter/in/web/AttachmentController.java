@@ -52,7 +52,8 @@ public class AttachmentController {
         .fold(
             failure ->
                 new ResponseEntity<>(
-                    new RequestResult.RequestError(failure.getMessage()), HttpStatus.NOT_FOUND),
+                    new RequestResult.RequestStringError(failure.getMessage()),
+                    HttpStatus.NOT_FOUND),
             result -> ResponseEntity.ok().body(result));
   }
 }

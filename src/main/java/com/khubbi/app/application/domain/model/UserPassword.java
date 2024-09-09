@@ -15,7 +15,18 @@ public class UserPassword {
   }
 
   public static Validation<Errors, UserPassword> of(String value) {
-    return Validation.valid(new UserPassword(value));
+    return Validation.combine(validateNotEmpty(value, "Value is empty"), alwaysValid(value))
+        .ap((String value1, String value2) -> new UserPassword(value))
+        .mapError(errors -> new Errors(UserPassword.class, errors));
+  }
+
+  private static Validation<String, String> alwaysValid(String value) {
+    return Validation.valid(value);
+  }
+
+  private static Validation<String, String> validateNotEmpty(String field, String error) {
+
+    return field != null && !field.isEmpty() ? Validation.valid(field) : Validation.invalid(error);
   }
 
   @Override

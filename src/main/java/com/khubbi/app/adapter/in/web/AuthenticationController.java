@@ -1,5 +1,6 @@
 package com.khubbi.app.adapter.in.web;
 
+import static com.khubbi.app.validation.ValidationToTry.toTry;
 import static io.vavr.API.*;
 import static io.vavr.Predicates.instanceOf;
 
@@ -11,7 +12,11 @@ import com.khubbi.app.application.domain.model.UserEmail;
 import com.khubbi.app.application.domain.model.UserPassword;
 import com.khubbi.app.application.domain.service.UserWithEmailExistsException;
 import com.khubbi.app.application.port.in.AddUserUseCase;
+import com.khubbi.app.validation.PropertyAwareValidation;
+import com.khubbi.app.validation.ValidationErrors;
 import io.vavr.API;
+import io.vavr.Tuple;
+import io.vavr.Tuple2;
 import io.vavr.control.Option;
 import io.vavr.control.Try;
 import io.vavr.control.Validation;
@@ -24,7 +29,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
 @Slf4j
@@ -36,7 +40,6 @@ public class AuthenticationController {
   private final AddUserUseCase addUserUseCase;
   private final JwtService jwtService;
   private final AuthenticationManager authenticationManager;
-  private final PasswordEncoder passwordEncoder;
   private final RefreshTokenService refreshTokenService;
 
   @PostMapping("/signup")
@@ -44,12 +47,16 @@ public class AuthenticationController {
     log.info("Received registration request {}", registerUserDto);
 
     Try<RegisterResponse> user =
-        Validation.combine(
-                UserEmail.of(registerUserDto.getEmail()),
-                UserPassword.of(passwordEncoder.encode(registerUserDto.getPassword())),
-                UserPassword.of(passwordEncoder.encode(registerUserDto.getRepeatedPassword())))
-            .ap(API::Tuple)
-            .toTry()
+        toTry(
+                Validation.combine(
+                        PropertyAwareValidation.of(
+                            "email", UserEmail.of(registerUserDto.getEmail())),
+                        PropertyAwareValidation.of(
+                            "password", UserPassword.of(registerUserDto.getPassword())),
+                        PropertyAwareValidation.of(
+                            "repeatedPassword",
+                            UserPassword.of(registerUserDto.getRepeatedPassword())))
+                    .ap(API::Tuple))
             .flatMapTry(tuple -> tuple.apply(addUserUseCase::addUser))
             .map(
                 addUserResult ->
@@ -60,12 +67,27 @@ public class AuthenticationController {
 
     return user.fold(
         failure -> {
-          HttpStatus status =
+          Tuple2<RequestResult, HttpStatus> bodyAndStatus =
               Match(failure)
                   .of(
-                      Case($(instanceOf(UserWithEmailExistsException.class)), HttpStatus.CONFLICT),
-                      Case($(), HttpStatus.INTERNAL_SERVER_ERROR));
-          return new ResponseEntity<>(new RequestResult.RequestError(failure.getMessage()), status);
+                      Case(
+                          $(instanceOf(UserWithEmailExistsException.class)),
+                          Tuple.of(
+                              new RequestResult.RequestStringError(failure.getMessage()),
+                              HttpStatus.CONFLICT)),
+                      Case(
+                          $(instanceOf(ValidationErrors.class)),
+                          () ->
+                              Tuple.of(
+                                  RequestResult.RequestValidationError.of(
+                                      (ValidationErrors) failure),
+                                  HttpStatus.BAD_REQUEST)),
+                      Case(
+                          $(),
+                          Tuple.of(
+                              new RequestResult.RequestStringError(failure.getMessage()),
+                              HttpStatus.INTERNAL_SERVER_ERROR)));
+          return new ResponseEntity<>(bodyAndStatus._1(), bodyAndStatus._2());
         },
         result -> new ResponseEntity<>(result, HttpStatus.CREATED));
   }

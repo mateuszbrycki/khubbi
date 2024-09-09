@@ -26,7 +26,7 @@ public class UserEmail {
             validateField(value, NOT_EMPTY_VALUE, "Value is empty"),
             validateField(value, EMAIL_PATTERN, "Invalid email"))
         .ap((String value1, String value2) -> new UserEmail(value))
-        .mapError(Errors::new);
+        .mapError(errors -> new Errors(UserEmail.class, errors));
   }
 
   private static Validation<String, String> validateField(

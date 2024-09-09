@@ -22,6 +22,7 @@ class UserService implements AddUserUseCase, FindUserUseCase {
 
   private final AddUserPort addUserPort;
   private final ListUsersPort listUsersPort;
+  private final PasswordEncoder passwordEncoder;
 
   @Override
   public Try<User> addUser(
@@ -29,9 +30,16 @@ class UserService implements AddUserUseCase, FindUserUseCase {
       @NonNull UserPassword password,
       @NonNull UserPassword repeatedPassword) {
 
+    // FIXME mateusz.brycki check if password is equal to repeatedPassword
     Date now = Date.from(Instant.now());
     User candidate =
-        new User(UUID.randomUUID(), email.value(), email.value(), password.value(), now, now);
+        new User(
+            UUID.randomUUID(),
+            email.value(),
+            email.value(),
+            passwordEncoder.encode(password.value()),
+            now,
+            now);
 
     log.info("Adding user {} ({} - {})", candidate.id(), candidate.email(), candidate.fullName());
     return this.listUsersPort
