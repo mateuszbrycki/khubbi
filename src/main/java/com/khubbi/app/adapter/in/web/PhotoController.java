@@ -55,7 +55,7 @@ public class PhotoController {
                   Match(failure)
                       .of(Case($(instanceOf(Exception.class)), HttpStatus.INTERNAL_SERVER_ERROR));
               return new ResponseEntity<>(
-                  new RequestResult.RequestError(failure.getMessage()), status);
+                  new RequestResult.RequestStringError(failure.getMessage()), status);
             },
             result -> new ResponseEntity<>(result, HttpStatus.CREATED));
   }

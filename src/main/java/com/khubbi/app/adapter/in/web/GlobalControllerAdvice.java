@@ -16,39 +16,41 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 public class GlobalControllerAdvice {
 
   @ExceptionHandler(Exception.class)
-  public ResponseEntity<RequestResult.RequestError> handleSecurityException(Exception exception) {
+  public ResponseEntity<RequestResult.RequestStringError> handleSecurityException(
+      Exception exception) {
 
     log.error("Received exception", exception);
 
     if (exception instanceof BadCredentialsException) {
       return new ResponseEntity<>(
-          new RequestResult.RequestError("The username or password is incorrect"),
+          new RequestResult.RequestStringError("The username or password is incorrect"),
           HttpStatus.UNAUTHORIZED);
     }
 
     if (exception instanceof AccountStatusException) {
       return new ResponseEntity<>(
-          new RequestResult.RequestError("The account is locked"), HttpStatus.FORBIDDEN);
+          new RequestResult.RequestStringError("The account is locked"), HttpStatus.FORBIDDEN);
     }
 
     if (exception instanceof AccessDeniedException) {
       return new ResponseEntity<>(
-          new RequestResult.RequestError("You are not authorized to access this resource"),
+          new RequestResult.RequestStringError("You are not authorized to access this resource"),
           HttpStatus.FORBIDDEN);
     }
 
     if (exception instanceof SignatureException) {
       return new ResponseEntity<>(
-          new RequestResult.RequestError("The JWT signature is invalid"), HttpStatus.FORBIDDEN);
+          new RequestResult.RequestStringError("The JWT signature is invalid"),
+          HttpStatus.FORBIDDEN);
     }
 
     if (exception instanceof ExpiredJwtException) {
       return new ResponseEntity<>(
-          new RequestResult.RequestError("The JWT token has expired"), HttpStatus.FORBIDDEN);
+          new RequestResult.RequestStringError("The JWT token has expired"), HttpStatus.FORBIDDEN);
     }
 
     return new ResponseEntity<>(
-        new RequestResult.RequestError("Unknown internal server error."),
+        new RequestResult.RequestStringError("Unknown internal server error."),
         HttpStatus.INTERNAL_SERVER_ERROR);
   }
 }

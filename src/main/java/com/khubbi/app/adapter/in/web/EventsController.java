@@ -44,7 +44,7 @@ public class EventsController {
         .fold(
             failure ->
                 new ResponseEntity<>(
-                    new RequestResult.RequestError(failure.getMessage()),
+                    new RequestResult.RequestStringError(failure.getMessage()),
                     HttpStatus.INTERNAL_SERVER_ERROR),
             result -> new ResponseEntity<>(result.toJavaList(), HttpStatus.OK));
   }

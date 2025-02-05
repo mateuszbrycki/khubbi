@@ -20,14 +20,14 @@ public class UserAutoRegistration {
     addUserUseCase
         .addUser(
             UserEmail.of("test1@test.com").get(),
-            UserPassword.of(passwordEncoder.encode("test1")).get(),
-            UserPassword.of(passwordEncoder.encode("test1")).get())
+            UserPassword.of("test1").get(),
+            UserPassword.of("test1").get())
         .getOrElseThrow(() -> new RuntimeException("Cannot Register user Test 1"));
     addUserUseCase
         .addUser(
             UserEmail.of("test2@test.com").get(),
-            UserPassword.of(passwordEncoder.encode("test2")).get(),
-            UserPassword.of(passwordEncoder.encode("test2")).get())
+            UserPassword.of("test2").get(),
+            UserPassword.of("test2").get())
         .getOrElseThrow(() -> new RuntimeException("Cannot Register user Test 2"));
   }
 }

@@ -28,6 +28,8 @@ class UserServiceTest {
 
   @Mock private ListUsersPort listUsersPort;
 
+  @Mock private PasswordEncoder passwordEncoder;
+
   @InjectMocks private UserService underTest;
 
   @Test
@@ -35,6 +37,7 @@ class UserServiceTest {
 
     // given
     when(listUsersPort.listUsers()).thenReturn(Try.success(List.empty()));
+    when(passwordEncoder.encode(any())).thenReturn("password");
     when(addUserPort.addUser(any()))
         .thenReturn(
             Try.success(
@@ -62,6 +65,7 @@ class UserServiceTest {
 
     // given
     when(listUsersPort.listUsers()).thenReturn(Try.success(List.empty()));
+    when(passwordEncoder.encode(any())).thenReturn("password");
     when(addUserPort.addUser(any()))
         .thenReturn(Try.failure(new RuntimeException("Cannot add a user")));
 
@@ -88,6 +92,7 @@ class UserServiceTest {
             Date.from(Instant.now()));
 
     when(listUsersPort.listUsers()).thenReturn(Try.success(List.of(existingUser)));
+    when(passwordEncoder.encode(any())).thenReturn("password");
 
     // when
     Try<User> user =

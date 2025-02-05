@@ -24,8 +24,9 @@ public class ServicesConfiguration {
   }
 
   @Bean
-  UserService userService(UserInMemoryRepository userInMemoryRepository) {
-    return new UserService(userInMemoryRepository, userInMemoryRepository);
+  UserService userService(
+      UserInMemoryRepository userInMemoryRepository, PasswordEncoder passwordEncoder) {
+    return new UserService(userInMemoryRepository, userInMemoryRepository, passwordEncoder);
   }
 
   @Bean
@@ -37,5 +38,11 @@ public class ServicesConfiguration {
   AttachmentService attachmentService(
       FindUserUseCase findUserUseCase, FindAttachmentPort findAttachmentPort) {
     return new AttachmentService(findUserUseCase, findAttachmentPort);
+  }
+
+  @Bean
+  PasswordEncoder passwordEncodingService(
+      org.springframework.security.crypto.password.PasswordEncoder passwordEncoder) {
+    return new PasswordEncoder(passwordEncoder);
   }
 }

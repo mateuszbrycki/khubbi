@@ -30,3 +30,12 @@ Content-Type: application/json
 GET http://localhost:8080/attachment/a3b679fd-62ef-4235-9ba9-0295cad397fd
 Authorization: Bearer {{jwt_token}}
 
+### signup
+POST http://localhost:8080/auth/signup
+Content-Type: application/json
+
+{
+  "email": "test3",
+  "password": "",
+  "repeatedPassword": ""
+}
