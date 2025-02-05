@@ -2,7 +2,7 @@
 
 ## Mission
 
-< Application Name> empowers and enables family members to collectively take care of their household.
+Khubbi empowers and enables family members to collectively take care of their household.
 
 The values encouraged by the application:
 1. the whole family should take care of their household,
