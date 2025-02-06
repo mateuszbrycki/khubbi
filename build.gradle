@@ -10,7 +10,7 @@ group = "com.khubbi"
 version = "0.0.1-SNAPSHOT"
 
 def jsonwebtokenVersion = "0.11.5"
-def vavrVersion = "0.10.4"
+def vavrVersion = "0.10.6"
 def assertjVavrVersion = "0.4.3"
 def jacksonDatatypeVersion = "2.17.2"
 def vavrJacksonVersion = "0.10.3"
