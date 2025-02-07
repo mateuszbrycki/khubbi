@@ -8,7 +8,7 @@
     "@types/react": "^18.2.79",
     "@types/react-dom": "^18.2.25",
     "@types/react-test-renderer": "^18.3.0",
-    "axios": "^1.6.8",
+    "axios": "^1.7.9",
     "bootstrap": "^5.3.3",
     "history": "^5.3.0",
     "immutable": "^5.0.0-beta.5",
