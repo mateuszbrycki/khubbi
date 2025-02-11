@@ -15,7 +15,7 @@ def assertjVavrVersion = "0.4.3"
 def jacksonDatatypeVersion = "2.18.2"
 def vavrJacksonVersion = "0.10.3"
 def lombokVersion = "1.18.36"
-def archUnitVersion = "1.3.0"
+def archUnitVersion = "1.4.0"
 
 
 java {
