@@ -9,7 +9,7 @@ plugins {
 group = "com.khubbi"
 version = "0.0.1-SNAPSHOT"
 
-def jsonwebtokenVersion = "0.11.5"
+def jsonwebtokenVersion = "0.12.6"
 def vavrVersion = "0.10.6"
 def assertjVavrVersion = "0.4.3"
 def jacksonDatatypeVersion = "2.18.2"

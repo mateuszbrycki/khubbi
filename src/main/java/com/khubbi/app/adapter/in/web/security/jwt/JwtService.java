@@ -9,15 +9,16 @@ import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.io.Decoders;
-import io.jsonwebtoken.security.Keys;
 import io.vavr.control.Try;
-import java.security.Key;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.core.userdetails.UserDetails;
+
+import javax.crypto.SecretKey;
+import javax.crypto.spec.SecretKeySpec;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Function;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.security.core.userdetails.UserDetails;
 
 @Slf4j
 public class JwtService {
@@ -105,16 +106,16 @@ public class JwtService {
   }
 
   private Claims extractAllClaims(String token) {
-    return Jwts.parserBuilder()
-        .setSigningKey(getSignInKey())
+    return Jwts.parser()
+            .verifyWith(getSignInKey())
         .build()
-        .parseClaimsJws(token)
-        .getBody();
+            .parseSignedClaims(token)
+            .getPayload();
   }
 
-  private Key getSignInKey() {
+  private SecretKey getSignInKey() {
     byte[] keyBytes = Decoders.BASE64.decode(secretKey);
-    return Keys.hmacShaKeyFor(keyBytes);
+    return new SecretKeySpec(keyBytes, "HmacSHA256");
   }
 
   private void markTokenAsActive(String email, JwtToken token) {
